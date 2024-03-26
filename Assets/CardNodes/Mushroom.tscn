@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3 uid="uid://2h7cenkf7ryn"]
+
+[ext_resource type="Texture2D" uid="uid://cq0uog01ui3tw" path="res://UI/Icons/Mushroom.tres" id="1_cbpi2"]
+[ext_resource type="Script" path="res://Assets/CardNodes/GrownNode.cs" id="1_u5d11"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qexk8"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_u5d11")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(200, 300)
+offset_right = 200.0
+offset_bottom = 300.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_qexk8")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(88, 77)
+scale = Vector2(4.33224, 4.67335)
+texture = ExtResource("1_cbpi2")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+position = Vector2(68, 164)
+scale = Vector2(4.33224, 4.67335)
+texture = ExtResource("1_cbpi2")
+
+[node name="Sprite2D3" type="Sprite2D" parent="."]
+position = Vector2(163, 141)
+scale = Vector2(4.33224, 4.67335)
+texture = ExtResource("1_cbpi2")
+
+[node name="Sprite2D4" type="Sprite2D" parent="."]
+position = Vector2(128, 211)
+scale = Vector2(3.39689, 3.95206)
+texture = ExtResource("1_cbpi2")

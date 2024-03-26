@@ -1,0 +1,222 @@
+[gd_scene load_steps=18 format=3 uid="uid://bf3xrtnouiei1"]
+
+[ext_resource type="Texture2D" uid="uid://d3f55ept5w5d2" path="res://Assets/UI/UIDifferentFree03Wenrexa/JPG/MiniPanel06.jpg" id="1_0vyn0"]
+[ext_resource type="Script" path="res://Main/TrackPlacer.cs" id="1_lh40l"]
+[ext_resource type="Texture2D" uid="uid://b73r8m2mqfjb" path="res://Assets/UI/Shikashi's Fantasy Icons Pack v2/BG 7.png" id="3_5yyhm"]
+[ext_resource type="Texture2D" uid="uid://bnu1f5wh0ycuu" path="res://Assets/Tracks/Raised/curve_right_up.tres" id="4_86byk"]
+[ext_resource type="Texture2D" uid="uid://de7syh4i3n8lt" path="res://Assets/Arrow.png" id="4_wjk7r"]
+[ext_resource type="Texture2D" uid="uid://dtq7yd318tf0o" path="res://Assets/Tracks/Modified/straight_horizontal.tres" id="6_tb40c"]
+[ext_resource type="Texture2D" uid="uid://bytevdpb4bdru" path="res://Assets/Tracks/Modified/Junction/down_up_right.tres" id="8_6tbfu"]
+[ext_resource type="Script" path="res://UI/GameButton.cs" id="8_tah16"]
+[ext_resource type="Shader" path="res://Assets/Shaders/Outline.gdshader" id="9_4dc8d"]
+[ext_resource type="PackedScene" uid="uid://co7ty1ancpy82" path="res://UI/TutorialUI.tscn" id="10_et41v"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5kxxg"]
+atlas = ExtResource("3_5yyhm")
+region = Rect2(416, 256, 32, 32)
+
+[sub_resource type="LabelSettings" id="LabelSettings_a34k4"]
+font_size = 13
+
+[sub_resource type="LabelSettings" id="LabelSettings_ly8ku"]
+font_size = 11
+
+[sub_resource type="LabelSettings" id="LabelSettings_faida"]
+font_size = 10
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ai60a"]
+resource_local_to_scene = true
+shader = ExtResource("9_4dc8d")
+shader_parameter/color = Color(1, 0.462745, 0.454902, 1)
+shader_parameter/width = 1.0
+shader_parameter/pattern = 0
+shader_parameter/inside = true
+shader_parameter/add_margins = false
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fqxpg"]
+resource_local_to_scene = true
+shader = ExtResource("9_4dc8d")
+shader_parameter/color = Color(1, 0.462745, 0.454902, 1)
+shader_parameter/width = 1.0
+shader_parameter/pattern = 0
+shader_parameter/inside = true
+shader_parameter/add_margins = false
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ddr7o"]
+resource_local_to_scene = true
+shader = ExtResource("9_4dc8d")
+shader_parameter/color = Color(1, 0.462745, 0.454902, 1)
+shader_parameter/width = 1.0
+shader_parameter/pattern = 0
+shader_parameter/inside = true
+shader_parameter/add_margins = false
+
+[node name="TrackPlacer" type="Node2D"]
+script = ExtResource("1_lh40l")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+self_modulate = Color(1, 1, 1, 0.607843)
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -38.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("1_0vyn0")
+expand_mode = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/TextureRect"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="TextureRect3" type="TextureRect" parent="CanvasLayer"]
+offset_left = 80.0
+offset_top = 245.0
+offset_right = 97.0
+offset_bottom = 260.0
+texture = SubResource("AtlasTexture_5kxxg")
+expand_mode = 1
+
+[node name="Arrow" type="Sprite2D" parent="CanvasLayer/TextureRect3"]
+position = Vector2(9, -5)
+rotation = 2.33874
+scale = Vector2(0.0372946, 0.0416526)
+texture = ExtResource("4_wjk7r")
+
+[node name="Label" type="Label" parent="CanvasLayer/TextureRect3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Q"
+label_settings = SubResource("LabelSettings_a34k4")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="Arrow2" type="Sprite2D" parent="CanvasLayer/TextureRect3"]
+position = Vector2(9, 20)
+rotation = -0.877901
+scale = Vector2(0.0372946, 0.0416526)
+texture = ExtResource("4_wjk7r")
+
+[node name="CheckBox" type="CheckBox" parent="CanvasLayer"]
+offset_left = 84.0
+offset_top = -1.0
+offset_right = 108.0
+offset_bottom = 23.0
+focus_mode = 0
+
+[node name="Label" type="Label" parent="CanvasLayer/CheckBox"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 4.0
+offset_right = 122.0
+offset_bottom = 23.0
+text = "Show Connections"
+label_settings = SubResource("LabelSettings_ly8ku")
+
+[node name="Normal" type="VBoxContainer" parent="CanvasLayer"]
+offset_left = 45.0
+offset_top = 229.0
+offset_right = 70.0
+offset_bottom = 268.0
+theme_override_constants/separation = 0
+
+[node name="Label" type="Label" parent="CanvasLayer/Normal"]
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 1
+text = "5"
+label_settings = SubResource("LabelSettings_faida")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Normal" type="TextureButton" parent="CanvasLayer/Normal"]
+material = SubResource("ShaderMaterial_ai60a")
+custom_minimum_size = Vector2(25.86, 22.025)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 1
+texture_normal = ExtResource("6_tb40c")
+ignore_texture_size = true
+stretch_mode = 1
+script = ExtResource("8_tah16")
+UIID = "Normal"
+metadata/_edit_lock_ = true
+
+[node name="Raised" type="VBoxContainer" parent="CanvasLayer"]
+offset_left = 110.0
+offset_top = 230.0
+offset_right = 135.0
+offset_bottom = 272.0
+theme_override_constants/separation = 0
+
+[node name="Label" type="Label" parent="CanvasLayer/Raised"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "5"
+label_settings = SubResource("LabelSettings_faida")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="Normal" type="TextureButton" parent="CanvasLayer/Raised"]
+material = SubResource("ShaderMaterial_fqxpg")
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 1
+texture_normal = ExtResource("4_86byk")
+ignore_texture_size = true
+stretch_mode = 1
+script = ExtResource("8_tah16")
+UIID = "Raised"
+metadata/_edit_lock_ = true
+
+[node name="Junc" type="VBoxContainer" parent="CanvasLayer"]
+offset_left = 160.0
+offset_top = 227.0
+offset_right = 185.0
+offset_bottom = 269.0
+theme_override_constants/separation = 0
+
+[node name="Label" type="Label" parent="CanvasLayer/Junc"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "5"
+label_settings = SubResource("LabelSettings_faida")
+horizontal_alignment = 1
+vertical_alignment = 2
+metadata/_edit_lock_ = true
+
+[node name="Normal" type="TextureButton" parent="CanvasLayer/Junc"]
+material = SubResource("ShaderMaterial_ddr7o")
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 1
+texture_normal = ExtResource("8_6tbfu")
+ignore_texture_size = true
+stretch_mode = 1
+script = ExtResource("8_tah16")
+UIID = "Junction"
+metadata/_edit_lock_ = true
+
+[node name="TutorialLayer" parent="CanvasLayer" instance=ExtResource("10_et41v")]
+
+[connection signal="toggled" from="CanvasLayer/CheckBox" to="." method="ShowConnections"]

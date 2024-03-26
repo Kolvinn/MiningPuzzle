@@ -1,0 +1,8 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://c57c0bod4r5lh"]
+
+[ext_resource type="Texture2D" uid="uid://dccjfx0mlfj6a" path="res://Assets/Arrowhead.png" id="1_embm6"]
+
+[resource]
+resource_local_to_scene = true
+atlas = ExtResource("1_embm6")
+region = Rect2(172.04, 124.568, 322.127, 214.087)

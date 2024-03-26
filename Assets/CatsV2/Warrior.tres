@@ -1,0 +1,7 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://b8ub6v04f8iob"]
+
+[ext_resource type="Texture2D" uid="uid://b62rs8y6ihl0s" path="res://Assets/Cats/warlord-cat-holding-a-war-sword-ai-genertaive-free-photo.jpg" id="1_hpwgx"]
+
+[resource]
+atlas = ExtResource("1_hpwgx")
+region = Rect2(1077.7, 20.5075, 1632.93, 1929.13)

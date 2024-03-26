@@ -1,0 +1,7 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://croq71fgdms46"]
+
+[ext_resource type="Texture2D" uid="uid://dx18qhht2awmw" path="res://Assets/Environment/RPGW_AncientForest_v1.0/_PNG/anim/tree1.png" id="1_we7mb"]
+
+[resource]
+atlas = ExtResource("1_we7mb")
+region = Rect2(2, 7, 156, 241)

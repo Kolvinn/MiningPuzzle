@@ -1,0 +1,131 @@
+[gd_scene load_steps=25 format=3 uid="uid://1tcgqoyv2r6d"]
+
+[ext_resource type="PackedScene" path="res://Assets/Particles/Smoke_Center_LARGE.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://b0imuenaahmso" path="res://Assets/Particles/Smoke_Center.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://Assets/Particles/Smoke_Border2.tscn" id="3"]
+[ext_resource type="Shader" path="res://TestShader.gdshader" id="4"]
+
+[sub_resource type="Gradient" id="22"]
+offsets = PackedFloat32Array(0, 0.131579, 0.276316, 0.475329, 0.871711, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1, 0.202394, 0.13501, 0.21875, 1, 0.167332, 0.132523, 0.175781, 1, 0.163574, 0.183353, 0.3125, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="19"]
+gradient = SubResource("22")
+
+[sub_resource type="FastNoiseLite" id="23"]
+seed = 7
+
+[sub_resource type="NoiseTexture2D" id="20"]
+seamless = true
+noise = SubResource("23")
+
+[sub_resource type="ShaderMaterial" id="24"]
+shader = ExtResource("4")
+shader_parameter/scroll = Vector2(-0.02, -0.01)
+shader_parameter/scroll2 = Vector2(0.06, 0.04)
+shader_parameter/Vec1 = Vector2(1, 1)
+shader_parameter/Vec2 = Vector2(200, 1)
+shader_parameter/Vec3 = Vector2(1, 200)
+shader_parameter/Vec4 = Vector2(200, 200)
+shader_parameter/global_transform = null
+shader_parameter/texture2 = SubResource("20")
+shader_parameter/colorTexture = SubResource("19")
+
+[sub_resource type="FastNoiseLite" id="21"]
+
+[sub_resource type="NoiseTexture2D" id="25"]
+seamless = true
+noise = SubResource("21")
+
+[sub_resource type="CanvasItemMaterial" id="6"]
+
+[sub_resource type="Gradient" id="9"]
+offsets = PackedFloat32Array(0, 0.0877863, 0.293893, 0.459924, 0.700382, 0.869186, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1, 0.235368, 0.132404, 0.277832, 1, 0.0985901, 0.0740128, 0.106445, 1, 0.204102, 0.121185, 0.202272, 1, 0.290196, 0.211765, 0.278431, 0.917647, 0.254902, 0.223529, 0.235294, 0)
+
+[sub_resource type="GradientTexture1D" id="10"]
+gradient = SubResource("9")
+width = 6
+
+[sub_resource type="ParticleProcessMaterial" id="7"]
+lifetime_randomness = 0.29
+emission_shape = 1
+emission_sphere_radius = 19.77
+direction = Vector3(0, 0, 0)
+spread = 180.0
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("10")
+
+[sub_resource type="CompressedTexture2D" id="8"]
+
+[sub_resource type="CanvasItemMaterial" id="1"]
+
+[sub_resource type="Gradient" id="5"]
+offsets = PackedFloat32Array(0.00763359, 0.0877863, 0.236948, 0.349398, 0.497992, 0.631861, 0.748327, 0.866131, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1, 0.235368, 0.132404, 0.277832, 1, 0.131325, 0.106087, 0.263672, 1, 0.0985901, 0.0740128, 0.106445, 1, 0.176307, 0.135941, 0.294922, 1, 0.204102, 0.121185, 0.202272, 1, 0.290196, 0.211765, 0.278431, 0.917647, 0.254902, 0.223529, 0.235294, 0)
+
+[sub_resource type="GradientTexture1D" id="3"]
+gradient = SubResource("5")
+width = 6
+
+[sub_resource type="ParticleProcessMaterial" id="4"]
+lifetime_randomness = 0.29
+emission_shape = 1
+emission_sphere_radius = 19.77
+direction = Vector3(0, 0, 0)
+spread = 180.0
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("3")
+
+[sub_resource type="CanvasItemMaterial" id="11"]
+
+[sub_resource type="Gradient" id="12"]
+offsets = PackedFloat32Array(0.00763359, 0.0877863, 0.293893, 0.459924, 0.700382, 0.895038, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1, 0.235368, 0.132404, 0.277832, 1, 0.0985901, 0.0740128, 0.106445, 1, 0.204102, 0.121185, 0.202272, 1, 0.290196, 0.211765, 0.278431, 0.917647, 0.254902, 0.223529, 0.235294, 0)
+
+[sub_resource type="GradientTexture1D" id="13"]
+gradient = SubResource("12")
+width = 6
+
+[sub_resource type="ParticleProcessMaterial" id="14"]
+lifetime_randomness = 0.29
+emission_shape = 1
+emission_sphere_radius = 19.77
+direction = Vector3(0, 0, 0)
+spread = 180.0
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("13")
+
+[node name="Smoke_Column" type="Node2D"]
+rotation = 1.5708
+
+[node name="ShadowPoly" type="Polygon2D" parent="."]
+visible = false
+material = SubResource("24")
+color = Color(1, 1, 1, 0.368627)
+texture = SubResource("25")
+invert_border = 919.2
+polygon = PackedVector2Array(182, -1746, 266, -1932, 248, -2268, -243, -2160, -393, -1920, -237, -1621, -4.00008, -1782)
+polygons = [null]
+
+[node name="Smoke_Center_LARGE2" parent="." instance=ExtResource("1")]
+material = SubResource("6")
+position = Vector2(-6.00476, -1315)
+process_material = SubResource("7")
+texture = SubResource("8")
+
+[node name="Smoke_Center" parent="." instance=ExtResource("2")]
+visible = false
+material = SubResource("1")
+position = Vector2(0, -566)
+process_material = SubResource("4")
+
+[node name="Smoke_Border2" parent="." instance=ExtResource("3")]
+material = SubResource("11")
+amount = 8
+process_material = SubResource("14")
+lifetime = 0.5
+
+[node name="Line2D" type="Line2D" parent="."]
+visible = false
+points = PackedVector2Array(-1, 0, -3, -1803)

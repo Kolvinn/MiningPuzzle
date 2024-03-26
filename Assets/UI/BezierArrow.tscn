@@ -1,0 +1,44 @@
+[gd_scene load_steps=4 format=3 uid="uid://jvte0ft56736"]
+
+[ext_resource type="Script" path="res://Assets/UI/BezierArrow.cs" id="1_avxb8"]
+[ext_resource type="Texture2D" uid="uid://c57c0bod4r5lh" path="res://Assets/ArrowHead.tres" id="2_1wmcx"]
+[ext_resource type="Texture2D" uid="uid://dpvlruhul340x" path="res://Assets/ArrowBase.tres" id="3_iwp6l"]
+
+[node name="BezierArrow" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_avxb8")
+
+[node name="ArrowHead" type="TextureRect" parent="."]
+z_index = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -118.0
+offset_top = -108.0
+offset_right = 118.0
+offset_bottom = 108.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(118, 108)
+mouse_filter = 2
+texture = ExtResource("2_1wmcx")
+expand_mode = 1
+
+[node name="ArrowNode" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 947.0
+offset_top = 373.0
+offset_right = 1140.0
+offset_bottom = 534.0
+mouse_filter = 2
+texture = ExtResource("3_iwp6l")
+expand_mode = 1

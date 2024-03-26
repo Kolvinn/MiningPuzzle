@@ -1,0 +1,8 @@
+[gd_resource type="TileSet" format=3 uid="uid://dfha2nkp3bei1"]
+
+[resource]
+terrain_set_0/mode = 0
+terrain_set_0/terrain_0/name = "Terrain10"
+terrain_set_0/terrain_0/color = Color(0.603922, 0.14902, 0.588235, 1)
+terrain_set_0/terrain_1/name = "Terrain 21"
+terrain_set_0/terrain_1/color = Color(0.5, 0.4375, 0.25, 1)

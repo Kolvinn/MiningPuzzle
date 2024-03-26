@@ -1,0 +1,513 @@
+[gd_scene load_steps=8 format=3 uid="uid://co7ty1ancpy82"]
+
+[ext_resource type="Script" path="res://UI/TutorialUI.cs" id="1_17apg"]
+[ext_resource type="Texture2D" uid="uid://djkypatjfgrhw" path="res://Assets/UI/UIDifferentFree03Wenrexa/PNG/Button01.png" id="2_6pruj"]
+[ext_resource type="FontFile" uid="uid://cgmcpe28yqrsy" path="res://Assets/Fonts/Kreon Font/Kreon-Light.ttf" id="3_vrvdy"]
+[ext_resource type="Script" path="res://UI/TutorialBox.cs" id="4_x0nw8"]
+[ext_resource type="Texture2D" uid="uid://bspld6vxbecvt" path="res://Assets/UI/Wenrexa Interface UI KIT #4/PNG/Icons/ArrowsRight2.png" id="5_5t600"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a5y2q"]
+texture = ExtResource("2_6pruj")
+texture_margin_left = 4.0
+texture_margin_top = 4.0
+texture_margin_right = 5.0
+texture_margin_bottom = 4.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_xy0wp"]
+font = ExtResource("3_vrvdy")
+font_size = 11
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -1.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_17apg")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.129412, 0.129412, 0.129412, 0.592157)
+
+[node name="1" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="1" type="Label" parent="1"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -103.0
+offset_top = -66.0
+offset_right = 112.0
+offset_bottom = 68.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_a5y2q")
+text = "Welcome to Journey to the Center of the Mines Demo!
+
+Your goal is to gather the correct ore amount and deliver it to the magic mining portals. If you meet the conditions, you will unlock the next level!
+
+(press [space] to continue)"
+label_settings = SubResource("LabelSettings_xy0wp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("4_x0nw8")
+
+[node name="2" type="Label" parent="1"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -196.0
+offset_top = -78.0
+offset_right = -35.0
+offset_bottom = 74.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_a5y2q")
+text = "To connect a track, select the type of track down the bottom and drag/place with left mouse button it to connect . You can delete tracks via right mouse button.
+
+You cannot place tracks on ore nodes!"
+label_settings = SubResource("LabelSettings_xy0wp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("4_x0nw8")
+RequiredId = "Normal"
+
+[node name="ArrowsRight2" type="Sprite2D" parent="1/2"]
+position = Vector2(20, 150)
+rotation = 1.5708
+scale = Vector2(0.594589, 0.34588)
+texture = ExtResource("5_5t600")
+
+[node name="3" type="Label" parent="1"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 6.0
+offset_top = -55.0
+offset_right = 167.0
+offset_bottom = 22.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_a5y2q")
+text = "The target of the level is indicated by the ore amounts here - with an amount and ore type."
+label_settings = SubResource("LabelSettings_xy0wp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("4_x0nw8")
+
+[node name="ArrowsRight2" type="Sprite2D" parent="1/3"]
+position = Vector2(74, -6)
+rotation = -1.5708
+scale = Vector2(0.594589, 0.34588)
+texture = ExtResource("5_5t600")
+
+[node name="4" type="Label" parent="1"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -82.0
+offset_top = -97.0
+offset_right = 127.0
+offset_bottom = 91.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_a5y2q")
+text = "The mine carts will load at the shown start positions. These positions cannot be deleted.
+
+The carts will have miners in them (in a non demo) who will automatically mine 1 ore node per square and pick up the amount indicated on each node.
+
+Go ahead and connect the start to the end point to pick up the amount of ore indicated !"
+label_settings = SubResource("LabelSettings_xy0wp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("4_x0nw8")
+
+[node name="ArrowsRight2" type="Sprite2D" parent="1/4"]
+position = Vector2(-10, 47)
+rotation = -3.14159
+scale = Vector2(0.594589, 0.34588)
+texture = ExtResource("5_5t600")
+
+[node name="5" type="Label" parent="1"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -109.0
+offset_top = -131.0
+offset_right = 52.0
+offset_bottom = 39.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_a5y2q")
+text = "When you've created a connected track you think works, click start and let the mine cart go!
+
+You can repeat a level or go next level via the drop down at the right after a successful run.
+
+(pls do go in order for me ty)"
+label_settings = SubResource("LabelSettings_xy0wp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("4_x0nw8")
+
+[node name="2" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="1" type="Label" parent="2"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -76.0
+offset_top = -46.0
+offset_right = 85.0
+offset_bottom = 31.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_a5y2q")
+text = "Sometimes you will have different ore type requirements. If a level target has nothing indicated for a specific ore, then the amount doesnt matter!"
+label_settings = SubResource("LabelSettings_xy0wp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("4_x0nw8")
+
+[node name="3" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="1" type="Label" parent="3"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -107.0
+offset_top = -119.0
+offset_right = 111.0
+offset_bottom = 105.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_a5y2q")
+text = "Double Trouble!
+
+More than one cart can mean you can use one to pick op resources the other cart doesnt want. Especially if there is more than one level target!
+
+Though as long as all level targets are satisfied, you need not use all carts!
+
+PS: Carts hitting each other before the end will result in a fail!"
+label_settings = SubResource("LabelSettings_xy0wp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("4_x0nw8")
+
+[node name="4" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="1" type="Label" parent="4"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -142.0
+offset_top = -104.0
+offset_right = 156.0
+offset_bottom = 79.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_a5y2q")
+text = "Two Carts One Junction
+
+Some levels will have more than one starting cart, but only one level target. In this case, targets may have 'Batches (indicated via (''b1', 'b2', etc.) that need to be completed one after the other.
+
+To complete a second batch, all you have to do is make the second cart hit the end of the first cart with the correct ores! This is assuming the first cart has already completed it's journey."
+label_settings = SubResource("LabelSettings_xy0wp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("4_x0nw8")
+
+[node name="2" type="Label" parent="4"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -87.0
+offset_top = -112.0
+offset_right = 110.0
+offset_bottom = 76.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_a5y2q")
+text = "You will need to use junctions to get carts into the same track. The amount of allowed junctions is shown here. 
+
+To create a junction, simply drag a track with two  existing connections, onto a new square to create a third connection.
+
+(Remember, if carts hit each other before the end, it's a big nono)."
+label_settings = SubResource("LabelSettings_xy0wp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("4_x0nw8")
+
+[node name="ArrowsRight2" type="Sprite2D" parent="4/2"]
+position = Vector2(19, 189)
+rotation = 1.5708
+scale = Vector2(0.594589, 0.34588)
+texture = ExtResource("5_5t600")
+
+[node name="3" type="Label" parent="4"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -101.0
+offset_top = -75.0
+offset_right = 95.0
+offset_bottom = 48.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_a5y2q")
+text = "Onece a junction has been made, you can rotate it via pressing \"r\".
+
+Carts will always follow the curve of a junction, except when coming from the straight end!
+
+HINT(to make sure tracks dont automatically connect when making a circle, make the first track into a straight in a different direction)"
+label_settings = SubResource("LabelSettings_xy0wp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("4_x0nw8")
+
+[node name="5" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="1" type="Label" parent="5"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -72.0
+offset_top = -34.0
+offset_right = 83.0
+offset_bottom = 22.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_a5y2q")
+text = "Lets try another more complicated batch!"
+label_settings = SubResource("LabelSettings_xy0wp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("4_x0nw8")
+
+[node name="6" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="1" type="Label" parent="6"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -74.0
+offset_top = -92.0
+offset_right = 87.0
+offset_bottom = 78.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_a5y2q")
+text = "Height Diff Time!
+You can change track height by pressing \"Q\". Higher tracks allow you to travel over ore nodes and other tracks, but they are expensive!
+
+Carts also cannot gather ore while on an elevated track!"
+label_settings = SubResource("LabelSettings_xy0wp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("4_x0nw8")
+
+[node name="2" type="Label" parent="6"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -103.0
+offset_top = -92.0
+offset_right = 110.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_a5y2q")
+text = "To connect different track levels, simply drag one track level onto another track level. Each level must have an available connection, however!
+
+In this tutorial, the height is indicated via a '2', and the ramps indicated via '1.5'. Ramps are special and do not count towards the total allowed level 2 tracks. They cannot be placed on top of nodes, but carts cannot gather ore when travel across them."
+label_settings = SubResource("LabelSettings_xy0wp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("4_x0nw8")
+
+[node name="7" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="1" type="Label" parent="7"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -211.0
+offset_top = -109.0
+offset_right = 225.0
+offset_bottom = 121.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_a5y2q")
+text = "Thanks so much for getting this far (assuming you're not cheating you sneaky sausage).
+
+If you would like to, I'd love some feedback about what you've played. Thinking along the lines of:
+  - Would you play this for real (i.e., a non bugged, better looking version?)
+  - Were the puzzles, engaging? Confusing? Fun? Stupid?
+  - What, if anything did you specifically like? What did you specifically hate?
+
+Apart from feedback, the remaining three levels are a combination of everything learned so far.
+
+I wish you good luck, and happy carting!
+
+"
+label_settings = SubResource("LabelSettings_xy0wp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("4_x0nw8")
+
+[node name="2" type="Label" parent="7"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -103.0
+offset_top = -92.0
+offset_right = 110.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_a5y2q")
+text = "To connect different track levels, simply drag one track level onto another track level. Each level must have an available connection, however!
+
+In this tutorial, the height is indicated via a '2', and the ramps indicated via '1.5'. Ramps are special and do not count towards the total allowed level 2 tracks. They cannot be placed on top of nodes, but carts cannot gather ore when travel across them."
+label_settings = SubResource("LabelSettings_xy0wp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("4_x0nw8")

@@ -1,0 +1,7 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://dh5ct5b4wr02p"]
+
+[ext_resource type="Texture2D" uid="uid://bbp2d34rlssbr" path="res://Assets/Tracks/Contents/lpc-mine-cart-tracks-angles.png" id="1_61a0h"]
+
+[resource]
+atlas = ExtResource("1_61a0h")
+region = Rect2(64, 128, 32, 32)

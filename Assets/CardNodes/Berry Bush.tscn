@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://be0sakc0xen5o"]
+
+[ext_resource type="Script" path="res://Assets/CardNodes/GrownNode.cs" id="1_2fpup"]
+[ext_resource type="Texture2D" uid="uid://b2057vuahvaml" path="res://Assets/Environment/crops.png" id="1_s1b05"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qexk8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rosas"]
+atlas = ExtResource("1_s1b05")
+region = Rect2(678, 547, 21, 27)
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_2fpup")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(200, 300)
+offset_right = 200.0
+offset_bottom = 300.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_qexk8")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(111, 157)
+scale = Vector2(8.97217, 8.96209)
+texture = SubResource("AtlasTexture_rosas")

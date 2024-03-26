@@ -1,0 +1,7 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://cnvv8gy12yit0"]
+
+[ext_resource type="Texture2D" uid="uid://dfo2f6lpb63sq" path="res://Assets/CatsV2/Fisher.jpeg" id="1_ps5g4"]
+
+[resource]
+atlas = ExtResource("1_ps5g4")
+region = Rect2(288.813, 0.821716, 693.237, 837.072)

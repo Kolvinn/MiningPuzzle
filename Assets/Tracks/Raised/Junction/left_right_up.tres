@@ -1,0 +1,8 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://bmbfvn2ajusdr"]
+
+[ext_resource type="Texture2D" uid="uid://wslnyyrmb4n6" path="res://Assets/Tracks/Contents/JunctionRaisedHorizontal.png" id="1_wivy0"]
+
+[resource]
+resource_local_to_scene = true
+atlas = ExtResource("1_wivy0")
+region = Rect2(32, 26, 32, 32)

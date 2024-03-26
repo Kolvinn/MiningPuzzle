@@ -1,0 +1,9 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://dtq7yd318tf0o"]
+
+[ext_resource type="Texture2D" uid="uid://bvke6364l50wn" path="res://Assets/Tracks/Contents/WithSide.png" id="1_vr1qt"]
+
+[resource]
+resource_local_to_scene = true
+atlas = ExtResource("1_vr1qt")
+region = Rect2(32, 6, 31, 21)
+filter_clip = true

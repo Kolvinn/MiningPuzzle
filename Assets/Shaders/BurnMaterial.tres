@@ -1,0 +1,30 @@
+[gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://5qo3on334e1b"]
+
+[ext_resource type="Shader" path="res://Assets/Shaders/Burn.gdshader" id="1_ttv3m"]
+
+[sub_resource type="Gradient" id="Gradient_j6kcf"]
+offsets = PackedFloat32Array(0.289773, 0.522727, 0.764205, 0.937063)
+colors = PackedColorArray(0, 0, 0, 1, 0.618141, 0, 0.0367607, 1, 0.779224, 0.366523, 0.111737, 1, 0.396078, 0.207843, 0.12549, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_gmk10"]
+gradient = SubResource("Gradient_j6kcf")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_p7a4c"]
+noise_type = 3
+seed = 25
+frequency = 0.0205
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7h8br"]
+seamless = true
+noise = SubResource("FastNoiseLite_p7a4c")
+
+[resource]
+resource_local_to_scene = true
+shader = ExtResource("1_ttv3m")
+shader_parameter/progress = -1.0
+shader_parameter/width = 0.539
+shader_parameter/timed = false
+shader_parameter/speed = 2.0
+shader_parameter/angle = -0.1
+shader_parameter/noise = SubResource("NoiseTexture2D_7h8br")
+shader_parameter/colorCurve = SubResource("GradientTexture2D_gmk10")

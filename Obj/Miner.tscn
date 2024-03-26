@@ -1,0 +1,439 @@
+[gd_scene load_steps=18 format=3 uid="uid://dj771pecqo0re"]
+
+[ext_resource type="Script" path="res://Obj/Miner.cs" id="1_8wecq"]
+[ext_resource type="Texture2D" uid="uid://cioeso572p62b" path="res://Assets/Mines/tools.png" id="1_20dxf"]
+[ext_resource type="Texture2D" uid="uid://5cw85cjankaw" path="res://Assets/Mines/animations.png" id="2_g3gs6"]
+[ext_resource type="Texture2D" uid="uid://bn434nvf1fupa" path="res://Assets/UI/Wenrexa Interface UI KIT #4/PNG/Icons/Circle01.png" id="4_tyduv"]
+[ext_resource type="Texture2D" uid="uid://6wcjwwaquu80" path="res://Assets/UI/Wenrexa Interface UI KIT #4/PNG/Icons/Circle02.png" id="5_hsqnb"]
+
+[sub_resource type="Animation" id="Animation_l1a46"]
+resource_name = "East"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AxeHorizontal:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0.0, 0.244346, 0.734784, 1.87797]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("EastAnim:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.4, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [4, 0, 1, 2, 3, 4]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AxeHorizontal:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Vector2(0, -11), Vector2(9, -11)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("AxeHorizontal:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("EastAnim:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_em7uk"]
+resource_name = "North"
+
+[sub_resource type="Animation" id="Animation_dtswq"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AxeHorizontal:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("EastAnim:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AxeHorizontal:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(9, -11)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SouthAxe:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -9)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("SouthAnim:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("SouthAxe:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("SouthAxeFinish:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("AxeHorizontal:visible")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("WestAnim:frame")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [4]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("EastAnim:visible")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("SouthAnim:visible")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("WestAnim:visible")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_3lxkx"]
+resource_name = "South"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SouthAxe:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Vector2(-1, -17), Vector2(0, -9)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SouthAnim:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.6, 0.8, 1.1, 1.3, 1.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [4, 0, 1, 2, 3, 4]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SouthAxe:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SouthAxeFinish:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1.2, 1.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("SouthAnim:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_imkny"]
+resource_name = "West"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WestAnim:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.4, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [4, 0, 1, 2, 3, 4]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AxeHorizontal:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Vector2(0, -11), Vector2(-9, -15)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AxeHorizontal:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [0.0, -0.816814, -1.8675]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("WestAnim:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_w6j8i"]
+_data = {
+"East": SubResource("Animation_l1a46"),
+"North": SubResource("Animation_em7uk"),
+"RESET": SubResource("Animation_dtswq"),
+"South": SubResource("Animation_3lxkx"),
+"West": SubResource("Animation_imkny")
+}
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kyh7n"]
+atlas = ExtResource("1_20dxf")
+region = Rect2(32, 92, 16, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y14nr"]
+atlas = ExtResource("2_g3gs6")
+region = Rect2(0, 960, 640, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_em8ok"]
+atlas = ExtResource("1_20dxf")
+region = Rect2(6, 90, 4, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0djw4"]
+atlas = ExtResource("1_20dxf")
+region = Rect2(22, 91, 4, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i8d0u"]
+atlas = ExtResource("2_g3gs6")
+region = Rect2(0, 1216, 640, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xx1eh"]
+atlas = ExtResource("2_g3gs6")
+
+[node name="Miner" type="Node2D"]
+script = ExtResource("1_8wecq")
+
+[node name="Axe" type="Node2D" parent="."]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Axe"]
+libraries = {
+"": SubResource("AnimationLibrary_w6j8i")
+}
+
+[node name="AxeHorizontal" type="Sprite2D" parent="Axe"]
+visible = false
+position = Vector2(9, -11)
+scale = Vector2(1.715, 1.715)
+texture = SubResource("AtlasTexture_kyh7n")
+offset = Vector2(0, -10.485)
+
+[node name="EastAnim" type="Sprite2D" parent="Axe"]
+visible = false
+position = Vector2(28.5, -5.99999)
+scale = Vector2(0.523438, 0.671875)
+texture = SubResource("AtlasTexture_y14nr")
+hframes = 5
+region_rect = Rect2(472, 1012, 16, 52)
+
+[node name="SouthAxe" type="Sprite2D" parent="Axe"]
+visible = false
+position = Vector2(0, -9)
+scale = Vector2(1.69, 1.69)
+texture = SubResource("AtlasTexture_em8ok")
+offset = Vector2(0, -9.545)
+
+[node name="SouthAxeFinish" type="Sprite2D" parent="Axe"]
+visible = false
+position = Vector2(3, 15)
+scale = Vector2(2, 2)
+texture = SubResource("AtlasTexture_0djw4")
+
+[node name="SouthAnim" type="Sprite2D" parent="Axe"]
+visible = false
+position = Vector2(22, -18)
+scale = Vector2(0.523, 0.507)
+texture = SubResource("AtlasTexture_i8d0u")
+hframes = 5
+
+[node name="WestAnim" type="Sprite2D" parent="Axe"]
+visible = false
+position = Vector2(-30.5, -16.5)
+scale = Vector2(0.523, 0.558)
+texture = SubResource("AtlasTexture_y14nr")
+flip_h = true
+hframes = 5
+frame = 4
+region_rect = Rect2(472, 1012, 16, 52)
+
+[node name="NorthAxe" type="Sprite2D" parent="Axe"]
+
+[node name="NorthAnim" type="Sprite2D" parent="Axe"]
+texture = SubResource("AtlasTexture_xx1eh")
+
+[node name="CooldownBar" type="TextureProgressBar" parent="."]
+visible = false
+offset_left = -7.0
+offset_top = -26.0
+offset_right = 8.0
+offset_bottom = -12.0
+step = 0.1
+fill_mode = 4
+nine_patch_stretch = true
+texture_under = ExtResource("4_tyduv")
+texture_progress = ExtResource("5_hsqnb")

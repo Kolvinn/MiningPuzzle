@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Object/GameObject/Environment/Grass_Single1.tscn" type="PackedScene" id=2]
+
+[node name="YSort" type="YSort"]
+position = Vector2( 0, 8 )
+
+[node name="Grass" parent="." instance=ExtResource( 2 )]
+position = Vector2( 9, 1 )
+
+[node name="Grass2" parent="." instance=ExtResource( 2 )]
+position = Vector2( 98, 11 )
+
+[node name="Grass3" parent="." instance=ExtResource( 2 )]
+position = Vector2( 16, -73 )
+
+[node name="Grass4" parent="." instance=ExtResource( 2 )]
+position = Vector2( 92, -37 )
+
+[node name="Grass5" parent="." instance=ExtResource( 2 )]
+position = Vector2( 46, 67 )
+
+[node name="Grass6" parent="." instance=ExtResource( 2 )]
+position = Vector2( -48, 53 )
+
+[node name="Grass7" parent="." instance=ExtResource( 2 )]
+position = Vector2( -77, -20 )

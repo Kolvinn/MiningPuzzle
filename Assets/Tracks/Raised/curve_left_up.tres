@@ -1,0 +1,8 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://dbmpta8c7yhso"]
+
+[ext_resource type="Texture2D" uid="uid://7adv5twwue6d" path="res://Assets/Tracks/Contents/TrackCircleRaised.png" id="1_gp5jk"]
+
+[resource]
+resource_local_to_scene = true
+atlas = ExtResource("1_gp5jk")
+region = Rect2(32, 26, 32, 32)

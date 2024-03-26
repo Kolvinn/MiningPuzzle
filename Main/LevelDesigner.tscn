@@ -1,0 +1,112 @@
+[gd_scene load_steps=13 format=3 uid="uid://bt6myu7ymgp1f"]
+
+[ext_resource type="Script" path="res://Main/LevelDesigner.cs" id="1_wtwda"]
+[ext_resource type="Texture2D" uid="uid://b73r8m2mqfjb" path="res://Assets/UI/Shikashi's Fantasy Icons Pack v2/BG 7.png" id="2_geehe"]
+[ext_resource type="Texture2D" uid="uid://dli2vnksgqf4q" path="res://Assets/Tracks/Old/straight_horizontal.tres" id="2_ndy2n"]
+[ext_resource type="Texture2D" uid="uid://ctesxmcbkp81" path="res://Assets/Environment/Minerals/Stone.tres" id="4_3e6gn"]
+[ext_resource type="Texture2D" uid="uid://bvc3l6oujm7wj" path="res://Assets/Environment/Minerals/Copper.tres" id="5_g4sts"]
+[ext_resource type="Texture2D" uid="uid://b1nedoxb58jgv" path="res://Assets/Environment/Minerals/Iron.tres" id="6_p8qvm"]
+[ext_resource type="Texture2D" uid="uid://ceby4gk5od21j" path="res://Assets/Mines/Craftables.png" id="7_vvfwd"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_6l2fr"]
+font_size = 10
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xxks5"]
+atlas = ExtResource("2_geehe")
+region = Rect2(416, 256, 32, 32)
+
+[sub_resource type="LabelSettings" id="LabelSettings_ngj1s"]
+font_size = 13
+
+[sub_resource type="Theme" id="Theme_k4nm8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p3td8"]
+atlas = ExtResource("7_vvfwd")
+region = Rect2(112, 707, 16, 29)
+
+[node name="LevelDesigner" type="Node2D"]
+script = ExtResource("1_wtwda")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+offset_left = 25.0
+offset_top = 234.0
+offset_right = 57.0
+offset_bottom = 266.0
+texture = ExtResource("2_ndy2n")
+
+[node name="Label" type="Label" parent="CanvasLayer/TextureRect"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = -1.0
+offset_right = 45.0
+offset_bottom = 22.0
+text = "Level: 1"
+label_settings = SubResource("LabelSettings_6l2fr")
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer"]
+offset_left = 4.0
+offset_top = 247.0
+offset_right = 23.0
+offset_bottom = 265.0
+texture = SubResource("AtlasTexture_xxks5")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/TextureRect2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Q"
+label_settings = SubResource("LabelSettings_ngj1s")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="Stone" type="TextureButton" parent="CanvasLayer"]
+offset_left = 4.0
+offset_top = 81.0
+offset_right = 26.0
+offset_bottom = 101.0
+texture_normal = ExtResource("4_3e6gn")
+
+[node name="Copper" type="TextureButton" parent="CanvasLayer"]
+offset_left = 5.0
+offset_top = 108.0
+offset_right = 21.0
+offset_bottom = 123.0
+theme = SubResource("Theme_k4nm8")
+texture_normal = ExtResource("5_g4sts")
+
+[node name="Iron" type="TextureButton" parent="CanvasLayer"]
+offset_left = 7.0
+offset_top = 132.0
+offset_right = 23.0
+offset_bottom = 148.0
+texture_normal = ExtResource("6_p8qvm")
+
+[node name="Track" type="TextureButton" parent="CanvasLayer"]
+offset_left = 3.0
+offset_top = 141.0
+offset_right = 35.0
+offset_bottom = 173.0
+texture_normal = ExtResource("2_ndy2n")
+
+[node name="Button" type="Button" parent="CanvasLayer"]
+offset_left = 7.0
+offset_top = 4.0
+offset_right = 91.0
+offset_bottom = 35.0
+text = "Save Level"
+
+[node name="EndCon" type="TextureButton" parent="CanvasLayer"]
+offset_left = 6.0
+offset_top = 179.0
+offset_right = 22.0
+offset_bottom = 208.0
+texture_normal = SubResource("AtlasTexture_p3td8")
+
+[connection signal="pressed" from="CanvasLayer/Button" to="." method="Save"]

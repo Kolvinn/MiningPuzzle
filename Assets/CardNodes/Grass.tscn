@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=3 uid="uid://bvxx0kdckri1l"]
+
+[ext_resource type="Texture2D" uid="uid://dybmjnehe484j" path="res://Assets/Environment/RPGW_AncientForest_v1.0/_PNG/Decorative.png" id="1_kdq57"]
+[ext_resource type="Script" path="res://Assets/CardNodes/GrownNode.cs" id="1_utybw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qexk8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rosas"]
+atlas = ExtResource("1_kdq57")
+region = Rect2(506.161, 485.938, 38.9487, 50.2382)
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_utybw")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(200, 300)
+offset_right = 200.0
+offset_bottom = 300.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_qexk8")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(52, 62)
+scale = Vector2(2.611, 2.739)
+texture = SubResource("AtlasTexture_rosas")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+position = Vector2(146, 62)
+scale = Vector2(2.611, 2.739)
+texture = SubResource("AtlasTexture_rosas")
+
+[node name="Sprite2D3" type="Sprite2D" parent="."]
+position = Vector2(52, 141.5)
+scale = Vector2(2.611, 2.739)
+texture = SubResource("AtlasTexture_rosas")
+
+[node name="Sprite2D4" type="Sprite2D" parent="."]
+position = Vector2(146, 141.5)
+scale = Vector2(2.611, 2.739)
+texture = SubResource("AtlasTexture_rosas")
+
+[node name="Sprite2D5" type="Sprite2D" parent="."]
+position = Vector2(54, 218.5)
+scale = Vector2(2.611, 2.739)
+texture = SubResource("AtlasTexture_rosas")
+
+[node name="Sprite2D6" type="Sprite2D" parent="."]
+position = Vector2(148, 218.5)
+scale = Vector2(2.611, 2.739)
+texture = SubResource("AtlasTexture_rosas")

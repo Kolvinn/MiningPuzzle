@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://c0b1h5m2anfyk"
+path="res://.godot/imported/Cursor2.ogg-5672c64d9f115568475d8ba36b902018.oggvorbisstr"
+
+[deps]
+
+source_file="res://Assets/Particles/FA01/FA - MV Demo/audio/se/Cursor2.ogg"
+dest_files=["res://.godot/imported/Cursor2.ogg-5672c64d9f115568475d8ba36b902018.oggvorbisstr"]
+
+[params]
+
+loop=true
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

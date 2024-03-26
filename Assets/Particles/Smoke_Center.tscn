@@ -1,0 +1,82 @@
+[gd_scene load_steps=9 format=3 uid="uid://b0imuenaahmso"]
+
+[ext_resource type="Texture2D" uid="uid://bcanjfr7c8n6f" path="res://Assets/Particles/kenney-particle-pack-7e801dc538996622a91327bb1dd5879cf977aa09/addons/kenney_particle_pack/smoke_04.png" id="1_kgt2g"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_crdo6"]
+particles_animation = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="5"]
+offsets = PackedFloat32Array(0.00763359, 0.0877863, 0.236948, 0.349398, 0.497992, 0.631861, 0.748327, 0.866131, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1, 0.235368, 0.132404, 0.277832, 1, 0.131325, 0.106087, 0.263672, 1, 0.0985901, 0.0740128, 0.106445, 1, 0.176307, 0.135941, 0.294922, 1, 0.204102, 0.121185, 0.202272, 1, 0.290196, 0.211765, 0.278431, 0.917647, 0.254902, 0.223529, 0.235294, 0)
+
+[sub_resource type="GradientTexture1D" id="3"]
+gradient = SubResource("5")
+width = 6
+
+[sub_resource type="ParticleProcessMaterial" id="4"]
+lifetime_randomness = 1.0
+emission_shape = 1
+emission_sphere_radius = 19.77
+direction = Vector3(0, 0, 0)
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 29.58
+initial_velocity_max = 99.93
+color_ramp = SubResource("3")
+
+[sub_resource type="Animation" id="Animation_nnnop"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_8trbk"]
+resource_name = "Spin"
+length = 25.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 23.8, 25),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 6.12611, 6.28319]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_17taf"]
+_data = {
+"RESET": SubResource("Animation_nnnop"),
+"Spin": SubResource("Animation_8trbk")
+}
+
+[node name="Smoke_Center" type="GPUParticles2D"]
+material = SubResource("CanvasItemMaterial_crdo6")
+scale = Vector2(0.2, 0.2)
+amount = 30
+process_material = SubResource("4")
+texture = ExtResource("1_kgt2g")
+preprocess = 1.0
+speed_scale = 0.1
+visibility_rect = Rect2(-500, -500, 1000, 1000)
+local_coords = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "Spin"
+libraries = {
+"": SubResource("AnimationLibrary_17taf")
+}

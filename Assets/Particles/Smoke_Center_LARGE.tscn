@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=2]
+
+[sub_resource type="CanvasItemMaterial" id=6]
+
+[sub_resource type="Gradient" id=9]
+offsets = PoolRealArray( 0, 0.0590476, 0.167619, 0.382857, 0.518095, 0.869186, 1 )
+colors = PoolColorArray( 0, 0, 0, 0, 0, 0, 0, 1, 0.235368, 0.132404, 0.277832, 1, 0.0985901, 0.0740128, 0.106445, 1, 0.204102, 0.121185, 0.202272, 1, 0.290196, 0.211765, 0.278431, 0.917647, 0.254902, 0.223529, 0.235294, 0 )
+
+[sub_resource type="GradientTexture" id=10]
+gradient = SubResource( 9 )
+width = 6
+
+[sub_resource type="ParticlesMaterial" id=7]
+lifetime_randomness = 0.29
+emission_shape = 1
+emission_sphere_radius = 19.77
+flag_disable_z = true
+direction = Vector3( 0, 0, 0 )
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 49.99
+initial_velocity_random = 0.5
+angular_velocity = 35.0
+angular_velocity_random = 0.73
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+damping = 8.33
+scale = 7.56
+scale_random = 0.71
+color_ramp = SubResource( 10 )
+
+[sub_resource type="StreamTexture" id=8]
+flags = 7
+load_path = "res://.import/smoke_04.png-de77629b49bdfaa53904b57d879bf34d.stex"
+
+[node name="Smoke_Center_LARGE" type="Particles2D"]
+material = SubResource( 6 )
+amount = 5
+lifetime = 3.0
+preprocess = 5.0
+speed_scale = 0.2
+explosiveness = 0.05
+randomness = 0.21
+visibility_rect = Rect2( -2500, -2500, 5000, 5000 )
+local_coords = false
+process_material = SubResource( 7 )
+texture = SubResource( 8 )

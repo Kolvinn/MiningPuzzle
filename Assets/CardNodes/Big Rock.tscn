@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://bqvcwc3h0k5iq"]
+
+[ext_resource type="Texture2D" uid="uid://y3uwkgilp71b" path="res://UI/Icons/Stone Pile 2.tres" id="1_5aa0o"]
+[ext_resource type="Script" path="res://Assets/CardNodes/GrownNode.cs" id="1_atdjv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qexk8"]
+
+[node name="Node2D" type="Node2D"]
+y_sort_enabled = true
+script = ExtResource("1_atdjv")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(200, 300)
+offset_right = 200.0
+offset_bottom = 300.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_qexk8")
+
+[node name="StonePile2" type="Sprite2D" parent="."]
+position = Vector2(100, 134)
+scale = Vector2(1.08125, 1.58411)
+texture = ExtResource("1_5aa0o")

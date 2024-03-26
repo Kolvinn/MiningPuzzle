@@ -1,0 +1,96 @@
+[gd_scene load_steps=7 format=3 uid="uid://b3mg3c3knrs40"]
+
+[ext_resource type="Script" path="res://Obj/TrackConnectionUI.cs" id="1_30kd6"]
+[ext_resource type="Texture2D" uid="uid://vhpi4hfu864b" path="res://Assets/UI/Shikashi's Fantasy Icons Pack v2/#1 - Transparent Icons.png" id="1_tjhig"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i36j2"]
+resource_local_to_scene = true
+atlas = ExtResource("1_tjhig")
+region = Rect2(99, 67, 25, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jjpuo"]
+resource_local_to_scene = true
+atlas = ExtResource("1_tjhig")
+region = Rect2(99, 67, 25, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4wqc6"]
+resource_local_to_scene = true
+atlas = ExtResource("1_tjhig")
+region = Rect2(99, 67, 25, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rycpv"]
+resource_local_to_scene = true
+atlas = ExtResource("1_tjhig")
+region = Rect2(99, 67, 25, 25)
+
+[node name="Control" type="Control" node_paths=PackedStringArray("Right", "Left", "Down", "Up")]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 3
+anchors_preset = 0
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+script = ExtResource("1_30kd6")
+Right = NodePath("Right")
+Left = NodePath("Left")
+Down = NodePath("Down")
+Up = NodePath("Up")
+
+[node name="Right" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -9.0
+offset_top = -4.5
+offset_right = -2.0
+offset_bottom = 2.5
+grow_horizontal = 0
+grow_vertical = 2
+texture = SubResource("AtlasTexture_i36j2")
+expand_mode = 1
+
+[node name="Left" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -4.5
+offset_right = 7.0
+offset_bottom = 2.5
+grow_vertical = 2
+texture = SubResource("AtlasTexture_jjpuo")
+expand_mode = 1
+flip_h = true
+
+[node name="Up" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -4.5
+offset_right = 2.5
+offset_bottom = 7.0
+grow_horizontal = 2
+texture = SubResource("AtlasTexture_4wqc6")
+expand_mode = 1
+flip_v = true
+
+[node name="Down" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -4.5
+offset_top = -9.0
+offset_right = 2.5
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = SubResource("AtlasTexture_rycpv")
+expand_mode = 1

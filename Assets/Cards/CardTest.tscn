@@ -1,0 +1,145 @@
+[gd_scene load_steps=20 format=3 uid="uid://cwckugruapl5o"]
+
+[ext_resource type="Texture2D" uid="uid://315qbrg1nxuj" path="res://Assets/CardsV3/Background-Thicker.png" id="1_i11pw"]
+[ext_resource type="Texture2D" uid="uid://ct8mkdi2tons8" path="res://Assets/CatsV2/Worker-upscale.tres" id="2_v3vmc"]
+[ext_resource type="FontFile" uid="uid://8ivq7i4elrx5" path="res://Assets/Fonts/hvd-edding-780/hvd_edding.otf" id="3_fqcxj"]
+[ext_resource type="Shader" path="res://Assets/Shaders/Blur.gdshader" id="6_tgad5"]
+[ext_resource type="Texture2D" uid="uid://crhw4yhdra5dq" path="res://Assets/UI/Shikashi's Fantasy Icons Pack v2/BG 3c.png" id="7_052tu"]
+[ext_resource type="Texture2D" uid="uid://d2v2ocdtp8rf2" path="res://Assets/CardsV2/BorderGold.png" id="7_vo4la"]
+[ext_resource type="Texture2D" uid="uid://hhtqp4hhbmen" path="res://Assets/UI/Shikashi's Fantasy Icons Pack v2/Background 2.png" id="8_1jw8g"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ctoww"]
+texture = ExtResource("2_v3vmc")
+
+[sub_resource type="LabelSettings" id="LabelSettings_c7wyr"]
+line_spacing = 1.0
+font = ExtResource("3_fqcxj")
+font_size = 29
+outline_size = 4
+outline_color = Color(0.169245, 0.169245, 0.169245, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8es50"]
+atlas = ExtResource("7_052tu")
+region = Rect2(128, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hgi8v"]
+atlas = ExtResource("8_1jw8g")
+region = Rect2(352, 544, 32, 32)
+
+[sub_resource type="LabelSettings" id="LabelSettings_nkqbi"]
+font_size = 14
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_tcdaq"]
+font = ExtResource("3_fqcxj")
+font_size = 20
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_e7lm3"]
+shader = ExtResource("6_tgad5")
+shader_parameter/lod = 1.62
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_aotny"]
+load_path = "res://.godot/imported/WorkerUpscale.png-32fdb0107013c3cc015afe7853caf4bf.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dapcv"]
+atlas = SubResource("CompressedTexture2D_aotny")
+region = Rect2(870.91, 1688.55, 2229.13, 930.086)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_s5p72"]
+texture = SubResource("AtlasTexture_dapcv")
+
+[sub_resource type="LabelSettings" id="LabelSettings_er5ut"]
+font_size = 13
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gy785"]
+texture = ExtResource("7_vo4la")
+expand_margin_left = 12.0
+expand_margin_top = 12.0
+expand_margin_right = 12.0
+expand_margin_bottom = 10.0
+
+[node name="PanelContainer" type="PanelContainer"]
+show_behind_parent = true
+offset_left = 198.0
+offset_top = -3.0
+offset_right = 449.0
+offset_bottom = 342.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_ctoww")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Worker"
+label_settings = SubResource("LabelSettings_c7wyr")
+horizontal_alignment = 1
+
+[node name="TextureRect" type="NinePatchRect" parent="."]
+self_modulate = Color(0.905882, 0.909804, 0.862745, 1)
+layout_mode = 2
+texture = ExtResource("1_i11pw")
+region_rect = Rect2(11.7598, 10.8968, 571.12, 826.43)
+
+[node name="TextureRect" type="TextureRect" parent="TextureRect"]
+layout_mode = 0
+offset_left = 148.0
+offset_top = -11.0
+offset_right = 180.0
+offset_bottom = 21.0
+texture = SubResource("AtlasTexture_8es50")
+
+[node name="TextureRect" type="TextureRect" parent="TextureRect/TextureRect"]
+self_modulate = Color(0.854902, 0.737255, 0.576471, 1)
+show_behind_parent = true
+layout_mode = 0
+offset_left = -21.0
+offset_top = 4.0
+offset_right = 9.0
+offset_bottom = 24.0
+texture = SubResource("AtlasTexture_hgi8v")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="TextureRect/TextureRect/TextureRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "1
+"
+label_settings = SubResource("LabelSettings_nkqbi")
+horizontal_alignment = 1
+vertical_alignment = 2
+metadata/_edit_lock_ = true
+
+[node name="Label2" type="Label" parent="TextureRect"]
+visible = false
+layout_mode = 0
+offset_left = 40.5
+offset_top = 165.5
+offset_right = 135.5
+offset_bottom = 193.5
+text = "Likes cheese"
+label_settings = SubResource("LabelSettings_tcdaq")
+
+[node name="PanelContainer2" type="PanelContainer" parent="TextureRect"]
+visible = false
+show_behind_parent = true
+material = SubResource("ShaderMaterial_e7lm3")
+layout_mode = 0
+offset_left = 12.0
+offset_top = 154.0
+offset_right = 165.0
+offset_bottom = 210.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_s5p72")
+
+[node name="Label" type="Label" parent="TextureRect/PanelContainer2"]
+layout_mode = 2
+text = "A hard working villager. Likes cheese"
+label_settings = SubResource("LabelSettings_er5ut")
+autowrap_mode = 2
+
+[node name="Border" type="PanelContainer" parent="."]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_gy785")
