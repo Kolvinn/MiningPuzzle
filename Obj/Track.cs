@@ -151,6 +151,7 @@ namespace MagicalMountainMinery.Obj
 
         }
 
+        
         public void Connect(IndexPos dir, int fromHeight = 1)
         {
             if (Connection1 == IndexPos.Zero)

@@ -16,18 +16,21 @@ namespace MagicalMountainMinery.Obj
         [StoreCollection(ShouldStore = true)]
         public List<Condition> Conditions { get; set; } = new List<Condition>();
 
-        public Dictionary<Condition, TextureRect> ConUI { get; set; }
-
+        
         [StoreCollection(ShouldStore = true)]
         public List<int> Batches { get; set; } = new List<int>();
 
-        public bool IsBatched { get; set; }
+        [StoreCollection(ShouldStore = false)]
+        public Dictionary<Condition, TextureRect> ConUI { get; set; }
 
+        [StoreCollection(ShouldStore = false)]
         public Dictionary<int, List<Condition>> BatchedConditions { get; set; }
 
-        public bool CompletedAll { get => Validated.Values.All(con => con); } 
+        [StoreCollection(ShouldStore = false)]
+        public Dictionary<Condition, bool> Validated { get; set; } = new Dictionary<Condition, bool>();
 
-        public Dictionary<Condition, bool> Validated = new Dictionary<Condition, bool>();
+        public bool CompletedAll { get => Validated.Values.All(con => con); }
+        public bool IsBatched { get; set; }
 
         public LevelTarget() 
         { 

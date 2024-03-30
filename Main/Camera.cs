@@ -25,6 +25,7 @@ namespace MagicalMountainMinery.Main
             {
                 currentzoom -= zoomspeed;
                 this.Zoom = new Vector2(currentzoom, currentzoom);
+                GD.Print("Setting Zoom to: ", Zoom.ToString(), " With pos: ", this.Position);
                 return true;
 
             }
@@ -32,6 +33,7 @@ namespace MagicalMountainMinery.Main
             {
                 currentzoom += zoomspeed;
                 this.Zoom = new Vector2(currentzoom, currentzoom);
+                GD.Print("Setting Zoom to: ", Zoom.ToString(), " With pos: ", this.Position);
                 return true;
             }
             return false;

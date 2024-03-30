@@ -1,9 +1,9 @@
 [gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://c0b2ohaegayts"]
 
-[ext_resource type="Texture2D" uid="uid://bnwl336m8wrcm" path="res://Assets/Environment/Ore/dark.png" id="1_3r1o2"]
+[ext_resource type="Texture2D" uid="uid://2hmx410tdnbn" path="res://Assets/Mines/Gold_Node.png" id="1_oxy6t"]
 
 [resource]
 resource_local_to_scene = true
-atlas = ExtResource("1_3r1o2")
-region = Rect2(48, 32, 16, 16)
+atlas = ExtResource("1_oxy6t")
+region = Rect2(0, 3, 45, 39)
 filter_clip = true

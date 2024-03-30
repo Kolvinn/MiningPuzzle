@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -56,6 +57,8 @@ namespace MagicalMountainMinery.Main
         public ResourceType resource { get; set; }
 
         public int CurrentLevelDex { get; set; }
+
+        public AudioStreamPlayer AudioStream { get; set; }
         public override void _Ready()
         {
             this.Position = Vector2.Zero;
@@ -66,6 +69,8 @@ namespace MagicalMountainMinery.Main
                 this.GetNode<GameButton>("CanvasLayer/Junc/Normal")
             };
             TutorialUI = this.GetNode<TutorialUI>("CanvasLayer/TutorialLayer");
+            AudioStream = new AudioStreamPlayer();
+            this.AddChild(AudioStream);
             //this.AddChild(TutorialUI);
         }
 
@@ -318,7 +323,8 @@ namespace MagicalMountainMinery.Main
                 //junc.Connection1 = match.From;
                 //junc.Connection2 = match.To;
 
-
+                AudioStream.Stream = ResourceStore.GetAudio("TrackPlace2");
+                AudioStream.Play();
                 junc.Texture = match.Texture;
 
 
@@ -462,6 +468,8 @@ namespace MagicalMountainMinery.Main
                 {
                     Disconnect(MapLevel.GetTrack(index + entry), entry.Opposite(), track);
                 }
+                AudioStream.Stream = ResourceStore.GetAudio("TrackRemove");
+                AudioStream.Play();
                 RemoveTrack(track, index);
             }
         }
@@ -683,6 +691,9 @@ namespace MagicalMountainMinery.Main
                     fromTrack.QueueFree();
                     MapLevel.CurrentJunctions++;
                     UpdateUI();
+
+                    AudioStream.Stream = ResourceStore.GetAudio("Junction");
+                    AudioStream.Play();
                     //now we connect the toTrack back to junction and check it
                     Connect(toTrack, fromDir);
                     if (ResourceStore.ContainsCurve(toTrack.GetConnection()))
@@ -799,10 +810,10 @@ namespace MagicalMountainMinery.Main
 
             var trackList = CurrentTrackLevel == 1 ? level1 : level2;
 
+            var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), index, CurrentTrackLevel);
             //can set track normally if no other surrounding tracks
             if (trackList.Count == 0)
             {
-                var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), index, CurrentTrackLevel);
                 //GD.Print("Setting track 1 with data:", data);
                 SetTrack(index, newT, tracklevel: CurrentTrackLevel); 
             }
@@ -811,16 +822,13 @@ namespace MagicalMountainMinery.Main
             {
                 var connection = trackList[0];
                 var thatTrackDex = connection.Index;
-                var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), index, CurrentTrackLevel);
                 SetTrack(index, newT, tracklevel: CurrentTrackLevel); ;
                 //GD.Print("Setting track 2");
                 ConnectTracks(thatTrackDex, connection, index, newT);
             
             }
             else
-            {
-                var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), index, CurrentTrackLevel);
-                //GD.Print("Setting track 3");
+            { 
                 SetTrack(index, newT, tracklevel: CurrentTrackLevel); ;
                 foreach (var track in trackList)
                 {
@@ -830,6 +838,19 @@ namespace MagicalMountainMinery.Main
                     }
                 }
             }
+
+            var dex = newT.Index + IndexPos.Up;
+            if (newT.CanConnect() && MapLevel.ValidIndex(dex))
+            {
+                var target = MapLevel.Get(dex);
+                if (target != null && target is LevelTarget)
+                {
+                    newT.Connect(IndexPos.Up);
+                    MatchSprite(newT);
+                }
+            }
+            AudioStream.Stream = ResourceStore.GetAudio("TrackPlace2");
+            AudioStream.Play();
             return true;
 
 

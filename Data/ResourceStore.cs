@@ -61,6 +61,8 @@ namespace MagicalMountainMinery.Data
 
         public static Dictionary<ResourceType, Texture2D> Resources = new Dictionary<ResourceType, Texture2D>();
 
+        public static Dictionary<string, AudioStream> AudioRef = new Dictionary<string, AudioStream>();
+
         public static Texture2D GetTex(TrackType type, int level = 1)
         {
             var con = new Connection(IndexPos.Left, IndexPos.Right, null);
@@ -129,65 +131,31 @@ namespace MagicalMountainMinery.Data
             return new Junc();
         }
 
-        //public static void thing()
-        //{
-        //    var stream = Godot.DirAccess.GetFilesAt("res://Assets/Tracks/").Where(item => !item.Contains("straight"));
-        //    var list = new List<List<string>>();
-
-        //    var hor = ResourceLoader.Load<Texture2D>("res://Assets/Tracks/straight_horizontal.tres");
-        //    var ver = ResourceLoader.Load<Texture2D>("res://Assets/Tracks/straight_vertical.tres");
-
-        //    TrackTextures.Add(new Connection(IndexPos.Left, IndexPos.Right, null), hor);
-        //    TrackTextures.Add(new Connection(IndexPos.Up, IndexPos.Down, null), ver);
-
-
-        //    foreach (var file in stream)
-        //    {
-        //        var split = file.Split("_");
-        //        bool found = false;
-        //        foreach (var entry in list)
-        //        {
-        //            if (entry.Any(item => item.Contains(split[1]) && item.Contains(split[2])))
-        //            {
-        //                entry.Add(file);
-        //                found = true;
-        //                break;
-        //            }
-
-        //        }
-        //        if (!found)
-        //        {
-        //            list.Add(new List<string>() { file });
-        //        }
-        //    }
-
-        //    foreach (var entry in list)
-        //    {
-        //        var textures = new List<Texture2D>();
-        //        foreach (var texture in entry)
-        //        {
-        //            textures.Add(ResourceLoader.Load<Texture2D>("res://Assets/Tracks/" + texture));
-        //        }
-        //        var split = entry.First().Split('.')[0].Split('_');
-        //        var index = new IndexPos();
-
-        //        var dict = new Dictionary<IndexPos, Texture2D>();
-        //        //i.e., down left 
-        //        var incoming = IndexPos.MatchDirection(split[1]);
-        //        var outgoing = IndexPos.MatchDirection(split[2]);
-
-        //        dict.Add(incoming, textures[0]);
-        //        var tex = textures[1];
-        //        if (textures.Count > 2)
-        //        {
-        //            dict.Add(outgoing, textures[2]);
-        //        }
-
-        //        var curve = new Connection(incoming, outgoing, dict, tex);
-        //        Curves.Add(curve);
-        //    }
-
-        //}
+        public static void LoadAudio()
+        {
+            var folder = "res://Assets/Sounds/Track/";
+            var list = new List<string>()
+            {
+                "TrackPlace",
+                "TrackRemove",
+                "TrackPlace2",
+                "Junction"
+            };
+            foreach ( var item in list )
+            {
+                if(ResourceLoader.Exists(folder + item + ".mp3"))
+                {
+                    AudioRef.Add(item, ResourceLoader.Load<AudioStream>(folder + item + ".mp3"));
+                }
+            }
+            
+        }
+        public static AudioStream GetAudio(string name)
+        {
+            if(AudioRef.ContainsKey(name))
+                return AudioRef[name];
+            return null;
+        }
 
         public static void LoadTracks()
         {

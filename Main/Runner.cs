@@ -38,13 +38,17 @@ public partial class Runner : Node2D
 	public bool ValidRun = true;
 
 	public static GameEvent LastEvent {  get; set; }
+
+    public AudioStreamPlayer player { get; set; } = new AudioStreamPlayer();
     public override void _Ready()
 	{
 		ResourceStore.LoadTracks();
         ResourceStore.LoadRocks();
         ResourceStore.LoadResources();
 		ResourceStore.LoadJunctions();
+        ResourceStore.LoadAudio();
         this.AddChild(new EventDispatch());
+        
         LoadingScreen = this.GetNode<ColorRect>("CanvasLayer/ColorRect");
         // MapLevel = new MapLevel();
         //MapLevel.GenNodes(5);
@@ -60,8 +64,10 @@ public partial class Runner : Node2D
         Cam.MakeCurrent();
         LoadSingleLevel(0);
 
+        this.AddChild(player);
+        player.Stream = ResourceLoader.Load<AudioStream>("res://Assets/Sounds/Music/SoundTrack.mp3");
+        //player.Play();
 
-        
 
     }
 
@@ -151,7 +157,7 @@ public partial class Runner : Node2D
        // MapLevel?.QueueFree();
 
         this.LoadingScreen.Visible = false;
-
+        GD.Print("loading in level :", index);
         var thingy3 = JsonConvert.DeserializeObject(Levels[index], SaveLoader.jsonSerializerSettings);
         var load = (MapLevel)SaveLoader.LoadGame(thingy3 as SaveInstance, this.Placer);
 
@@ -170,7 +176,11 @@ public partial class Runner : Node2D
             CartControllers.Add(control);
 
             var startT = new Track(ResourceStore.GetTex(TrackType.Straight), start);
+
             MapLevel.SetTrack(start, startT);
+            var list = new List<IndexPos>() { IndexPos.Left, IndexPos.Right, IndexPos.Up, IndexPos.Down };
+            var conn = list.First(pos => !MapLevel.ValidIndex(pos));
+            startT.Connect(conn);
         }
 		ValidRun = true;
         Cam.Position = new Vector2(MapLevel.GridWith/2, MapLevel.GridHeight/2);

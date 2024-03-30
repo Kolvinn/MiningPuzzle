@@ -1,5 +1,6 @@
-[gd_scene load_steps=21 format=3 uid="uid://mxv1hoqyypag"]
+[gd_scene load_steps=22 format=3 uid="uid://mxv1hoqyypag"]
 
+[ext_resource type="Texture2D" uid="uid://8g0mobcxvmax" path="res://Assets/MinerCat.png" id="3_mdvxu"]
 [ext_resource type="PackedScene" uid="uid://dj771pecqo0re" path="res://Obj/Miner.tscn" id="3_wcrvc"]
 [ext_resource type="Script" path="res://Obj/Cart.cs" id="CSharpScript_0a8dh"]
 
@@ -12,8 +13,48 @@ atlas = SubResource("CompressedTexture2D_jcil7")
 region = Rect2(0, 0, 32, 64)
 filter_clip = true
 
-[sub_resource type="Animation" id="Animation_0sgka"]
-resource_name = "East"
+[sub_resource type="Animation" id="Animation_irgjp"]
+resource_name = "Down"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("./Sprite2D:texture:region")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Rect2(0, 0, 32, 64)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CollisionShape2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -2)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("CollisionShape2D:shape:size")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(21.5, 23)]
+}
+
+[sub_resource type="Animation" id="Animation_od535"]
+resource_name = "Left"
 length = 0.1
 loop_mode = 1
 tracks/0/type = "value"
@@ -51,46 +92,6 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(29.74, 21)]
-}
-
-[sub_resource type="Animation" id="Animation_ha3uu"]
-resource_name = "North"
-length = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("./Sprite2D:texture:region")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Rect2(0, 0, 32, 64)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CollisionShape2D:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, -2)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("CollisionShape2D:shape:size")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(21.5, 23)]
 }
 
 [sub_resource type="Animation" id="Animation_e45xn"]
@@ -166,81 +167,8 @@ tracks/2/keys = {
 "values": [Vector2(0, -2)]
 }
 
-[sub_resource type="Animation" id="Animation_irgjp"]
-resource_name = "South"
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("./Sprite2D:texture:region")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Rect2(0, 0, 32, 64)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CollisionShape2D:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, -2)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("CollisionShape2D:shape:size")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(21.5, 23)]
-}
-
-[sub_resource type="Animation" id="Animation_ttt6p"]
-resource_name = "SouthEast"
-length = 0.1
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("./Sprite2D:texture:region")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Rect2(160, 0, 64, 64)]
-}
-
-[sub_resource type="Animation" id="Animation_bnlar"]
-resource_name = "SouthWest"
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("./Sprite2D:texture:region")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Rect2(96, 0, 64, 64)]
-}
-
-[sub_resource type="Animation" id="Animation_od535"]
-resource_name = "West"
+[sub_resource type="Animation" id="Animation_0sgka"]
+resource_name = "Right"
 length = 0.1
 loop_mode = 1
 tracks/0/type = "value"
@@ -280,17 +208,91 @@ tracks/2/keys = {
 "values": [Vector2(29.74, 21)]
 }
 
+[sub_resource type="Animation" id="Animation_ttt6p"]
+resource_name = "SouthEast"
+length = 0.1
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("./Sprite2D:texture:region")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Rect2(160, 0, 64, 64)]
+}
+
+[sub_resource type="Animation" id="Animation_bnlar"]
+resource_name = "SouthWest"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("./Sprite2D:texture:region")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Rect2(96, 0, 64, 64)]
+}
+
+[sub_resource type="Animation" id="Animation_ha3uu"]
+resource_name = "Up"
+length = 0.1
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("./Sprite2D:texture:region")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Rect2(0, 0, 32, 64)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CollisionShape2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -2)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("CollisionShape2D:shape:size")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(21.5, 23)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ys215"]
 _data = {
-"East": SubResource("Animation_0sgka"),
-"North": SubResource("Animation_ha3uu"),
+"Down": SubResource("Animation_irgjp"),
+"Left": SubResource("Animation_od535"),
 "NorthEast": SubResource("Animation_e45xn"),
 "NorthWest": SubResource("Animation_vykgt"),
 "RESET": SubResource("Animation_6gjcb"),
-"South": SubResource("Animation_irgjp"),
+"Right": SubResource("Animation_0sgka"),
 "SouthEast": SubResource("Animation_ttt6p"),
 "SouthWest": SubResource("Animation_bnlar"),
-"West": SubResource("Animation_od535")
+"Up": SubResource("Animation_ha3uu")
 }
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_rnvph"]
@@ -341,12 +343,7 @@ libraries = {
 [node name="AnimationTree" type="AnimationTree" parent="."]
 tree_root = SubResource("AnimationNodeBlendSpace2D_wqgcv")
 anim_player = NodePath("../AnimationPlayer")
-active = true
 parameters/blend_position = Vector2(0.109891, -0.0412104)
-
-[node name="Miner" parent="." instance=ExtResource("3_wcrvc")]
-visible = false
-position = Vector2(-17, 16)
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 anchors_preset = 8
@@ -362,3 +359,11 @@ grow_vertical = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_edai0")
+
+[node name="MinerCat" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(-1, -12)
+scale = Vector2(0.0411987, 0.0419617)
+texture = ExtResource("3_mdvxu")
+
+[node name="Miner" parent="." instance=ExtResource("3_wcrvc")]
