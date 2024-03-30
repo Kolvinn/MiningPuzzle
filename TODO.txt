@@ -1,0 +1,32 @@
+- Create a proper ordering of layers with consistent zindex (Perhaps even change just the sprite level to be a sub viewport)
+- Add use of viewports for text such that they ignore the origin viewport size
+- Add (green) UI representation of what tiles/ore nodes each different cart will mine along their path
+- Fix level target duplicating conditions and not saving them
+- Implement hardness more usefully. I.e., make better UI
+- Animation for taking resources out of the cart and checking against level targets
+- Add level targets, mine carts, and starting positions outside the map
+- Add rail connections between levels (i.e., from edge to start and frrom level targets to end)
+- Add boulder blocking the way or something similar that gets removed on level complete
+- Add GoNext level button on complete
+- Add Reset level button on main UI
+- Plan and make better tile maps
+- Add a TileBlock object that cannot be placed on which affects map size and shape. Do for both placement and designer.
+- Add a gold/silver/bronze star level for different types of level target conditions. 
+- Disable Start button after level start. reinable after  reset.
+- Plan for a more detailed tutorial
+- Add sounds for main soundtrack, stone hit, stone break, etc.
+
+
+Layers
+
+Base
+
+- Tile Map
+	- Track level 1
+	- Mining Ores
+	- Level Targets
+		- Mining and track UI
+			- Level 2 Track (& UI?)
+				- Level Target UI
+
+			

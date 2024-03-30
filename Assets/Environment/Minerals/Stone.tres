@@ -1,7 +1,8 @@
 [gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://ctesxmcbkp81"]
 
-[ext_resource type="Texture2D" uid="uid://dhgji553xdaae" path="res://Assets/Environment/Rocks/rocks.png" id="1_4py1n"]
+[ext_resource type="Texture2D" uid="uid://jwqmxsxduysn" path="res://Assets/Mines/Stone_Index670.png" id="1_20gb0"]
 
 [resource]
-atlas = ExtResource("1_4py1n")
-region = Rect2(50, 24, 22, 20)
+resource_local_to_scene = true
+atlas = ExtResource("1_20gb0")
+region = Rect2(3, 3, 42, 45)

@@ -1,7 +1,0 @@
-[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://bx3ts3l3qukag"]
-
-[ext_resource type="Texture2D" uid="uid://rjj283l6c1ve" path="res://Assets/CatsV2/Miner.jpeg" id="1_abc1f"]
-
-[resource]
-atlas = ExtResource("1_abc1f")
-region = Rect2(320.001, -0.816559, 660.225, 888.947)

@@ -158,19 +158,28 @@ namespace MagicalMountainMinery.Main
             if (objects == null)
                 return;
             MapObjects = objects;
-            foreach(var m in MapObjects)
+            for (int i = 0; i < objects.GetLength(0); i++)
             {
-                if (m != null)
+                for (int j = 0; j < objects.GetLength(1); j++)
                 {
-                    var obj = (Node2D)m;
-                    this.AddChild(obj);
-
-                    if(m is LevelTarget t)
+                    var m = objects[i, j];
+                    if (m != null)
                     {
-                        LevelTargets.Add(t);
+                        var obj = (Node2D)m;
+                        this.AddChild(obj);
+
+                        if (m is LevelTarget t)
+                        {
+                            LevelTargets.Add(t);
+                        }
+                        else
+                        {
+                            var rock = (Mineable)obj;
+                            rock.Index = new IndexPos(i, j);
+                            rock.PostLoad();
+                        }
                     }
                 }
-
             }
         }
 
@@ -188,7 +197,7 @@ namespace MagicalMountainMinery.Main
                        ((Node2D) existing).QueueFree();
                     }
                     var replacement = objects[i, j];
-
+                    
                     if (replacement != null)
                     {
                         this.AddChild((Node2D)replacement);
@@ -196,6 +205,11 @@ namespace MagicalMountainMinery.Main
                         if (replacement is LevelTarget t)
                         {
                             LevelTargets.Add(t);
+                        }
+                        else if(replacement is Mineable m )
+                        {
+                            m.Index = new IndexPos(i, j);
+                            m.PostLoad();
                         }
                     }
                     

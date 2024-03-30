@@ -38,11 +38,11 @@ namespace MagicalMountainMinery.Data
         public override readonly string ToString()
         {
             var s = "";
-            if (this == Left) s += "left";
-            else if (this == Right) s += "right";
-            else if(this == Up) s += "up";
+            if (this == Left) s += "_Left";
+            else if (this == Right) s += "_Right";
+            else if(this == Up) s += "_Up";
             else if(this == Down)
-                s += "down";
+                s += "_Down";
 
             return "X: " + this.X + ", " + this.Y + ")" + s;
         }

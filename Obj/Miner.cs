@@ -1,4 +1,5 @@
 ﻿using Godot;
+using MagicalMountainMinery.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,9 @@ namespace MagicalMountainMinery.Obj
 
         public Mineable MiningTarget;
 
+        [Signal]
+        public delegate void MiningHitEventHandler(Mineable mineable);
+
         public bool canMine { get; set; } = true;
 
         
@@ -40,37 +44,64 @@ namespace MagicalMountainMinery.Obj
             
             if (anim != "RESET")
             {
-                CooldownBar.Visible = true;
-                cooldown = 100;
-                EmitSignal(SignalName.MiningFinished, MiningTarget, this);
-                player.Play("RESET");
+                //CooldownBar.Visible = true;
+                //cooldown = 100;
+                //EmitSignal(SignalName.MiningFinished, MiningTarget, this);
+                //player.Play("RESET");
             }
 
         }
 
         public override void _PhysicsProcess(double delta)
         {
-            if (cooldown > 0)
-            {
-                var val = 1 * cooldownMultiplier;
-                cooldown -= val;
-                CooldownBar.Value += val;
-            }
-            else if(CooldownBar.Value > 99 && !canMine)
-            {
-                CooldownBar.Visible = false;
-                CooldownBar.Value = 0;
-                canMine = true;
+            //if (cooldown > 0)
+            //{
+            //    var val = 1 * cooldownMultiplier;
+            //    cooldown -= val;
+            //    CooldownBar.Value += val;
+            //}
+            //else if(CooldownBar.Value > 99 && !canMine)
+            //{
+            //    CooldownBar.Visible = false;
+            //    CooldownBar.Value = 0;
+            //    canMine = true;
 
-            }
+            //}
 
         }
 
-        public void Mine(Mineable target, string direction)
+
+        public void Hit()
         {
-            player.Play(direction, 7f);
-            MiningTarget = target;
-            canMine = false;
+
+            GD.Print("hit mining target: ",MiningTarget);
+            EmitSignal(SignalName.MiningHit, MiningTarget);
+        }
+
+        public void Mine(IndexPos dir, Mineable target, float speed = 2f)
+        {
+            target.locked = true;
+            this.MiningTarget = target;
+            if (!string.IsNullOrEmpty(player.CurrentAnimation))
+            {
+                player.Stop();
+                player.ClearQueue();
+                player.Play("RESET");
+            }
+            var str = "East";
+            if (dir == IndexPos.Up)
+                str = "North";
+            else if (dir == IndexPos.Down)
+                str = "South";
+            else if (dir == IndexPos.Left)
+                str = "West";
+
+
+            GD.Print("playing animation: ", str, " for target: ", MiningTarget);
+            player.Play(str, speed);
+            player.Queue("RESET");
+            //MiningTarget = target;
+            //canMine = false;
             //cooldown = 100f;
         }
 

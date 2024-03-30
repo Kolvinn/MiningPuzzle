@@ -4,6 +4,7 @@ using MagicalMountainMinery.Obj;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,7 +17,8 @@ namespace MagicalMountainMinery.Main
 
         public MapLevel MapLevel { get; set; }
 
-        public Queue<Vector2> CartDirs { get; set; }  = new Queue<Vector2>();
+        public Queue<Vector2> CartVectors { get; set; }  = new Queue<Vector2>();
+        public Queue<IndexPos> CartDirs { get; set; } = new Queue<IndexPos>();
 
         public Queue<Track> TrackQueue = new Queue<Track>();
 
@@ -26,12 +28,20 @@ namespace MagicalMountainMinery.Main
 
         public IndexPos CartDex {  get; set; }  
 
-        public Vector2 LastDirection { get; set; }
-        public Track LastTrack { get; set; }
+        public Vector2 LastVector { get; set; }
+        public Vector2 NextVector { get; set; }
+        public Track LastTrack { get; set; } = new Track();
+        public Track NextTrack { get; set; } = new Track();
 
+        public Track CurrentTrack { get; set; } = new Track();
+        public IndexPos LastDirection { get; set; } = IndexPos.Zero;
+        public IndexPos NextDirection { get; set; } = IndexPos.Zero;
         public Line2D CartLine { get; set; }
 
         public IndexPos LevelTargetIndex { get; set; } = new IndexPos(-1, -1);
+
+        public AudioStreamPlayer Player1 { get; set; }
+        public AudioStreamPlayer Player2 { get; set; }
 
         public Dictionary<Sprite2D, GameResource> spriteSpawns { get; set; } = new Dictionary<Sprite2D, GameResource>();
 
@@ -49,23 +59,24 @@ namespace MagicalMountainMinery.Main
         public override void _Ready()
         {
             Cart = Runner.LoadScene<Cart>("res://Obj/Cart.tscn");
+            
         }
         public override void _PhysicsProcess(double delta)
         {
+            
             if (Finished)
                 return;
             if (State == CartState.Moving)
             {
                 CartDex = FetchCartIndex();
-
                 if (CheckEnd(Cart.CurrentIndex + IndexPos.Up))
                 {
-                    State = CartState.WaitOnFinish;
-                    
+                    State = CartState.WaitOnFinish;   
                 }
                 else
                 {
-                   // DoMine();
+                    // DoMine();
+                    DoMine();
                     Move(delta);
                 }
 
@@ -124,13 +135,10 @@ namespace MagicalMountainMinery.Main
                 }
                 //State = CartState.Fail;
             }
-            if (Cart.Position == LastDirection)
+            if (Cart.Position == NextVector)
             {
-                Cart.CurrentLevel = LastTrack.TrackLevel;
-                Cart.CurrentIndex = LastTrack.Index;
-                Cart.ZIndex = (Cart.CurrentLevel * 5) + 1;
-
-                if (CartDirs.Count == 0)
+                
+                if (CartVectors.Count == 0)
                 {
                     State = CartState.WaitOnFinish;
                     CheckEnd(Cart.CurrentIndex + IndexPos.Up);
@@ -138,19 +146,22 @@ namespace MagicalMountainMinery.Main
                 }
                 else
                 {
-                    
-                    LastDirection = CartDirs.Dequeue();
-                    LastTrack = TrackQueue.Dequeue();
-                    //only do once per square
-                    DoMine();
+
+                    LastVector = Cart.Position;
+                    LastTrack = NextTrack;
+
+                    NextVector = CartVectors.Dequeue();
+                    NextTrack = TrackQueue.Dequeue();
+
+                    LastDirection = NextDirection;
+                    NextDirection = CartDirs.Dequeue();
+                    var thing = (NextDirection.ToString().Split("_")[1]);
+                    Cart.CurrentPlayer.Play(thing);
                 }
             }
             else
             {
-                var thing = Cart.Position.MoveToward(LastDirection, (float)delta * 40);
-                var diff = thing - Cart.Position;
-
-                Cart.GetNode<AnimationTree>("AnimationTree").Set("parameters/blend_position", diff * 10);
+                var thing = Cart.Position.MoveToward(NextVector, (float)delta * 40);
                 Cart.Position = thing;
             }
         }
@@ -164,12 +175,34 @@ namespace MagicalMountainMinery.Main
             this.StartPos = start;
             this.MapLevel = map;
         }
+
+
+        public void MineableHit(Mineable mineable)
+        {
+            if (mineable.Hardness > 0)
+            {
+                mineable.Hardness--;
+                if (mineable.Hardness <= 0)
+                {
+                    mineable.HardnessIcon.Visible = false;
+                }
+            }
+            else
+            {
+                mineable.locked = true;
+                CreateGrownResources(mineable.ResourceSpawn, mineable.Position);
+                MapLevel.RemoveAt(mineable.Index);
+            }
+        }
+
+
         public void Start(Color c, Dictionary<Track, List<Track>> trackList)
         {
             MapLevel.AddChild(Cart);
             Cart.Position = MapLevel.GetGlobalPosition(StartPos);
+            Cart.CurrentMiner.Connect(Miner.SignalName.MiningHit, new Callable(this, nameof(MineableHit)));
 
-            var lastDirection = MapLevel.GetTrack(StartPos).Connection2;
+            var lastDirection = MapLevel.GetTrack(StartPos).Connection1;
             var currentTrack = MapLevel.GetTrack(StartPos);
 
             CartLine = new Line2D()
@@ -191,7 +224,7 @@ namespace MagicalMountainMinery.Main
                 var nextDir = IndexPos.Zero;
                 //normal track, i.e. start or non junc
                 if (startList == null || startList.Count == 0)
-                    return;
+                    break;
                 else if (currentTrack is Junction junc)
                 {
                     if (lastDirection == junc.Connection1)
@@ -213,47 +246,56 @@ namespace MagicalMountainMinery.Main
                 }
                 
 
-                //if (currentTrack is Junction junc)
-                //{
-
-                //    if (lastDirection == junc.Connection1)
-                //        nextDir = junc.Option;
-                //    else if (lastDirection == junc.Option)
-                //        nextDir = junc.Connection1;
-                //    else
-                //        nextDir = junc.Connection1;
-
-                //}
-                //else
-                //{
-                //    nextDir = currentTrack.Connection1 == lastDirection ? currentTrack.Connection2 : currentTrack.Connection1;
-                //}
-
                 var nextPos = currentTrack.Index + nextDir;
 
-                //var nextTrack = MapLevel.GetTrack(nextPos);
-                var nextTrack = startList.First(item => item.Index == nextPos);
+                var nextTrack = new Track();
+                nextTrack = startList.First(item => item.Index == nextPos);
+                
                 var global = (MapLevel.GetGlobalPosition(nextPos));
 
                 CartLine.AddPoint(global);
-                CartDirs.Enqueue(global);
+                CartVectors.Enqueue(global);
+                CartDirs.Enqueue(nextDir);
                 TrackQueue.Enqueue(nextTrack);
+
+
                 currentTrack = nextTrack;
                 lastDirection = nextDir.Opposite();
 
+
+                var item1 = MapLevel.Get(currentTrack.Index + currentTrack.Connection1);
+                var item2 = MapLevel.Get(currentTrack.Index + currentTrack.Connection2);
                 if (currentTrack.Connection1 == IndexPos.Zero || currentTrack.Connection2 == IndexPos.Zero)
+                    break;
+                if ((item1 != null && item1 is LevelTarget) || (item2 != null && item2 is LevelTarget))
                     break;
                 maxinterations--;
 
             }
 
-            MapLevel.AddChild(CartLine);
-            CartLine.ZIndex = 100;
+            if (CartVectors.Count == 0)
+            {
+                State = CartState.WaitOnFinish;
+                CheckEnd(Cart.CurrentIndex + IndexPos.Up);
+                return;
+            }
+            else
+            {
+                MapLevel.AddChild(CartLine);
+                CartLine.ZIndex = 100;
 
-            LastDirection = CartDirs.Dequeue();
-            LastTrack = TrackQueue.Dequeue();
+                LastVector = NextVector = CartVectors.Dequeue();
+                LastTrack = NextTrack = TrackQueue.Dequeue();
+                LastDirection = NextDirection = CartDirs.Dequeue();
 
-            State = CartState.Moving;
+                var thing = (LastDirection.ToString().Split("_")[1]);
+
+                Cart.CurrentPlayer.Play(thing);
+                State = CartState.Moving;
+            }
+            
+
+            
         }
         public void Free(Node node)
         {
@@ -295,6 +337,19 @@ namespace MagicalMountainMinery.Main
             var dexX = (global.X / (MapLevel.TrackX));
             var dexY = (global.Y / (MapLevel.TrackY));
             var index = new IndexPos(dexX, dexY); //index auto chops floats to ints
+            var track = MapLevel.GetTrack(index);
+            CurrentTrack = track;
+            
+            if (index != Cart.CurrentIndex)
+            {
+                Cart.CurrentLevel = track.TrackLevel;
+                Cart.CurrentIndex = track.Index;
+                Cart.ZIndex = (Cart.CurrentLevel * 5) + 1;
+
+                //everytime we move to a different index, update lastminedindex
+
+            }
+
             return index;
         }
 
@@ -313,6 +368,9 @@ namespace MagicalMountainMinery.Main
             }
             return false;   
         }
+
+
+        
         public void DoMine()
         {
 
@@ -321,66 +379,36 @@ namespace MagicalMountainMinery.Main
             // return;  //one per square
 
             //Cart.CurrentIndex = CartDex;
-            if (LastTrack.TrackLevel == 2)
+            if (CurrentTrack.TrackLevel == 2)
                 return;
-            if (LastTrack.HeightLabel.Text == "1.5")
+            if (CurrentTrack.HeightLabel.Text == "1.5")
                 return;
-            var list = new List<IndexPos>() { IndexPos.Up, IndexPos.Right, IndexPos.Down, IndexPos.Left };
+            if (Cart.LastMinedIndex == Cart.CurrentIndex)
+                return;
+
+
+            var list = Cart.GetMineableIndexes().Where(pos => MapLevel.ValidIndex(Cart.CurrentIndex + pos)).ToList();
+            
+
             foreach (var dex in list)
             {
                 var index = Cart.CurrentIndex + dex;
-                if (!MapLevel.ValidIndex(index))
-                    return;
-
                 var mineable = MapLevel.GetMineable(index);
-                if (mineable != null && !mineable.locked)
+                if (  mineable != null && IsInstanceValid(mineable) &&!mineable.locked)
                 {
-                    mineable.locked = true;
-                    CreateGrownResources(mineable.ResourceSpawn, mineable.Position);
-                    MapLevel.RemoveAt(index);
+
                     Cart.LastMinedIndex = Cart.CurrentIndex;
+                    //var dir = dex - Cart.CurrentIndex;
+
+                    Cart.CurrentMiner.Mine(dex, mineable);
+
                     return;
                 }
             }
 
-            //if (Cart.CurrentIndex != Cart.LastMinedIndex)
-            //{
-            //    var track = MapLevel.GetTrack(Cart.CurrentIndex);
-            //    if (track.HeightLabel.Text == "1.5" || track.TrackLevel == 2)
-            //        return;
-
-
-            //    var dirs = MapLevel.GetAdjacentDirections(Cart.CurrentIndex);
-
-
-            //    foreach (var dir in dirs)
-            //    {
-            //        var rock = MapLevel.GetMineable(Cart.CurrentIndex + dir);
-            //        if (rock == null || rock.locked) continue;
-            //        else
-            //        {
-            //            //var str = GetOrientationString(dir);
-            //            var mineable  = rock as Mineable;
-            //            mineable.locked = true;
-            //            CreateGrownResources(mineable);
-            //            mineable.QueueFree();
-            //            Cart.LastMinedIndex = Cart.CurrentIndex;
-            //            //entry.Value.Mine(rock as Mineable, str);
-            //            //entry.Value.Connect(Miner.SignalName.MiningFinished, new Callable(this, nameof(MineActionFinish)));
-            //            //var anim = this.Cart.GetNode<AnimationPlayer>("Axe/AnimationPlayer");
-            //            //anim.Play(str, customSpeed: 1.2f);
-            //            //anim.Connect(AnimationPlayer.SignalName.AnimationFinished, new Callable(this, nameof(AnimFinished)));
-            //            //cooldown = 30 * 5; //5 secondds for 30 frames a second in physics process;
-            //            //GD.Print("Setting cooldown to : ", cooldown);
-            //        }
-            //    }
-            //}
-
-
-
-
-
         }
+
+
         public void CreateGrownResources(GameResource ResourceSpawn, Vector2 pos)
         {
             var newRes = ResourceSpawn;

@@ -367,6 +367,7 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="1" type="Label" parent="5"]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -388,6 +389,7 @@ autowrap_mode = 2
 script = ExtResource("4_x0nw8")
 
 [node name="6" type="Control" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -482,30 +484,6 @@ Apart from feedback, the remaining three levels are a combination of everything 
 I wish you good luck, and happy carting!
 
 "
-label_settings = SubResource("LabelSettings_xy0wp")
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-script = ExtResource("4_x0nw8")
-
-[node name="2" type="Label" parent="7"]
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -103.0
-offset_top = -92.0
-offset_right = 110.0
-offset_bottom = 60.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/normal = SubResource("StyleBoxTexture_a5y2q")
-text = "To connect different track levels, simply drag one track level onto another track level. Each level must have an available connection, however!
-
-In this tutorial, the height is indicated via a '2', and the ramps indicated via '1.5'. Ramps are special and do not count towards the total allowed level 2 tracks. They cannot be placed on top of nodes, but carts cannot gather ore when travel across them."
 label_settings = SubResource("LabelSettings_xy0wp")
 horizontal_alignment = 1
 vertical_alignment = 1

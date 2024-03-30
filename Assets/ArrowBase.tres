@@ -1,8 +1,0 @@
-[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://dpvlruhul340x"]
-
-[ext_resource type="Texture2D" uid="uid://cti735ab7rglc" path="res://Assets/Arrow & Base.png" id="1_yhi56"]
-
-[resource]
-resource_local_to_scene = true
-atlas = ExtResource("1_yhi56")
-region = Rect2(95, 60, 260, 165)

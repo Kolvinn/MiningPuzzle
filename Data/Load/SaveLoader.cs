@@ -517,13 +517,17 @@ namespace MagicalMountainMinery.Data.Load
                 {
 
 
-                   
+                    GD.Print("Loading: '", p.Name, " in parent: ", saveInstanceObject);
                     var type = value?.GetType();
                     var namey = value?.ToString();
                     object o = null;
-                    if (p.GetCustomAttribute(typeof(StoreCollectionAttribute)) != null)
+                    if(p.GetCustomAttribute(typeof(StoreCollectionAttribute)) != null)
                     {
-                        o = LoadGenericCollection(p.Name, (JArray)value, saveInstanceObject);
+                        var att = (StoreCollectionAttribute)p.GetCustomAttribute(typeof(StoreCollectionAttribute));
+                        if (att.ShouldStore)
+                            o = LoadGenericCollection(p.Name, (JArray)value, saveInstanceObject);
+                        else
+                            o = null;
                     }
                     else if (value is JToken)
                     {
@@ -647,7 +651,10 @@ namespace MagicalMountainMinery.Data.Load
                         if (o.GetType().IsPrimitive && o is not string)//o is Int64 || o is Int32 || o is Int16)
                             f.SetValue(saveInstanceObject, ParsePrimitive(f.FieldType.FullName, o));
                         else
+                        {
+                            GD.Print("Setting: '", f.Name, "' to object: '", o, " in parent: ", saveInstanceObject);
                             f.SetValue(saveInstanceObject, o);
+                        }
                     }
                 }
             }
