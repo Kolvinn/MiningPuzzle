@@ -54,6 +54,8 @@ namespace MagicalMountainMinery.Main
         [JsonConverter(typeof(StringEnumConverter))]
 
         public TutorialUI TutorialUI { get; set; }
+
+        public bool TutorialDisabled { get; set; } = true;
         public ResourceType resource { get; set; }
 
         public int CurrentLevelDex { get; set; }
@@ -68,7 +70,9 @@ namespace MagicalMountainMinery.Main
                 this.GetNode<GameButton>("CanvasLayer/Raised/Normal"),
                 this.GetNode<GameButton>("CanvasLayer/Junc/Normal")
             };
+
             TutorialUI = this.GetNode<TutorialUI>("CanvasLayer/TutorialLayer");
+
             AudioStream = new AudioStreamPlayer();
             this.AddChild(AudioStream);
             //this.AddChild(TutorialUI);
@@ -84,13 +88,17 @@ namespace MagicalMountainMinery.Main
             this.MapLevel = level;
             UpdateUI();
             ShowConnections(false);
-            TutorialUI.CurrentTutorial = null;
+            
             var raised = MapLevel.AllowedTracksRaised == 0 ? false : true;
             var junc = MapLevel.AllowedJunctions == 0 ? false : true;
+
+    
 
             this.GetNode<VBoxContainer>("CanvasLayer/Raised").Visible = raised;
             this.GetNode<TextureRect>("CanvasLayer/TextureRect3").Visible=raised;
             this.GetNode<VBoxContainer>("CanvasLayer/Junc").Visible = junc;
+
+            TutorialUI.CurrentTutorial = null;
             TutorialUI.CurrentIndex = (levelDex + 1);
             TutorialUI.CurrentSubIndex = 1;
             
@@ -107,17 +115,22 @@ namespace MagicalMountainMinery.Main
             var obj = EventDispatch.PeekHover();
             var env = EventDispatch.FetchLast();
 
-            if(TutorialUI.CurrentTutorial != null)
+            if (!TutorialDisabled)
             {
-                if(TutorialUI.TryPass(env, obj))
+                if (TutorialUI.CurrentTutorial != null)
                 {
-                    
+                    if (TutorialUI.TryPass(env, obj))
+                    {
+
+                    }
+                    return;
                 }
-                return;
+                else if (TutorialUI.GetNext(env, obj))
+                {
+                    return;
+                }
             }
-            else if(TutorialUI.GetNext(env, obj)){
-                return;
-            }
+
             if (obj != null)
             {
                 //obj = EventDispatch.FetchInteractable();
@@ -141,7 +154,7 @@ namespace MagicalMountainMinery.Main
                     item.selectMat.SetShaderParameter("width", 0);
                 }
             }
-            btn.selectMat.SetShaderParameter("width", 1);
+            btn.selectMat?.SetShaderParameter("width", 1);
         }
         public void HandleUI(EventType env, IUIComponent comp)
         {
@@ -451,7 +464,7 @@ namespace MagicalMountainMinery.Main
             var index = FetchMouseIndex();
 
             var direction = LastHover - index;
-            if (!MapLevel.ValidIndex(index) || MapLevel.StartPositions.Contains(index))
+            if (!MapLevel.ValidIndex(index) || MapLevel.StartPositions.Contains(index) || MapLevel.EndPositions.Contains(index))
                 return;
             if (index != CurrentHover)
             {
@@ -466,7 +479,7 @@ namespace MagicalMountainMinery.Main
             {
                 foreach (var entry in track.GetConnectionList())
                 {
-                    Disconnect(MapLevel.GetTrack(index + entry), entry.Opposite(), track);
+                    Disconnect(index + entry, entry.Opposite(), track);
                 }
                 AudioStream.Stream = ResourceStore.GetAudio("TrackRemove");
                 AudioStream.Play();
@@ -520,8 +533,16 @@ namespace MagicalMountainMinery.Main
         /// </summary>
         /// <param name="track"></param>
         /// <param name="dir"></param>
-        public void Disconnect(Track track, IndexPos dir, Track fromTrack)
+        public void Disconnect(IndexPos connectedPos, IndexPos dir, Track fromTrack)
         {
+            var track = new Track();
+            if (MapLevel.StartPositions.Contains(connectedPos))
+            {
+                track = null;  
+            }
+            else
+                track = MapLevel.GetTrack(connectedPos);
+
             if (track == null) return;
             if (track is Junction junc)
             {
@@ -758,6 +779,7 @@ namespace MagicalMountainMinery.Main
 
             var data = MapLevel.GetData(index);
 
+
             if (MapLevel.ValidIndex(LastHover))
             {
                 if (CheckJunction(LastHover, index))
@@ -839,16 +861,20 @@ namespace MagicalMountainMinery.Main
                 }
             }
 
-            var dex = newT.Index + IndexPos.Up;
-            if (newT.CanConnect() && MapLevel.ValidIndex(dex))
+            foreach(var pos in MapLevel.StartPositions)
             {
-                var target = MapLevel.Get(dex);
-                if (target != null && target is LevelTarget)
+                //var t = MapLevel.GetTrack(pos);
+                var dirs = new List<IndexPos>() { IndexPos.Left, IndexPos.Right, IndexPos.Up, IndexPos.Down };
+                var any = dirs.Any(item => item + newT.Index == pos);
+                if (newT.CanConnect() && any)
                 {
-                    newT.Connect(IndexPos.Up);
+                    var first = dirs.First(item => item + newT.Index == pos);
+                    newT.Connect(first);
+
                     MatchSprite(newT);
                 }
             }
+            
             AudioStream.Stream = ResourceStore.GetAudio("TrackPlace2");
             AudioStream.Play();
             return true;
@@ -865,20 +891,12 @@ namespace MagicalMountainMinery.Main
         {
             if (!track1.CanConnect() || !track2.CanConnect()) //has 0 or 1 connection
                 return;
-            //var toDir = to - from;
-            var directions = MapLevel.GetAdjacentDirections(from);//.Where(dir => dir != fromDirection).ToList();
-            var tracks = MapLevel.GetAdjacentTracks(from);
 
             var dex1 = from - to;
             var dex2 = to - from;
 
-            var resulting = new Connection(dex1, dex2, null);
-
             Connect(track1, dex2);
             Connect(track2, dex1);
-
-            var con = track1.GetConnection();
-            var con2 = track2.GetConnection();
 
             MatchSprite(track1);
             MatchSprite(track2);
@@ -886,7 +904,6 @@ namespace MagicalMountainMinery.Main
 
 
             LastHover = CurrentHover;
-            //GD.Print("Setting last hover to (connect): ", LastHover);
 
         }
 

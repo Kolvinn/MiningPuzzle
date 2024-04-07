@@ -19,8 +19,9 @@ public partial class Mineable : Sprite2D, IInteractable, ISaveable
 
 	public Sprite2D HardnessIcon { get; set; }	
 
-	public Label ResourceLabel { get; set; }
+	public Label ResourceLabel { get =>resLabel; set=> resLabel = value; }
 
+	private Label resLabel = null;
 	public IndexPos Index {  get; set; }
 
     public override void _Ready()
@@ -29,26 +30,6 @@ public partial class Mineable : Sprite2D, IInteractable, ISaveable
 		this.Texture = ResourceStore.Mineables[Type];
 		//CanvasLayer canvas = new CanvasLayer();
 		//this.AddChild(canvas);
-
-		ResourceLabel = new Label()
-		{
-			Text = ResourceSpawn?.Amount.ToString(),
-			Size = new Vector2(32, 32),
-			Position = new Vector2(-16, -16),
-			LabelSettings = new LabelSettings()
-			{
-				FontSize = 32,
-				Font = ResourceLoader.Load<Font>("res://Assets/Fonts/BitPotionExt.ttf"),
-			},
-			HorizontalAlignment = HorizontalAlignment.Center,
-			VerticalAlignment = VerticalAlignment.Center,
-			MouseFilter = Control.MouseFilterEnum.Ignore,
-			TextureFilter = TextureFilterEnum.Nearest
-			
-
-		};
-
-        this.AddChild(ResourceLabel);
 		//canvas.Visible = true;
         this.TextureFilter = TextureFilterEnum.Nearest;
         //48 pixel node on 32 pixel squares
@@ -83,6 +64,25 @@ public partial class Mineable : Sprite2D, IInteractable, ISaveable
             HardnessIcon.GetNode<Label>("Label").Text = Hardness.ToString();
 
         }
+        ResourceLabel = new Label()
+        {
+            Text = ResourceSpawn?.Amount.ToString(),
+            Size = new Vector2(32, 32),
+            Position = new Vector2(-16, -16),
+            LabelSettings = new LabelSettings()
+            {
+                FontSize = 16,
+                Font = ResourceLoader.Load<Font>("res://Assets/Fonts/Pixel/PrintChar21.ttf"),
+            },
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+            TextureFilter = TextureFilterEnum.Nearest
+
+
+        };
+
+        this.AddChild(ResourceLabel);
     }
 	public virtual List<string> GetSaveRefs()
 	{

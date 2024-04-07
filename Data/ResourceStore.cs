@@ -1,4 +1,5 @@
 ﻿using Godot;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -62,6 +63,8 @@ namespace MagicalMountainMinery.Data
         public static Dictionary<ResourceType, Texture2D> Resources = new Dictionary<ResourceType, Texture2D>();
 
         public static Dictionary<string, AudioStream> AudioRef = new Dictionary<string, AudioStream>();
+
+        public static Dictionary<string, List<MapData>> Levels = new Dictionary<string, List<MapData>>();
 
         public static Texture2D GetTex(TrackType type, int level = 1)
         {
@@ -332,6 +335,52 @@ namespace MagicalMountainMinery.Data
                 }
 
             }
+        }
+
+
+        public static void LoadLevels()
+        {
+ 
+            var dir = "res://Levels/";
+            var dirList = new List<String>()
+            {
+                "Tutorial Valley",
+                "Dark Hills"
+            };
+            //var levels = Godot.DirAccess.GetFilesAt(dir);
+            
+            foreach (var name in dirList)
+            {
+
+                Levels.Add(name, new List<MapData>());
+                int count = 1;
+                while (true)
+                {
+                    var fileDir = dir + name + "/Level_" + count + ".lvl";
+                    if (!Godot.FileAccess.FileExists(fileDir))
+                    {
+                        GD.Print("File not found at: ", fileDir);
+                        break;
+                    }
+                    using (var access = Godot.FileAccess.Open(fileDir, Godot.FileAccess.ModeFlags.Read))
+                    {
+                        var str = access.GetAsText();
+                        var data = new MapData()
+                        {
+                            BonusStars = 0,
+                            Difficulty = 1,
+                            Completed = false,
+                            DataString = str,
+                            LevelIndex = (count-1)
+                        };
+                        //JsonConvert.PopulateObject(, data);
+                        Levels[name].Add(data);
+                    }
+
+                    count++;
+                }
+            }
+            
         }
     }
 }

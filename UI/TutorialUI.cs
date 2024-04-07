@@ -85,13 +85,5 @@ public partial class TutorialUI : Control
         }
         return false;
     }
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _PhysicsProcess(double delta)
-    {
-        var env = EventDispatch.FetchLast();
-        if (env == EventType.Nill)
-            return;
-
-        
-    }
+   
 }

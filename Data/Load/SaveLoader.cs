@@ -82,63 +82,54 @@ namespace MagicalMountainMinery.Data.Load
             }
 
             //if not endnode, we need to store private and public fields
-            if (!endNode)
-            {
-                foreach (FieldInfo f in fields)
-                {
-                    if (f.Name == "Tracks1")
-                        continue;
-                    object fieldObject = f.GetValue(o);
-                    //var name = f.Name;
-                    ////don't store null fields!
-                    //if (f.Name.ToLower().Contains("ptr") || f.Name.ToLower().Contains("memory")
-                    //|| fieldObject == null
-                    //|| f.Name.Contains("BackingField")
-                    //|| (PersistAttribute)f.GetCustomAttribute(typeof(PersistAttribute)) != null)
-                    //    continue;
-                    //else
-                    //{
-                    if (fieldObject == null)
-                    {
-                        continue;
-                    }
+            //if (!endNode)
+            //{
+            //    foreach (FieldInfo f in fields)
+            //    {
 
-                    object ret;
-                    if (parsedClasses.Keys.Contains(fieldObject))
-                    {
-                        ////GD.Print("      Already parsed object: ",fieldObject, " for parent", o.GetType());
-                        object savedRef;
-                        parsedClasses.TryGetValue(fieldObject, out savedRef);
-                        ret = new ObjectRef(savedRef);
-                    }
-                    else if (f.GetCustomAttribute(typeof(StoreCollectionAttribute)) != null)
-                    {
-                        var att = (StoreCollectionAttribute)f.GetCustomAttribute(typeof(StoreCollectionAttribute));
-                        if (att.ShouldStore)
-                            ret = StoreCollection(f.Name, fieldObject, o);
-                        else
-                            ret = null;
-                    }
-                    else
-                    {
-                        ret = ParseSaveObject(f.Name, fieldObject, o);
+            //        object fieldObject = f.GetValue(o);
 
-                        if (ret != null && ret.GetType() == typeof(SaveInstance))
-                            parsedClasses.Add(fieldObject, ret);
-                    }
+            //        if (fieldObject == null)
+            //        {
+            //            continue;
+            //        }
 
-                    //make sure that we aren't storing something null that we can't parse!
-                    if (ret != null)
-                    {
-                        //////GD.Print("Adding field object: ", fieldObject, " with type: ", fieldObject.GetType());
+            //        object ret;
+            //        if (parsedClasses.Keys.Contains(fieldObject))
+            //        {
+            //            ////GD.Print("      Already parsed object: ",fieldObject, " for parent", o.GetType());
+            //            object savedRef;
+            //            parsedClasses.TryGetValue(fieldObject, out savedRef);
+            //            ret = new ObjectRef(savedRef);
+            //        }
+            //        else if (f.GetCustomAttribute(typeof(StoreCollectionAttribute)) != null)
+            //        {
+            //            var att = (StoreCollectionAttribute)f.GetCustomAttribute(typeof(StoreCollectionAttribute));
+            //            if (att.ShouldStore)
+            //                ret = StoreCollection(f.Name, fieldObject, o);
+            //            else
+            //                ret = null;
+            //        }
+            //        else
+            //        {
+            //            ret = ParseSaveObject(f.Name, fieldObject, o);
 
-                        s.fieldBook.Add(f.Name, ret);
-                        ////////GD.Print("writing field: ",f.Name,": ", ret, " as ",ret.GetType(), " under Namespace: ",ret.GetType().Namespace);
-                    }
-                    // }
-                }
+            //            if (ret != null && ret.GetType() == typeof(SaveInstance))
+            //                parsedClasses.Add(fieldObject, ret);
+            //        }
 
-            }
+            //        //make sure that we aren't storing something null that we can't parse!
+            //        if (ret != null)
+            //        {
+            //            //////GD.Print("Adding field object: ", fieldObject, " with type: ", fieldObject.GetType());
+
+            //            s.fieldBook.Add(f.Name, ret);
+            //            ////////GD.Print("writing field: ",f.Name,": ", ret, " as ",ret.GetType(), " under Namespace: ",ret.GetType().Namespace);
+            //        }
+            //        // }
+            //    }
+
+            //}
 
             //always store public properties if you can for this SaveInstance
             foreach (PropertyInfo p in properties)
@@ -748,7 +739,7 @@ namespace MagicalMountainMinery.Data.Load
                     }
                     return doubleObj;
                 }
-                else if (fieldName == "StartPositions")
+                else if (fieldName == "StartPositions" || fieldName == "EndPositions" || fieldName == "Blocked")
                 {
                     objList = new List<object>();
                     var list = (List<IndexPos>)o;
@@ -761,7 +752,7 @@ namespace MagicalMountainMinery.Data.Load
             }
             if(parent.GetType() == typeof(LevelTarget))
             {
-                if (fieldName == "Conditions")
+                if (fieldName == "Conditions" || fieldName == "BonusConditions")
                 {
                     var list = (List<Condition>)o;
                     foreach (var c in list)
@@ -810,7 +801,8 @@ namespace MagicalMountainMinery.Data.Load
                     }
                     return rocks;
                 }
-                else if(fieldName == "StartPositions")
+                //list of indexpos
+                else if(fieldName == "StartPositions" || fieldName == "EndPositions" || fieldName == "Blocked")
                 {
                     var jArray = (JArray)o;
                     //var array = ((object[,])o);
@@ -823,22 +815,12 @@ namespace MagicalMountainMinery.Data.Load
                     }
                     return objList;
                 }
-                //else if (fieldName == "Tracks1")
-                //{
-                //    for (int i = 0; i < ((MapLevel)o).IndexHeight + 1; i++)
-                //    {
-                //        for (int j = 0; j < ((MapLevel)o).IndexHeight + 1; j++)
-                //        {
-                //            objList.Add(ParseSaveObject(null, ((MapLevel)o).Tracks1[i, j], null));
-                //        }
-                //    }
-                //}
             }
             if (parent.GetType() == typeof(LevelTarget))
             {
                 var jArray = (JArray)o;
                 var str = JArray.Parse(jArray.ToString()).ToString();
-                if (fieldName == "Conditions")
+                if (fieldName == "Conditions" || fieldName == "BonusConditions")
                 {
                     var list = JsonConvert.DeserializeObject<List<string>>(str);
                     var objList = new List<Condition>();

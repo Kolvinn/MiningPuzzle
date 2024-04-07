@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MagicalMountainMinery.Main
 {
-    internal partial class EventDispatch : Node2D
+    public partial class EventDispatch : Node2D
     {
         private static Queue<EventType> eventTypes = new Queue<EventType>();
 
@@ -90,8 +90,12 @@ namespace MagicalMountainMinery.Main
             {
                 eventTypes.Enqueue(EventType.Space);
             }
+            else if (Input.IsActionJustPressed("escape"))
+            {
+                eventTypes.Enqueue(EventType.Escape);
+            }
 
-            
+
         }
 
         public static void PushGameEvent(GameEvent gameEvent)
@@ -174,17 +178,17 @@ namespace MagicalMountainMinery.Main
         }
 
 
-        public override void _Input(InputEvent @event)
-        {
-            if (@event is InputEventMouseMotion input)
-            {
-                eventTypes.Enqueue(EventType.Drag_Start);
-                this.SetProcessInput(false);
+        //public override void _Input(InputEvent @event)
+        //{
+        //    if (@event is InputEventMouseMotion input)
+        //    {
+        //        eventTypes.Enqueue(EventType.Drag_Start);
+        //        this.SetProcessInput(false);
                 
 
-            }
+        //    }
 
-        }
+        //}
 
         public Vector2 GetMouseDirection(Vector2 dragVec)
         {
@@ -202,6 +206,13 @@ namespace MagicalMountainMinery.Main
             {
                 return new Vector2(Xmult, 0);
             }
+        }
+
+        public static void ClearAll()
+        {
+            eventTypes.Clear();
+            hoverList.Clear();
+            interactables.Clear();
         }
     }
 }

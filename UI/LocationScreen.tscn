@@ -1,0 +1,58 @@
+[gd_scene load_steps=5 format=3 uid="uid://4l3ar3f8u4iq"]
+
+[ext_resource type="FontFile" uid="uid://cipymmhxrwq2p" path="res://Assets/Fonts/Pixel/Stepalange-x3BLm.otf" id="1_s2rgl"]
+[ext_resource type="PackedScene" uid="uid://bcufgs3ng8yr2" path="res://UI/LevelSelectBox.tscn" id="2_ghctj"]
+[ext_resource type="Texture2D" uid="uid://dnrwb2dqyxuys" path="res://Assets/UI/UIDifferentFree03Wenrexa/PNG/Arrow01.png" id="3_wdwk5"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_623u1"]
+font = ExtResource("1_s2rgl")
+font_size = 180
+
+[node name="Control" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="TitleBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TextureRect2" type="TextureRect" parent="TitleBox"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_wdwk5")
+stretch_mode = 2
+flip_h = true
+
+[node name="Label" type="Label" parent="TitleBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Tutorial Valley"
+label_settings = SubResource("LabelSettings_623u1")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="TitleBox"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_wdwk5")
+stretch_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_constants/h_separation = 50
+theme_override_constants/v_separation = 20
+columns = 5
+
+[node name="LevelBox" parent="GridContainer" instance=ExtResource("2_ghctj")]
+visible = false
+layout_mode = 2
+mouse_filter = 2

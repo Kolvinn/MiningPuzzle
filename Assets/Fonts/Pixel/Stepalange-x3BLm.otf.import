@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://b2d6ktwjsy7x5"
-path="res://.godot/imported/BitPotionExt.ttf-2a5523c9fe9ccb43b03617612d172102.fontdata"
+uid="uid://cipymmhxrwq2p"
+path="res://.godot/imported/Stepalange-x3BLm.otf-602331789532709e27b055770c16c1b4.fontdata"
 
 [deps]
 
-source_file="res://Assets/Fonts/BitPotionExt.ttf"
-dest_files=["res://.godot/imported/BitPotionExt.ttf-2a5523c9fe9ccb43b03617612d172102.fontdata"]
+source_file="res://Assets/Fonts/Pixel/Stepalange-x3BLm.otf"
+dest_files=["res://.godot/imported/Stepalange-x3BLm.otf-602331789532709e27b055770c16c1b4.fontdata"]
 
 [params]
 

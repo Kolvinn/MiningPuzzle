@@ -1,4 +1,4 @@
-[gd_scene load_steps=78 format=3 uid="uid://caxy0l7ayp7qd"]
+[gd_scene load_steps=79 format=3 uid="uid://caxy0l7ayp7qd"]
 
 [ext_resource type="Texture2D" uid="uid://bsyqofwxtrjcg" path="res://Assets/UI/MenuGif/frame_00_delay-0.1s.png" id="1_tine8"]
 [ext_resource type="Texture2D" uid="uid://b2c0ggo1y0ovx" path="res://Assets/UI/MenuGif/frame_01_delay-0.1s.png" id="2_ptuol"]
@@ -295,6 +295,9 @@ animations = [{
 "speed": 10.0
 }]
 
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_4lq48"]
+frame_0/texture = ExtResource("1_tine8")
+
 [node name="Menu Screen" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -304,8 +307,8 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(240.5, 135)
-scale = Vector2(0.60625, 0.568465)
+position = Vector2(639.25, 360)
+scale = Vector2(1.59938, 1.49793)
 sprite_frames = SubResource("SpriteFrames_gfxx5")
 autoplay = "default"
 frame_progress = 0.981388
@@ -361,3 +364,12 @@ metadata/_edit_lock_ = true
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("76_ahprt")
 pitch_scale = 0.21
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = -28.0
+offset_top = -38.0
+offset_right = 1421.0
+offset_bottom = 828.0
+texture = SubResource("AnimatedTexture_4lq48")
+stretch_mode = 5

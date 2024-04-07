@@ -1,0 +1,124 @@
+{
+  "$type": "MagicalMountainMinery.Data.Load.SaveInstance, MagicalMountainMinery",
+  "objectType": "MagicalMountainMinery.Main.MapLevel, MagicalMountainMinery, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+  "ResPath": "",
+  "fieldBook": {
+    "$type": "System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib],[System.Object, System.Private.CoreLib]], System.Private.CoreLib",
+    "MapObjects": [
+      [
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "$type": "MagicalMountainMinery.Data.Load.SaveInstance, MagicalMountainMinery",
+          "objectType": "Mineable, MagicalMountainMinery, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "ResPath": "",
+          "fieldBook": {
+            "$type": "System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib],[System.Object, System.Private.CoreLib]], System.Private.CoreLib",
+            "Hardness": 0,
+            "Size": 1,
+            "Type": "\"Stone\"",
+            "ResourceSpawn": "{\r\n  \"$type\": \"MagicalMountainMinery.Data.GameResource, MagicalMountainMinery\",\r\n  \"ResourceType\": \"Stone\",\r\n  \"Description\": null,\r\n  \"Title\": null,\r\n  \"Amount\": 5\r\n}",
+            "Index": "{\r\n  \"$type\": \"MagicalMountainMinery.Data.IndexPos, MagicalMountainMinery\",\r\n  \"X\": 0,\r\n  \"Y\": 0\r\n}",
+            "Position": "{\r\n  \"$type\": \"Godot.Vector2, GodotSharp\",\r\n  \"X\": 80.0,\r\n  \"Y\": 16.0\r\n}"
+          },
+          "childBook": {
+            "$type": "System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib],[System.Object, System.Private.CoreLib]], System.Private.CoreLib"
+          }
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        {
+          "$type": "MagicalMountainMinery.Data.Load.SaveInstance, MagicalMountainMinery",
+          "objectType": "Mineable, MagicalMountainMinery, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "ResPath": "",
+          "fieldBook": {
+            "$type": "System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib],[System.Object, System.Private.CoreLib]], System.Private.CoreLib",
+            "Hardness": 0,
+            "Size": 1,
+            "Type": "\"Stone\"",
+            "ResourceSpawn": "{\r\n  \"$type\": \"MagicalMountainMinery.Data.GameResource, MagicalMountainMinery\",\r\n  \"ResourceType\": \"Stone\",\r\n  \"Description\": null,\r\n  \"Title\": null,\r\n  \"Amount\": 5\r\n}",
+            "Index": "{\r\n  \"$type\": \"MagicalMountainMinery.Data.IndexPos, MagicalMountainMinery\",\r\n  \"X\": 0,\r\n  \"Y\": 0\r\n}",
+            "Position": "{\r\n  \"$type\": \"Godot.Vector2, GodotSharp\",\r\n  \"X\": 144.0,\r\n  \"Y\": 80.0\r\n}"
+          },
+          "childBook": {
+            "$type": "System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib],[System.Object, System.Private.CoreLib]], System.Private.CoreLib"
+          }
+        }
+      ],
+      [
+        null,
+        {
+          "$type": "MagicalMountainMinery.Data.Load.SaveInstance, MagicalMountainMinery",
+          "objectType": "MagicalMountainMinery.Obj.LevelTarget, MagicalMountainMinery, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "ResPath": "res://Obj/Target.tscn",
+          "fieldBook": {
+            "$type": "System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib],[System.Object, System.Private.CoreLib]], System.Private.CoreLib",
+            "Conditions": [
+              "{\r\n  \"$type\": \"MagicalMountainMinery.Data.Condition, MagicalMountainMinery\",\r\n  \"ResourceType\": \"Stone\",\r\n  \"Amount\": 10,\r\n  \"ConCheck\": \"eq\",\r\n  \"Validated\": false\r\n}"
+            ],
+            "Batches": [],
+            "CompletedAll": true,
+            "IsBatched": false,
+            "Position": "{\r\n  \"$type\": \"Godot.Vector2, GodotSharp\",\r\n  \"X\": 176.0,\r\n  \"Y\": 48.0\r\n}"
+          },
+          "childBook": {
+            "$type": "System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib],[System.Object, System.Private.CoreLib]], System.Private.CoreLib"
+          }
+        },
+        null
+      ]
+    ],
+    "StartPositions": [
+      "{\r\n  \"$type\": \"MagicalMountainMinery.Data.IndexPos, MagicalMountainMinery\",\r\n  \"X\": -1,\r\n  \"Y\": 1\r\n}"
+    ],
+    "EndPositions": [
+      "{\r\n  \"$type\": \"MagicalMountainMinery.Data.IndexPos, MagicalMountainMinery\",\r\n  \"X\": 5,\r\n  \"Y\": 1\r\n}"
+    ],
+    "IndexWidth": 6,
+    "IndexHeight": 3,
+    "PathOffsetHorizontal": "{\r\n  \"$type\": \"Godot.Vector2, GodotSharp\",\r\n  \"X\": 16.0,\r\n  \"Y\": 5.0\r\n}",
+    "PathOffsetVertical": "{\r\n  \"$type\": \"Godot.Vector2, GodotSharp\",\r\n  \"X\": 0.0,\r\n  \"Y\": 16.0\r\n}",
+    "TrackOffset": "{\r\n  \"$type\": \"Godot.Vector2, GodotSharp\",\r\n  \"X\": 16.0,\r\n  \"Y\": 16.0\r\n}",
+    "Blocked": [
+      "{\r\n  \"$type\": \"MagicalMountainMinery.Data.IndexPos, MagicalMountainMinery\",\r\n  \"X\": 0,\r\n  \"Y\": 0\r\n}",
+      "{\r\n  \"$type\": \"MagicalMountainMinery.Data.IndexPos, MagicalMountainMinery\",\r\n  \"X\": 1,\r\n  \"Y\": 0\r\n}",
+      "{\r\n  \"$type\": \"MagicalMountainMinery.Data.IndexPos, MagicalMountainMinery\",\r\n  \"X\": 0,\r\n  \"Y\": 2\r\n}",
+      "{\r\n  \"$type\": \"MagicalMountainMinery.Data.IndexPos, MagicalMountainMinery\",\r\n  \"X\": 1,\r\n  \"Y\": 2\r\n}",
+      "{\r\n  \"$type\": \"MagicalMountainMinery.Data.IndexPos, MagicalMountainMinery\",\r\n  \"X\": 2,\r\n  \"Y\": 2\r\n}",
+      "{\r\n  \"$type\": \"MagicalMountainMinery.Data.IndexPos, MagicalMountainMinery\",\r\n  \"X\": 3,\r\n  \"Y\": 2\r\n}",
+      "{\r\n  \"$type\": \"MagicalMountainMinery.Data.IndexPos, MagicalMountainMinery\",\r\n  \"X\": 5,\r\n  \"Y\": 2\r\n}",
+      "{\r\n  \"$type\": \"MagicalMountainMinery.Data.IndexPos, MagicalMountainMinery\",\r\n  \"X\": 3,\r\n  \"Y\": 0\r\n}",
+      "{\r\n  \"$type\": \"MagicalMountainMinery.Data.IndexPos, MagicalMountainMinery\",\r\n  \"X\": 4,\r\n  \"Y\": 0\r\n}",
+      "{\r\n  \"$type\": \"MagicalMountainMinery.Data.IndexPos, MagicalMountainMinery\",\r\n  \"X\": 5,\r\n  \"Y\": 0\r\n}"
+    ],
+    "RandGen": "{\r\n  \"$type\": \"System.Random, System.Private.CoreLib\"\r\n}",
+    "AllowedTracks": 6,
+    "AllowedTracksRaised": 0,
+    "AllowedJunctions": 0,
+    "CurrentTracks": 0,
+    "CurrentTracksRaised": 0,
+    "CurrentJunctions": 0,
+    "GridWith": 192.0,
+    "GridHeight": 96.0
+  },
+  "childBook": {
+    "$type": "System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib],[System.Object, System.Private.CoreLib]], System.Private.CoreLib"
+  }
+}

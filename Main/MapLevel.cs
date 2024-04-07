@@ -16,6 +16,7 @@ namespace MagicalMountainMinery.Main
         public Track track2 { get; set; }
         public IInteractable obj { get; set; }
         public IndexPos pos { get; set; }
+
         public IndexData(Track track1, Track track2, IInteractable obj, IndexPos pos)
         {
             this.track1 = track1;
@@ -47,7 +48,6 @@ namespace MagicalMountainMinery.Main
         [StoreCollection(ShouldStore =true)]
         public IInteractable[,] MapObjects { get; set; }
 
-        public object GetTest { get => DOTEST(); }
 
         [StoreCollection(ShouldStore = false)]
         public Track[,] Tracks1 { get; set; }
@@ -60,20 +60,28 @@ namespace MagicalMountainMinery.Main
 
         [StoreCollection(ShouldStore = true)]
         public List<IndexPos> StartPositions { get; set; } = new List<IndexPos>();
+        [StoreCollection(ShouldStore = true)]
+        public List<IndexPos> EndPositions { get; set; } = new List<IndexPos>();
 
-        public int IndexWidth { get => width; }
-        public  int IndexHeight { get => height; }
+        public int IndexWidth { get => width; set => width = value; }
+        public  int IndexHeight { get => height; set => height = value; }
 
         public Vector2 PathOffsetHorizontal { get; set; } = new Vector2(16, 5);
         public Vector2 PathOffsetVertical { get; set; } = new Vector2(0, 16);
 
-        
         public Vector2 TrackOffset { get; } = new Vector2(TrackX/2, TrackY/2);
 
-        
-        //public IndexPos StartPos { get; set; } = IndexPos.Zero;
-        public IndexPos EndPos { get; set; } = new IndexPos(width - 2, height - 2);
+        [StoreCollection(ShouldStore = false)]
+        public List<Line2D> GridLines { get; set; } = new List<Line2D>();
 
+        [StoreCollection(ShouldStore = false)]
+        public List<Vector2> GridVertices { get; set; } = new List<Vector2> ();
+        //public IndexPos StartPos { get; set; } = IndexPos.Zero;
+        [StoreCollection(ShouldStore = true)]
+        public List<IndexPos> Blocked { get; set; } = new List<IndexPos>();
+
+        [StoreCollection(ShouldStore = false)]
+        public List<Track> EndTracks { get; set; } = new List<Track>();
         public Random RandGen { get; set; } = new Random();
 
         public int AllowedTracks { get; set; }
@@ -107,49 +115,102 @@ namespace MagicalMountainMinery.Main
             }
         }
 
-
-       public object DOTEST()
+        public void PostLoad()
         {
-            return null;
+            Tracks1 = new Track[IndexWidth, IndexHeight];
+            Tracks2 = new Track[IndexWidth, IndexHeight];
+            RedrawGrid();
+            this.YSortEnabled = true;
+            this.Position = new Vector2(0, 0);
+        }
+        public void RedrawGrid()
+        {
+            GridLines.ForEach(item => item.QueueFree());
+            GridLines.Clear();
+            GridVertices.Clear();
+            var boxLine = new Line2D()
+            {
+                Modulate = Colors.AliceBlue,
+                Width = 1.4f
+            };
+            
+
+            for (int y = 0; y < IndexHeight; y++)
+            {
+                var px = y * TrackY;
+
+                for (int x = 0; x < IndexWidth; x++)
+                { ///column 0,1,2,3 etc.
+                    var dex = new IndexPos(x,y);
+
+                    if (!Blocked.Contains(dex) && !StartPositions.Contains(dex) && !EndPositions.Contains(dex))
+                    {
+                        boxLine = new Line2D()
+                        {
+                            Modulate = Colors.AliceBlue,
+                            Width = 1.4f
+                        };
+
+                        this.AddChild(boxLine);
+                        GridLines.Add(boxLine);
+                        boxLine.AddPoint(new Vector2(x * TrackX, y * TrackY)); //top left
+                        boxLine.AddPoint(new Vector2((x + 1) * TrackX, y * TrackY)); //top right
+                        boxLine.AddPoint(new Vector2((x + 1) * TrackX, (y + 1) * TrackY)); //bot right
+                        boxLine.AddPoint(new Vector2(x * TrackX, (y+1) * TrackY)); //bot left
+                        boxLine.AddPoint(new Vector2(x * TrackX, y * TrackY)); //top lef
+                        GridVertices.AddRange(boxLine.Points.ToList()); 
+
+                    }
+                    else
+                    {
+                        GD.Print("cannot create square at ", dex, " due to block");
+                    }
+
+                    
+
+                }
+            }
+
+            //for (int x = 0; x < IndexWidth; x++)
+            //{
+            //    var px = x * TrackX;
+            //    line = new Line2D()
+            //    {
+            //        Modulate = Colors.AliceBlue,
+            //        Width = 1.4f
+            //    };
+            //    this.AddChild(line);
+            //    GridLines.Add(line);
+            //    for (int y = 0; y < IndexHeight; y++)
+            //    {
+            //        var dex = new IndexPos(x,y);
+
+            //        if (Blocked.Contains(dex))
+            //        {
+            //            line = new Line2D()
+            //            {
+            //                Modulate = Colors.AliceBlue,
+            //                Width = 1.4f
+            //            };
+            //            this.AddChild(line);
+            //            GridLines.Add(line);
+            //            continue;
+            //        }
+
+            //        line.AddPoint(new Vector2(px, y * TrackY));
+            //        line.AddPoint(new Vector2(px, (y +1) * TrackY));
+
+            //    }
+            //}
+
         }
         public override void _Ready()
         {
-            var line = new Line2D();
-            for (int i = 0; i < IndexHeight + 1; i++)
-            {
-                var px = i * TrackY;
-                line = new Line2D()
-                {
-                    Modulate = Colors.AliceBlue,
-                    Width = 1.4f
-                };
-                this.AddChild(line);
-                for (int j = 0; j < IndexWidth+1;j++)
-                {
-                    line.AddPoint(new Vector2(j * TrackX,px ));
-
-                }
-            }
-
-            for (int i = 0; i < IndexWidth + 1; i++)
-            {
-                var px = i * TrackX;
-                line = new Line2D()
-                {
-                    Modulate = Colors.AliceBlue,
-                    Width = 1.4f
-                };
-                this.AddChild(line);
-                for (int j = 0; j < IndexHeight+1; j++)
-                {
-                    line.AddPoint(new Vector2( px, j * TrackY));
-
-                }
-            }
-
+            MapObjects = new IInteractable[IndexWidth, IndexHeight];
+            Tracks1 = new Track[IndexWidth, IndexHeight];
+            Tracks2 = new Track[IndexWidth, IndexHeight];
+            RedrawGrid();
             this.YSortEnabled = true;
-
-            AddMapObjects(MapObjects);
             this.Position = new Vector2(0,0);
         }
 
@@ -250,14 +311,12 @@ namespace MagicalMountainMinery.Main
         {
             var rows = IndexWidth > index.X && index.X > -1;
             var cols = IndexHeight > index.Y && index.Y > -1;
-            return rows && cols;
+            return rows && cols && !Blocked.Contains(index);
         }
 
         public MapLevel()
         {
-            MapObjects = new IInteractable[IndexWidth, IndexHeight];
-            Tracks1 = new Track[IndexWidth, IndexHeight];
-            Tracks2 = new Track[IndexWidth, IndexHeight];
+            
 
         }
 
@@ -352,7 +411,7 @@ namespace MagicalMountainMinery.Main
         }
 
         /// <summary>
-        /// Will prioritise getting the highest level track, i.e., level 2
+        /// Will prioritise getting the highest level track, y.e., level 2
         /// </summary>
         /// <param name="pos"></param>
         /// <returns></returns>
@@ -365,11 +424,11 @@ namespace MagicalMountainMinery.Main
         {
             
 
-            //for (int i = 0; i < IndexWidth; i++)
+            //for (int y = 0; y < IndexWidth; y++)
             //{
             //    for (int y = 0; y < IndexHeight; y++)
             //    {
-            //        var dex = new IndexPos(i, y);
+            //        var dex = new IndexPos(y, y);
             //        var rand = RandGen.NextDouble();
 
             //        if (rand <= MineableSpawnBase && dex != StartPos && dex != EndPos)

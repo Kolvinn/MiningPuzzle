@@ -1,0 +1,148 @@
+[gd_scene load_steps=11 format=3 uid="uid://bv52jxq0nrdo"]
+
+[ext_resource type="Script" path="res://UI/LevelCompleteUI.cs" id="1_qcrj7"]
+[ext_resource type="Texture2D" uid="uid://2oxhque4g8cf" path="res://Assets/UI/Banner4.png" id="1_sh5d0"]
+[ext_resource type="FontFile" uid="uid://cipymmhxrwq2p" path="res://Assets/Fonts/Pixel/Stepalange-x3BLm.otf" id="5_kqc1f"]
+[ext_resource type="FontFile" uid="uid://cylak8bji1wf3" path="res://Assets/Fonts/Pixel/PRNumber3.ttf" id="6_q60b7"]
+[ext_resource type="Texture2D" uid="uid://scwdnqvqoxn" path="res://Assets/UI/UI_Wood_B_NoBorder.png" id="7_tpiqx"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_pvt5l"]
+font = ExtResource("5_kqc1f")
+font_size = 80
+font_color = Color(1, 0.972549, 0.968627, 1)
+outline_size = 6
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 13
+shadow_color = Color(0.717647, 0.541176, 0.407843, 0.831373)
+
+[sub_resource type="LabelSettings" id="LabelSettings_cfh88"]
+font = ExtResource("6_q60b7")
+font_size = 32
+font_color = Color(0.286275, 0.286275, 0.286275, 1)
+outline_size = 4
+outline_color = Color(0.192157, 0.0823529, 0.0705882, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fmkfv"]
+atlas = ExtResource("7_tpiqx")
+region = Rect2(33, 257, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aaa0g"]
+atlas = ExtResource("7_tpiqx")
+region = Rect2(97, 257, 30, 30)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ocmih"]
+atlas = ExtResource("7_tpiqx")
+region = Rect2(97, 289, 30, 30)
+
+[node name="Control" type="Control"]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -6.0
+offset_top = -4.0
+offset_right = -6.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_qcrj7")
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -362.0
+offset_right = 362.0
+offset_bottom = 498.0
+grow_horizontal = 2
+texture = ExtResource("1_sh5d0")
+
+[node name="MarginContainer" type="MarginContainer" parent="TextureRect2"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 110
+theme_override_constants/margin_top = 155
+theme_override_constants/margin_right = 95
+theme_override_constants/margin_bottom = 65
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TextureRect2/MarginContainer"]
+texture_filter = 1
+layout_mode = 2
+
+[node name="NormBox" type="HBoxContainer" parent="TextureRect2/MarginContainer/VBoxContainer"]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="TextureRect2/MarginContainer/VBoxContainer"]
+texture_filter = 1
+layout_mode = 2
+text = "Complete!"
+label_settings = SubResource("LabelSettings_pvt5l")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BonusBox" type="HBoxContainer" parent="TextureRect2/MarginContainer/VBoxContainer"]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="Label2" type="Label" parent="TextureRect2/MarginContainer/VBoxContainer/BonusBox"]
+texture_filter = 1
+layout_mode = 2
+text = "Bonus:"
+label_settings = SubResource("LabelSettings_cfh88")
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="TextureRect2/MarginContainer/VBoxContainer"]
+texture_filter = 1
+layout_mode = 2
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="TextureRect2/MarginContainer/VBoxContainer"]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 10
+theme_override_constants/separation = 20
+
+[node name="TryAgain" type="TextureButton" parent="TextureRect2/MarginContainer/VBoxContainer/HBoxContainer4"]
+texture_filter = 1
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+tooltip_text = "Retry"
+texture_normal = SubResource("AtlasTexture_fmkfv")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Map" type="TextureButton" parent="TextureRect2/MarginContainer/VBoxContainer/HBoxContainer4"]
+texture_filter = 1
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+tooltip_text = "Home Map"
+texture_normal = SubResource("AtlasTexture_aaa0g")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Next" type="TextureButton" parent="TextureRect2/MarginContainer/VBoxContainer/HBoxContainer4"]
+texture_filter = 1
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+tooltip_text = "Next"
+texture_normal = SubResource("AtlasTexture_ocmih")
+ignore_texture_size = true
+stretch_mode = 0
+
+[connection signal="pressed" from="TextureRect2/MarginContainer/VBoxContainer/HBoxContainer4/TryAgain" to="." method="_on_try_again_pressed"]
+[connection signal="pressed" from="TextureRect2/MarginContainer/VBoxContainer/HBoxContainer4/Map" to="." method="_on_map_pressed"]
+[connection signal="pressed" from="TextureRect2/MarginContainer/VBoxContainer/HBoxContainer4/Next" to="." method="_on_next_pressed"]

@@ -166,7 +166,7 @@ namespace MagicalMountainMinery.Data
     }
 
 
-
+  
     public class GameResource
     {
         //[JsonProperty(ItemConverterType = typeof(StringEnumConverter))]
@@ -218,7 +218,8 @@ namespace MagicalMountainMinery.Data
         Nill,
         Level_Toggle,
         Rotate,
-        Space
+        Space,
+        Escape
 
     }
 

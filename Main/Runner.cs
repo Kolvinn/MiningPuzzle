@@ -6,187 +6,197 @@ using MagicalMountainMinery.Obj;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Diagnostics;
-using System.Diagnostics.Metrics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
-using System.Threading;
-using static System.Net.Mime.MediaTypeNames;
-using Connection = MagicalMountainMinery.Data.Connection;
 using FileAccess = Godot.FileAccess;
 using Label = Godot.Label;
 
 public partial class Runner : Node2D
 {
-	public MapLevel MapLevel;
+	public MapLevel MapLevel { get; set; }
 	//public Cart Cart;
 	
 	public TrackPlacer Placer;
 
     public ColorRect LoadingScreen {  get; set; }	
 
-	public Dictionary<int, string> Levels { get; set; } = new Dictionary<int, string>();
-
-
-	public Camera Cam { get; set; }
 	public List<CartController> CartControllers { get; set; } = new List<CartController>();
 
 	public bool ValidRun = true;
 
 	public static GameEvent LastEvent {  get; set; }
 
+    public TextureButton StartButton { get; set; }
     public AudioStreamPlayer player { get; set; } = new AudioStreamPlayer();
+
+    public LevelCompleteUI LevelEndUI { get; set; }    
+
     public override void _Ready()
 	{
-		ResourceStore.LoadTracks();
-        ResourceStore.LoadRocks();
-        ResourceStore.LoadResources();
-		ResourceStore.LoadJunctions();
-        ResourceStore.LoadAudio();
-        this.AddChild(new EventDispatch());
+		
+
         
+
         LoadingScreen = this.GetNode<ColorRect>("CanvasLayer/ColorRect");
+        LevelEndUI = this.GetNode<LevelCompleteUI>("CanvasLayer/LevelCompleteUI");
+        LevelEndUI.Connect(LevelCompleteUI.SignalName.NextLevel, Callable.From(_on_next_pressed));
+        // LevelEndUI.Connect(LevelCompleteUI.SignalName.Home, Callable.From(_on_next_pressed));
+        LevelEndUI.Connect(LevelCompleteUI.SignalName.Reset, Callable.From(OnReset));
+
+
         // MapLevel = new MapLevel();
         //MapLevel.GenNodes(5);
+
         Placer = this.GetNode<TrackPlacer>("TrackPlacer");
 
+        //this.AddChild(Placer);
+        //this.MoveChild(Placer, 2);
 
-        var select = this.GetNode<OptionButton>("CanvasLayer/LevelSelect");
-		select.Connect(OptionButton.SignalName.ItemSelected, new Callable(this, nameof(LoadSingleLevel)));
+        StartButton = this.GetNode<TextureButton>("CanvasLayer/StartButton");
 
-		LoadLevels();
-        Cam = new Camera();
-        this.AddChild(Cam);
-        Cam.MakeCurrent();
-        LoadSingleLevel(0);
 
-        this.AddChild(player);
-        player.Stream = ResourceLoader.Load<AudioStream>("res://Assets/Sounds/Music/SoundTrack.mp3");
+        //var select = this.GetNode<OptionButton>("CanvasLayer/LevelSelect");
+		//select.Connect(OptionButton.SignalName.ItemSelected, new Callable(this, nameof(OnResetSingle)));
+
+        //LoadSingleLevel(0);
+
+        //this.AddChild(player);
+        //player.Stream = ResourceLoader.Load<AudioStream>("res://Assets/Sounds/Music/SoundTrack.mp3");
         //player.Play();
 
 
     }
 
 	
-	public void OnReset()
+	public void OnResetSingle(int level)
 	{
+        LevelEndUI.Visible = false;
+        LoadSingleLevel(level);
+    }
+    public void OnReset()
+    {
+        LevelEndUI.Visible = false;
         LoadSingleLevel(Placer.CurrentLevelDex);
     }
 	public void OnRetry()
 	{
-        var index = Placer.CurrentLevelDex;
+        LevelEndUI.Visible = false;
+        LoadSingleLevel(Placer.CurrentLevelDex, MapLevel);
+
+    }
+    public void _on_next_pressed()
+    {
+        LevelEndUI.Visible = false;
+        LoadSingleLevel(Placer.CurrentLevelDex+1);
+    }
+
+
+    
+    public void LoadMapLevel(MapData data, MapLevel existing = null)
+    {
+
+        LevelEndUI.LoadStars(data.Difficulty+5, data.BonusStars+3);
+
+        var thingy3 = JsonConvert.DeserializeObject(data.DataString, SaveLoader.jsonSerializerSettings);
+        var load = (MapLevel)SaveLoader.LoadGame(thingy3 as SaveInstance, this.Placer);
+
         foreach (var entry in CartControllers)
         {
             entry.DeleteSelf();
         }
         CartControllers.Clear();
-
-        // MapLevel?.QueueFree();
-
         this.LoadingScreen.Visible = false;
 
-        foreach (var obj in MapLevel.MapObjects)
-        {
-            if (obj != null && obj is Node2D node)
-                node.QueueFree();
-        }
-
-        var thingy3 = JsonConvert.DeserializeObject(Levels[index], SaveLoader.jsonSerializerSettings);
-        var load = (MapLevel)SaveLoader.LoadGame(thingy3 as SaveInstance, this.Placer);
-
-        MapLevel.ReplaceObjects(load.MapObjects);
-        //load.AddTracks(MapLevel.Tracks1, MapLevel.Tracks2);
-        //this.Placer.CurrentState = Placer
-        //this.Placer.LoadLevel(load, index);
-
-        //MapLevel?.QueueFree();
-        //MapLevel = load;
-
-        foreach (var start in MapLevel.StartPositions)
-        {
-            var control = new CartController(start, MapLevel);
-            this.AddChild(control);
-            CartControllers.Add(control);
-        }
-        ValidRun = true;
-        Cam.Position = new Vector2(MapLevel.GridWith / 2, MapLevel.GridHeight / 2);
-
-    }
-	
-	public void LoadLevels()
-	{
-        var select = this.GetNode<OptionButton>("CanvasLayer/LevelSelect");
-        Levels  = new Dictionary<int, string>();
-        var dir = "res://Levels/";
-		//var levels = Godot.DirAccess.GetFilesAt(dir);
-        int count = 0;
-        while (true)
-		{
-			var fileDir = dir + "Level_" + count + ".lvl";
-			if (!FileAccess.FileExists(fileDir))
-			{
-				GD.Print("File not found at: ", fileDir);
-				break;
-			}
-
-            using (var access = Godot.FileAccess.Open(fileDir, Godot.FileAccess.ModeFlags.Read))
-            {
-                var str = access.GetAsText();
-                Levels.Add(count, str);
-                select.AddItem("Level_" + count, count);
-            }
-			count++;
-        }
-		
-        
-    }
-
-	
-	public void LoadSingleLevel(int index)
-	{
-        foreach (var entry in CartControllers)
-        {
-            entry.DeleteSelf();
-        }
-        CartControllers.Clear();
-
-       // MapLevel?.QueueFree();
-
-        this.LoadingScreen.Visible = false;
-        GD.Print("loading in level :", index);
-        var thingy3 = JsonConvert.DeserializeObject(Levels[index], SaveLoader.jsonSerializerSettings);
-        var load = (MapLevel)SaveLoader.LoadGame(thingy3 as SaveInstance, this.Placer);
-
-
+        load.PostLoad();
         load.AddMapObjects(load.MapObjects);
 
-        this.Placer.LoadLevel(load, index);
+        if (existing != null)
+        {
+            for (int x = 0; x < existing.IndexWidth; x++)
+            {
+                for (int y = 0; y < existing.IndexHeight; y++)
+                {
+                    load.Tracks1[x, y] = existing.Tracks1[x, y];
+                    existing.RemoveChild(load.Tracks1[x, y]);
+                    load.AddChild(load.Tracks1[x, y]);
+
+                    load.Tracks2[x, y] = existing.Tracks2[x, y];
+                    existing.RemoveChild(load.Tracks2[x, y]);
+                    load.AddChild(load.Tracks2[x, y]);
+                }
+            }
+            this.Placer.MapLevel = load;
+        }
+        else
+        {
+            this.Placer.LoadLevel(load, data.LevelIndex);
+        }
+
+
 
         MapLevel?.QueueFree();
         MapLevel = load;
 
+        var endTs = new List<Track>();
+        foreach (var end in MapLevel.EndPositions)
+        {
+            if (existing != null)
+            {
+                MapLevel.RemoveTrack(end);
+            }
+            var target = MapLevel.GetObj(end);
+            if (target != null && target is LevelTarget t)
+            {
+                //t.GetParent().RemoveChild(t);
+                MapLevel.MapObjects[end.X, end.Y] = null;
+
+                var list = new List<IndexPos>() { IndexPos.Left, IndexPos.Right, IndexPos.Up, IndexPos.Down };
+                var pos = list.First(pos => !MapLevel.ValidIndex(pos + end));
+                t.Position = MapLevel.GetGlobalPosition(pos + end);
+
+                var endT = new Track(ResourceStore.GetTex(TrackType.Straight), pos);
+                MapLevel.SetTrack(end, endT);
+                endT.Connect(pos);
+                endTs.Add(endT);
+
+            }
+        }
+        MapLevel.EndTracks = endTs;
         foreach (var start in MapLevel.StartPositions)
         {
-            var control = new CartController(start, MapLevel);
-            this.AddChild(control);
-            CartControllers.Add(control);
+
 
             var startT = new Track(ResourceStore.GetTex(TrackType.Straight), start);
-
-            MapLevel.SetTrack(start, startT);
+            MapLevel.AddChild(startT);
+            startT.Index = start;
+            startT.ZIndex = 5;
+            startT.Position = MapLevel.GetGlobalPosition(start);
             var list = new List<IndexPos>() { IndexPos.Left, IndexPos.Right, IndexPos.Up, IndexPos.Down };
-            var conn = list.First(pos => !MapLevel.ValidIndex(pos));
+            var conn = list.First(pos => MapLevel.ValidIndex(pos + startT.Index));
             startT.Connect(conn);
+
+            var control = new CartController(startT, MapLevel);
+            this.AddChild(control);
+            CartControllers.Add(control);
         }
-		ValidRun = true;
-        Cam.Position = new Vector2(MapLevel.GridWith/2, MapLevel.GridHeight/2);
+
+
+        ValidRun = true;
+        GetViewport().GetCamera2D().Position = new Vector2(MapLevel.GridWith / 2, MapLevel.GridHeight / 2);
+        var col = this.StartButton.SelfModulate;
+        col.A = 1f;
+        this.StartButton.Modulate = col;
+        this.StartButton.Disabled = false;
     }
+	
+	public void LoadSingleLevel(int index, MapLevel existing = null)
+	{
+        
+        GD.Print("loading in level :", index);
+        LoadMapLevel(ResourceStore.Levels["Tutorial Valley"][index], existing);
 
 
+    }
 
 
 
@@ -199,10 +209,14 @@ public partial class Runner : Node2D
 		if (fin && ValidRun)
 		{
 			var success = MapLevel.LevelTargets.All(item => item.CompletedAll);
-			string text = success ? "Success!" : "Fail!";
-            this.LoadingScreen.Visible = true;
+            if (success)
+            {
+                LevelEndUI.Show();
+            }
+			//string text = success ? "Success!" : "Fail!";
+            //this.LoadingScreen.Visible = true;
 			//spriteSpawns.Clear();
-			this.LoadingScreen.GetNode<Label>("Label").Text = text;
+			//this.LoadingScreen.GetNode<Label>("Label").Text = text;
             ValidRun = false;
         }
 
@@ -233,21 +247,24 @@ public partial class Runner : Node2D
 
 	public void _on_start_pressed()
 	{
-		//this.RemoveChild(Placer);
+        var col = this.StartButton.SelfModulate;
+        col.A = 0.5f;
+        this.StartButton.Modulate = col;
+        this.StartButton.Disabled = true;
 		var colors = new List<Color>() { Colors.AliceBlue, Colors.RebeccaPurple, Colors.Yellow, Colors.Green };
 		int i = 0;
-		
 
         foreach (var control in CartControllers)
 		{
-			//var startT = MapLevel.GetTrack(control.StartPos);
-			//var connections = new List<Track>();
-			//Placer.MasterTrackList.TryGetValue(startT, out connections);
-
             control.Start(colors[i++], Placer.MasterTrackList);
 		}
 
 		
+    }
+
+    public void _on_reset_pressed()
+    {
+        OnReset();
     }
 
     public static T LoadScene<T>(string scenePath, string name = null)

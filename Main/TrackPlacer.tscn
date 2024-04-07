@@ -1,10 +1,11 @@
-[gd_scene load_steps=18 format=3 uid="uid://bf3xrtnouiei1"]
+[gd_scene load_steps=19 format=3 uid="uid://bf3xrtnouiei1"]
 
 [ext_resource type="Texture2D" uid="uid://d3f55ept5w5d2" path="res://Assets/UI/UIDifferentFree03Wenrexa/JPG/MiniPanel06.jpg" id="1_0vyn0"]
 [ext_resource type="Script" path="res://Main/TrackPlacer.cs" id="1_lh40l"]
 [ext_resource type="Texture2D" uid="uid://b73r8m2mqfjb" path="res://Assets/UI/Shikashi's Fantasy Icons Pack v2/BG 7.png" id="3_5yyhm"]
 [ext_resource type="Texture2D" uid="uid://bnu1f5wh0ycuu" path="res://Assets/Tracks/Raised/curve_right_up.tres" id="4_86byk"]
 [ext_resource type="Texture2D" uid="uid://de7syh4i3n8lt" path="res://Assets/Arrow.png" id="4_wjk7r"]
+[ext_resource type="FontFile" uid="uid://bwxcy1yplwsmm" path="res://Assets/Fonts/Pixel/PrintChar21.ttf" id="5_fff4f"]
 [ext_resource type="Texture2D" uid="uid://dtq7yd318tf0o" path="res://Assets/Tracks/Modified/straight_horizontal.tres" id="6_tb40c"]
 [ext_resource type="Texture2D" uid="uid://bytevdpb4bdru" path="res://Assets/Tracks/Modified/Junction/down_up_right.tres" id="8_6tbfu"]
 [ext_resource type="Script" path="res://UI/GameButton.cs" id="8_tah16"]
@@ -22,7 +23,8 @@ font_size = 13
 font_size = 11
 
 [sub_resource type="LabelSettings" id="LabelSettings_faida"]
-font_size = 10
+font = ExtResource("5_fff4f")
+font_size = 8
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ai60a"]
 resource_local_to_scene = true
@@ -135,7 +137,7 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 39.0
-offset_top = -39.0
+offset_top = -33.0
 offset_right = 64.0
 grow_vertical = 0
 theme_override_constants/separation = 0
@@ -168,7 +170,7 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 104.0
-offset_top = -39.0
+offset_top = -33.0
 offset_right = 129.0
 offset_bottom = 3.0
 grow_vertical = 0
@@ -203,9 +205,9 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 183.0
-offset_top = -41.0
+offset_top = -37.0
 offset_right = 208.0
-offset_bottom = 1.0
+offset_bottom = -1.0
 grow_vertical = 0
 theme_override_constants/separation = 0
 
@@ -233,5 +235,6 @@ UIID = "Junction"
 metadata/_edit_lock_ = true
 
 [node name="TutorialLayer" parent="CanvasLayer" instance=ExtResource("10_et41v")]
+visible = false
 
 [connection signal="toggled" from="CanvasLayer/CheckBox" to="." method="ShowConnections"]

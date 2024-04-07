@@ -4,7 +4,10 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Assets\CardNodes\" />
+    <Compile Remove="Assets\CardNodes\**" />
+    <EmbeddedResource Remove="Assets\CardNodes\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Assets\Environment\Rocks\" />
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,78 @@
+[gd_scene load_steps=8 format=3 uid="uid://c5ow47g547ss"]
+
+[ext_resource type="Texture2D" uid="uid://ciekkg1cyo36h" path="res://Assets/Environment/Biomes_map (1).png" id="1_aobyi"]
+[ext_resource type="Script" path="res://Main/Camera.cs" id="2_wh43x"]
+[ext_resource type="PackedScene" uid="uid://4l3ar3f8u4iq" path="res://UI/LocationScreen.tscn" id="3_7xiad"]
+[ext_resource type="Texture2D" uid="uid://3sutkg73jwbw" path="res://Assets/UI/Kasaya's Frames/Inventory & chests/2/shop/buy and sell  button.png" id="4_45aa3"]
+[ext_resource type="FontFile" uid="uid://cipymmhxrwq2p" path="res://Assets/Fonts/Pixel/Stepalange-x3BLm.otf" id="4_bsuii"]
+[ext_resource type="Script" path="res://UI/GameButton.cs" id="5_b3unk"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_61apb"]
+font = ExtResource("4_bsuii")
+font_size = 180
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+limit_left = -3500
+limit_top = -3500
+limit_right = 3500
+limit_bottom = 3500
+script = ExtResource("2_wh43x")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(910, 325)
+texture = ExtResource("1_aobyi")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" parent="CanvasLayer" instance=ExtResource("3_7xiad")]
+visible = false
+
+[node name="Tut" type="TextureButton" parent="CanvasLayer"]
+offset_left = 1070.0
+offset_top = 378.0
+offset_right = 2164.0
+offset_bottom = 616.0
+texture_normal = ExtResource("4_45aa3")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("5_b3unk")
+UIID = "Tutorial Valley"
+
+[node name="Label" type="Label" parent="CanvasLayer/Tut"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Tutorial Valley"
+label_settings = SubResource("LabelSettings_61apb")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="Dark" type="TextureButton" parent="CanvasLayer"]
+offset_left = 2611.0
+offset_top = -633.0
+offset_right = 3705.0
+offset_bottom = -395.0
+texture_normal = ExtResource("4_45aa3")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("5_b3unk")
+UIID = "Dark Hills"
+
+[node name="Label" type="Label" parent="CanvasLayer/Dark"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Dark Hills"
+label_settings = SubResource("LabelSettings_61apb")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true

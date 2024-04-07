@@ -10,7 +10,16 @@ namespace MagicalMountainMinery.Main
     public partial class Camera : Camera2D
     {
         public static float zoomspeed = 0.1f, upperLimit = 0.001f, lowerLimit = 4f, currentzoom = 1, cameraSpeed = 1.6f;
+        public static Vector2 MaxSize;
 
+        public override void _Ready()
+        {
+            MaxSize = new Vector2(LimitRight - LimitLeft, LimitBottom - LimitTop);
+            this.MakeCurrent();
+            this.Position = new Vector2(0, 0);
+            this.Zoom= new Vector2(1, 1);
+            //CheckLimit();
+        }
         public bool SetPan(Vector2 pan)
         {
             var pos = this.Position;
@@ -18,9 +27,14 @@ namespace MagicalMountainMinery.Main
             return pos != this.Position;
 
         }
+
+        
         public bool SetZoom(float scrollDir)
         {
-
+            //get_viewport_rect().size / self.zoom
+            if (CheckLimit(scrollDir))
+                return false;
+            //1280,720 / 0.2 = 
             if (scrollDir < 0 && currentzoom - zoomspeed >= upperLimit)
             {
                 currentzoom -= zoomspeed;
@@ -39,6 +53,32 @@ namespace MagicalMountainMinery.Main
             return false;
         }
 
+        public bool CheckLimit(float scrollDir)
+        {
+            var size = GetViewportRect().Size;
+            var pos = GetViewportRect().Position;
+            var nextZoom = zoomspeed * scrollDir;
+            var nextZoomvec = new Vector2(Zoom.X + nextZoom, Zoom.Y + nextZoom);
+
+            var relativeSize = size / nextZoomvec;
+            var relativePosition = this.Position - relativeSize / 2;
+            
+
+            
+
+            if (relativePosition.X < LimitLeft || relativePosition.Y < LimitTop
+                || relativePosition.X + relativeSize.X > LimitRight
+                || relativePosition.Y + relativeSize.Y > LimitBottom)
+            {
+                GD.Print("relative pos: ", relativePosition);
+                GD.Print("relative size", relativeSize);
+                GD.Print("Zoom", Zoom);
+                GD.Print("cant go beyond limit");
+                return true;
+            }
+            return false;
+
+        }
         public override void _PhysicsProcess(double delta)
         {
             HandleBaseInput();

@@ -1,5 +1,4 @@
 ﻿using Godot;
-using Godot.Collections;
 using MagicalMountainMinery.Data;
 using MagicalMountainMinery.Data.Load;
 using MagicalMountainMinery.Obj;
@@ -17,6 +16,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static MagicalMountainMinery.Main.LevelDesigner;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace MagicalMountainMinery.Main
@@ -35,6 +35,7 @@ namespace MagicalMountainMinery.Main
          * if press r,
          *     
          */
+        public static bool HasFocus = true;
         public State CurrentState { get; set; } = State.Default;
         //public Track SelectedTrack { get; set; }
 
@@ -46,7 +47,8 @@ namespace MagicalMountainMinery.Main
 
         public List<IndexPos> DirectionStack { get; set; }
 
-        
+
+        public Dictionary<IndexPos, TextureRect> MapBlocks { get; set; } = new Dictionary<IndexPos, TextureRect>();
 
         public int CurrentTrackLevel = 1;
         public enum State
@@ -60,7 +62,8 @@ namespace MagicalMountainMinery.Main
         {
             Resource,
             Track,
-            EndCon
+            EndCon,
+            Block
         }
 
         public ObjectFocus focus { get; set; } = ObjectFocus.Track;
@@ -100,6 +103,67 @@ namespace MagicalMountainMinery.Main
             cam.MakeCurrent();
         }
 
+        public class MapBlock : IInteractable
+        {
+
+        }
+        public void OnMapSizeFocusExit()
+        {
+            var edit = this.GetNode<TextEdit>("CanvasLayer/MapSizeText");
+            try
+            {
+                if (edit.Text.Length < 3)
+                    return;
+                var split = edit.Text.Split(",");
+               
+                var width = int.Parse(split[0]);
+                var height = int.Parse(split[1]);
+
+                if (MapLevel.IndexHeight == width && MapLevel.IndexHeight == height)
+                    return;
+
+                var newObj = new IInteractable[width, height];
+                var newTracks1 = new Track[width, height];
+                var newTracks2 = new Track[width, height];
+                for (int i = 0; i < MapLevel.MapObjects.GetLength(0); i++)
+                {
+                    
+                    for(int j = 0; j < MapLevel.MapObjects.GetLength(1); j++)
+                    {
+                        if (i >= width || j >= height)
+                        {
+                            var node = MapLevel.MapObjects[i, j] as Node2D;
+
+                            Delete(MapLevel.Tracks1[i, j]);
+                            Delete(MapLevel.Tracks2[i, j]);
+                            node?.QueueFree();
+                            
+
+                        }
+                        else
+                        {
+                            newObj[i, j] = MapLevel.MapObjects[i, j];
+                            newTracks1[i, j] = MapLevel.Tracks1[i, j];
+                            newTracks2[i, j] = MapLevel.Tracks2[i, j];
+                        }
+                        
+
+                    }
+                }
+                MapLevel.MapObjects = newObj;
+                MapLevel.Tracks1 = newTracks1;
+                MapLevel.Tracks2 = newTracks2;
+                MapLevel.IndexWidth = width;
+                MapLevel.IndexHeight = height;
+
+                MapLevel.RedrawGrid();
+
+            }
+            catch (Exception e)
+            {
+                GD.Print(e);
+            }
+        }
         public void OnEndConPressed()
         {
             focus = ObjectFocus.EndCon;
@@ -128,18 +192,40 @@ namespace MagicalMountainMinery.Main
             mineable = MineableType.Iron;
             resource = ResourceType.Iron_Ore;
         }
-        public override void _Process(double delta)
+        
+        public void HandleUI(EventType env, IUIComponent comp)
         {
+            if(comp.UIID == "block" && env == EventType.Left_Action)
+            {
+                focus = ObjectFocus.Block;
+            }
+        }
+        public override void _PhysicsProcess(double delta)
+        {
+            var obj = EventDispatch.PeekHover();
             var env = EventDispatch.FetchLast();
+
+            if (obj != null)
+            {
+                //obj = EventDispatch.FetchInteractable();
+                HandleUI(env, obj);
+            }
+            else
+            {
+                ParseInput(env);
+                ValidateState();
+            }
+        }
+
+        public void ParseInput(EventType env)
+        {
+
+
             if (env == EventType.Nill)
                 return;
             if (env == EventType.Left_Action)
             {
                 CurrentState = State.Constructing;
-                
-            }
-            else if (env == EventType.Drag_Start)
-            {
 
             }
             else if (env == EventType.Right_Action)
@@ -149,48 +235,95 @@ namespace MagicalMountainMinery.Main
             else if (env == EventType.Left_Release)
             {
                 CurrentState = State.Default;
+                LastHover = CurrentHover = new IndexPos(-1, -1);
 
-                GD.Print("release in placer");
             }
-            else if(env == EventType.Right_Release)
+            else if (env == EventType.Right_Release)
             {
                 CurrentState = State.Default;
             }
-            else if(env == EventType.Level_Toggle) 
+            else if (env == EventType.Level_Toggle)
             {
                 CurrentTrackLevel = CurrentTrackLevel == 1 ? 2 : 1;
-                this.GetNode<Label>("CanvasLayer/TextureRect/Label").Text = "Level: " + CurrentTrackLevel;
+                var id = CurrentTrackLevel == 1 ? "Normal" : "Raised";
+                //SetButtonFocus(Buttons.First(item => item.UIID == id));
+                //this.GetNode<Label>("CanvasLayer/TextureRect2/Label").Text = "Level: " + CurrentTrackLevel;
             }
 
-            else if(env == EventType.Rotate) 
+            else if (env == EventType.Rotate)
             {
                 Rotate();
             }
-
         }
 
-        public override void _PhysicsProcess(double delta)
+        public void ValidateState()
         {
-            //var global = EventDispatcher.MousePos();//(lets say 100,100)
-            //32px * viewport scale(2) = 64;
-            //100,100 / 64,64 = 1.5,1.5 ish = Indexpos 1,1
-            //if this new indexpos is diff, change some things
             if (CurrentState == State.Constructing)
             {
+                var index = FetchMouseIndex();
                 if (focus == ObjectFocus.Track)
-                    SetTrackSingle();
-                else if (focus == ObjectFocus.EndCon)
-                    SetEndCon();
-                else
+                {
+                    
+
+
+                    if (!MapLevel.ValidIndex(index))
+                        return;
+
+                    if (index != CurrentHover)
+                    {
+                        LastHover = CurrentHover;
+
+                        //GD.Print("Setting last hover to (valid): ", LastHover);
+                        CurrentHover = index;
+                    }
+
+                    if (SetTrackSingle(index))
+                    {
+
+                        //GD.Print("Setting last hover to (success): ", LastHover);
+                        //if we set a new track, that means we've moved on and can no longer use the last hovered track
+                        LastHover = CurrentHover;
+                    }
+                }
+                else if(focus == ObjectFocus.Resource)
+                {
+                    if (!MapLevel.ValidIndex(index) || MapBlocks.ContainsKey(index))
+                        return;
                     SetMineable();
+                }
+                else if(focus == ObjectFocus.EndCon)
+                {
+                    if (!MapLevel.ValidIndex(index) || MapBlocks.ContainsKey(index))
+                        return;
+                    SetEndCon();
+                }
+                else if(focus == ObjectFocus.Block)
+                {
+                    SetBlock(index);
+                }
+
+
+
 
             }
-            else if(CurrentState == State.Deleting)
+            
+            else if (CurrentState == State.Deleting)
             {
-                Delete();
+                var index = FetchMouseIndex();
+                if (!MapLevel.ValidIndex(index))
+                    return;
+                if (MapBlocks.ContainsKey(index))
+                {
+                    MapBlocks[index].QueueFree();
+                    MapBlocks.Remove(index);
+                    return;
+                }
+
+                Delete(index);
             }
         }
 
+        
         public IndexPos FetchMouseIndex()
         {
             var global = GetGlobalMousePosition();
@@ -204,7 +337,25 @@ namespace MagicalMountainMinery.Main
             return index;
         }
         
-        
+        public void SetBlock(IndexPos pos)
+        {
+            if (!MapLevel.ValidIndex(pos))
+                return;
+            var thing = MapLevel.Get(pos);
+            if (MapLevel.Get(pos) != null)
+                return;
+            if (MapBlocks.ContainsKey(pos))
+                return;
+            var rect = new TextureRect()
+            {
+                Texture = this.GetNode<GameButton>("CanvasLayer/Block").TextureNormal,
+                Position = MapLevel.GetGlobalPosition(pos) - new Vector2(16,16),
+            };
+            MapBlocks.Add(pos, rect);
+            this.AddChild(rect);
+            //MapLevel.MapObjects[pos.X, pos.Y] = new MapBlock();
+
+        }
         public void Rotate()
         {
             GD.Print("Rotating");
@@ -243,7 +394,7 @@ namespace MagicalMountainMinery.Main
                 this.CustomMinimumSize = this.Size = new Vector2(32, 32);
                 this.Set("theme_override_font_sizes/font_size", 11);
                 this.Position = new(-16,-16);
-                this.MouseFilter = MouseFilterEnum.Pass;
+                this.MouseFilter = MouseFilterEnum.Stop;
             }
             public void OnFocusExit()
             {
@@ -260,7 +411,7 @@ namespace MagicalMountainMinery.Main
                         levelTarget.Batches.Clear();
                         for (int i = 0; i < array.Length; i++)
                         {
-                            DoTarget(array[0].Split(' ').ToList(), levelTarget,i);
+                            DoTarget(array[i].Split(' ').ToList(), levelTarget,i);
                         }
 
 
@@ -295,6 +446,21 @@ namespace MagicalMountainMinery.Main
                         var con = new Condition(parsedEnumValue, t, check);
                         target.Conditions.Add(con);
                         target.Batches.Add(index);
+                    }
+                }
+                //this is a bonus condition, so treat the same but add to bonus cons
+                else if(entries[0] == "*")
+                {
+                    if (Enum.TryParse(entries[1], true, out parsedEnumValue)
+                    && Enum.TryParse(entries[2], true, out check)
+                    && int.TryParse(entries[3], out t))
+                    {
+                        if (entries.Count() == 4)
+                        {
+                            var con = new Condition(parsedEnumValue, t, check);
+                            target.BonusConditions.Add(con);
+
+                        }
                     }
                 }
                 
@@ -353,6 +519,8 @@ namespace MagicalMountainMinery.Main
             MapLevel.SetInteractable(index, item);
             item.AddChild(new TextEditMod());
         }
+
+
         public void SetMineable()
         {
             GD.Print("SetMineable");
@@ -394,70 +562,169 @@ namespace MagicalMountainMinery.Main
             miney.AddChild(new TextEditMod());
 
         }
-        public void Delete()
+        public void Delete(IndexPos index)
         {
 
 
-            var index = FetchMouseIndex();
-
             var direction = LastHover - index;
-            if (!MapLevel.ValidIndex(index))
+            if (!MapLevel.ValidIndex(index) || MapLevel.StartPositions.Contains(index))
                 return;
             if (index != CurrentHover)
             {
                 LastHover = CurrentHover;
+                //GD.Print("Setting last hover to (del): ", LastHover);
                 CurrentHover = index;
             }
 
-            var obj = MapLevel.GetObj(index);
-            if (obj == null)
-                return;
+            var track = MapLevel.GetTrack(index);
 
-            if(obj is Track track)
+            if (track != null)
             {
-                foreach(var entry in track.GetConnectionList())
+                foreach (var entry in track.GetConnectionList())
                 {
-                    Disconnect(MapLevel.GetTrack(index + entry), entry.Opposite());
+                    Disconnect(MapLevel.GetTrack(index + entry), entry.Opposite(), track);
                 }
-                MapLevel.RemoveTrack(index);
+                RemoveTrack(track, index);
+                return;
             }
-            else if(obj is Mineable)
-            {
-                MapLevel.RemoveMinable(index);
-            }
-            else if(obj is LevelTarget)
-            {
+            else {
                 MapLevel.RemoveAt(index);
             }
         }
 
-
-        
-        public void Disconnect(Track track, IndexPos dir)
+        public void Delete(Track track)
         {
-            if(track == null) return;
-            if(track is Junction junc)
+
+            if (track == null)
+                return;
+            var index = track.Index;
+            foreach (var entry in track.GetConnectionList())
+            {
+                Disconnect(MapLevel.GetTrack(index + entry), entry.Opposite(), track);
+             }
+            RemoveTrack(track, index);
+            
+        }
+
+        public void RemoveTrack(Track t, IndexPos pos, bool update = true)
+        {
+
+            if (update)
+            {
+                if (t.TrackLevel == 2)
+                    MapLevel.CurrentTracksRaised--;
+                else
+                    MapLevel.CurrentTracks--;
+                if (t is Junction)
+                    MapLevel.CurrentJunctions--;
+            }
+            MapLevel.RemoveTrack(pos);
+        }
+
+        public void Connect(Track track, params IndexPos[] indexes)
+        {
+
+
+            if (track.TrackLevel == 2)
+            {
+                if (track is Junction junc)
+                {
+                    var v0 = MapLevel.GetTrack(junc.Index + indexes[0]);
+                    var v1 = MapLevel.GetTrack(junc.Index + indexes[1]);
+                    var v2 = MapLevel.GetTrack(junc.Index + indexes[2]);
+
+                    junc.Connect(indexes[0], indexes[1], indexes[2],
+                        v0.TrackLevel,
+                        v1.TrackLevel,
+                        v2.TrackLevel);
+
+
+                }
+                else
+                {
+                    for (var i = 0; i < indexes.Length; i++)
+                    {
+                        var v1 = MapLevel.GetTrack(track.Index + indexes[i]);
+                        track.Connect(indexes[i], v1.TrackLevel);
+
+                    }
+
+
+                }
+            }
+            else
+            {
+                var dex = track.Index;
+                bool isSlide = false;
+                foreach (var index in indexes)
+                {
+                    var con = MapLevel.GetTrack(dex + index);
+                    if (con != null && con.TrackLevel == 2)
+                        isSlide = true;
+                }
+                var height = isSlide ? 2 : 1;
+                if (track is Junction junc)
+                {
+                    var v0 = MapLevel.GetTrack(junc.Index + indexes[0]);
+                    var v1 = MapLevel.GetTrack(junc.Index + indexes[1]);
+                    var v2 = MapLevel.GetTrack(junc.Index + indexes[2]);
+
+                    junc.Connect(indexes[0], indexes[1], indexes[2],
+                        v0.TrackLevel,
+                        v1.TrackLevel,
+                        v2.TrackLevel);
+
+                }
+                else
+                {
+                    for (var i = 0; i < indexes.Length; i++)
+                    {
+                        var t = MapLevel.GetTrack(track.Index + indexes[i]);
+                        track.Connect(indexes[i], t.TrackLevel);
+
+                    }
+                }
+            }
+
+
+
+        }
+
+        public void Disconnect(Track track, IndexPos dir, Track fromTrack)
+        {
+            if (track == null) return;
+            if (track is Junction junc)
             {
                 var list = new List<IndexPos>() { junc.Option, junc.Connection1, junc.Connection2 };
                 list.Remove(dir);
-                //var newcon = new Connection(list[0], list[1]);
+
+
+                //MasterTrackList.Remove(junc); //remove the ref to this obj
+                // UpdateList(track, true, fromTrack);
 
                 var t = new Track();
-                MapLevel.SetTrack(track.Index, t);
-                //SetTrack(junc.Index, t, false);
-                
-                t.Connect(list[0]);
-                t.Connect(list[1]);
+                //MapLevel.SetTrack(junc.Index, t);
+                SetTrack(junc.Index, t, false, junc.TrackLevel);
                 t.TrackLevel = junc.TrackLevel;
+
+                //ReplaceRef(junc, t);
+                Connect(t, list[0], list[1]);
+                MapLevel.CurrentJunctions--;
+
+                //t.Connect(list[0]);
+                //t.Connect(list[1]);
+
                 track = t;
                 junc.QueueFree();
+
 
 
 
             }
             else
             {
-                track.Disconnect(dir);
+                track.Disconnect(dir, fromTrack.TrackLevel);
+
             }
 
             MatchSprite(track);
@@ -594,156 +861,173 @@ namespace MagicalMountainMinery.Main
             
 
         }
-        public void SetTrackSingle()
+
+        public bool CheckRamp(IndexPos from, IndexPos to)
+        {
+            var fromTrack = MapLevel.GetTrack(from);
+            var toTrack = MapLevel.GetTrack(to);
+
+            var fromDir = from - to;
+            var toDir = to - from;
+
+            if (fromTrack != null && toTrack == null && fromTrack.CanConnect())
+            {
+                if (fromTrack.TrackLevel != CurrentTrackLevel)
+                {
+                    var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), to, CurrentTrackLevel);
+                    SetTrack(to, newT, tracklevel: CurrentTrackLevel);
+                    ConnectTracks(from, fromTrack, to, newT);
+                    return true;
+                }
+            }
+            else if (fromTrack != null && toTrack != null && fromTrack.CanConnect() && toTrack.CanConnect())
+            {
+                if (fromTrack.TrackLevel != CurrentTrackLevel)
+                {
+                    ConnectTracks(from, fromTrack, to, toTrack);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
+        public bool SetTrackSingle(IndexPos index)
         {
 
 
-            var index = FetchMouseIndex();
 
-            var direction = LastHover - index;
+            var data = MapLevel.GetData(index);
 
-            if (!MapLevel.ValidIndex(index))
-                return;
-            if (index != CurrentHover)
+            if (MapLevel.ValidIndex(LastHover))
             {
-                LastHover = CurrentHover;
-                CurrentHover = index;
+                if (CheckJunction(LastHover, index))
+                    return true;
+                else if (CheckRamp(LastHover, index))
+                    return true;
             }
-
-            if (MapLevel.Get(index) != null && CurrentTrackLevel < 2)
+            //can't place a level 1 track on an already existing level 1 track
+            if (data.track1 != null && CurrentTrackLevel == 1)
             {
-                return;
+                LastHover = index;
+                //GD.Print("rejecting track 1");
+
+                //GD.Print("Setting last hover to (reject1): ", LastHover);
+                return false;
             }
-
-            
-
-            if (CheckJunction(LastHover, index))
-                return;
-
-            var obj = MapLevel.GetTrack(index);
-            
-            if (obj != null)
-                return;
-
-            if (obj == null) //and u got the money
+            //for now, just dont place another track where a track 2 is
+            if (data.track2 != null)
             {
-                var directions = MapLevel.GetAdjacentDirections(index);
-                var tracks = MapLevel.GetAdjacentTracks(index).Where(item => item != null).ToList();
+                LastHover = index;
+                //GD.Print("rejecting track 2");
+
+                //GD.Print("Setting last hover to (reject2): ", LastHover);
+                return false;
+            }
+            if (data.obj != null && data.obj is not Mineable)
+            {
+                return false;
+            }
+            if (data.obj is Mineable && CurrentTrackLevel < 2)
+            {
+                return false;
+            }
+            //if (MapLevel.Get(index) != null && CurrentTrackLevel < 2)
+            //{
+            //    return;
+            //}
 
 
-                if (tracks.Count == 0)
+
+            //GD.Print("  Curent Track level:", CurrentTrackLevel);
+            var directions = MapLevel.GetAdjacentDirections(index);
+            var datas = MapLevel.GetAdjacentData(index);
+
+
+
+            //var tracks = MapLevel.GetAdjacentTracks(index).Where(item => item != null).ToList();
+            var level1 = datas.Select(item => item.track1).Where(item => item != null).ToList();
+            var level2 = datas.Select(item => item.track2).Where(item => item != null).ToList();
+
+            var trackList = CurrentTrackLevel == 1 ? level1 : level2;
+
+            var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), index, CurrentTrackLevel);
+            //can set track normally if no other surrounding tracks
+            if (trackList.Count == 0)
+            {
+                //GD.Print("Setting track 1 with data:", data);
+                SetTrack(index, newT, tracklevel: CurrentTrackLevel);
+            }
+            //can auto connect to level if only 1 exists
+            else if (trackList.Count == 1)
+            {
+                var connection = trackList[0];
+                var thatTrackDex = connection.Index;
+                SetTrack(index, newT, tracklevel: CurrentTrackLevel); ;
+                //GD.Print("Setting track 2");
+                ConnectTracks(thatTrackDex, connection, index, newT);
+
+            }
+            else
+            {
+                SetTrack(index, newT, tracklevel: CurrentTrackLevel); ;
+                foreach (var track in trackList)
                 {
-                    var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), index, CurrentTrackLevel);
-                    MapLevel.SetTrack(index, newT);
-                }
-                else if (tracks.Count == 1)
-                {
-                    var connection = tracks[0] as Track;
-                    var thatTrackDex = connection.Index;
-                    var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), index, CurrentTrackLevel);
-                    MapLevel.SetTrack(index, newT);
-                    ConnectTracks(thatTrackDex, connection, index, newT);
-                    //           if (connection.CanConnect())
-                    //           {
-                    //var dex1 = index - thatTrackDex;
-                    //var dex2 = thatTrackDex - index;
-                    //var con = new Connection(dex1, dex2, null);
-
-
-                    //           }
-
-                }
-                else if(tracks.Count >= 2)
-                {
-                    var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), index, CurrentTrackLevel);
-                    MapLevel.SetTrack(index, newT);
-                    foreach(var track in tracks)
+                    if (track.CanConnect() && newT.CanConnect())
                     {
-                        if(track.CanConnect() && newT.CanConnect())
-                        {
-                            ConnectTracks(track.Index, track, index, newT);
-                        }
+                        ConnectTracks(track.Index, track, index, newT);
                     }
                 }
-               
-                //else
-                //{
-                //             var newT = new Track(ResourceStore.GetTex(TrackType.Straight));
-                //             MapLevel.SetTrack(index, newT);
-                //         }
-
             }
+
+            var dex = newT.Index + IndexPos.Up;
+            if (newT.CanConnect() && MapLevel.ValidIndex(dex))
+            {
+                var target = MapLevel.Get(dex);
+                if (target != null && target is LevelTarget)
+                {
+                    newT.Connect(IndexPos.Up);
+                    MatchSprite(newT);
+                }
+            }
+
+            return true;
+
+
+
 
 
 
         }
 
-        public void DoCurve(IndexPos curveDex, Track curveTrack, Connection con)
+        public void SetTrack(IndexPos pos, Track track, bool update = true, int tracklevel = 1)
         {
-            //var dex1 = MapLevel.GetTrack(curveTrack.Connection1 + curveDex);
-            //var dex2 = MapLevel.GetTrack(curveTrack.Connection2 + curveDex);
+            MapLevel.SetTrack(pos, track, tracklevel);
 
-            //curveTrack.Texture = con.Texture;
-
-            //if (con.spriteStore.ContainsKey(curveTrack.Connection1))
-            //{
-            //    dex1.Texture = con.spriteStore[curveTrack.Connection1];
-
-            //}
-
-            //if (con.spriteStore.ContainsKey(curveTrack.Connection2))
-            //{
-            //    dex2.Texture = con.spriteStore[curveTrack.Connection2];
-
-            //}
-            //     var CurveIndex = new List<Track>() { , curveTrack, MapLevel.GetTrack(dex2) };
-
-            //     while (textures.Count > 0)
-            //     {
-            //         var curve = textures.Last();
-            //var track = CurveIndex.Last();
-            //         track.Texture = curve;
-
-            //textures.Remove(curve);
-            //CurveIndex.Remove(track);
-
-
-            //     }
+            if (update)
+            {
+                if (track.TrackLevel == 2)
+                    MapLevel.CurrentTracksRaised++;
+                else
+                    MapLevel.CurrentTracks++;
+                //UpdateUI();
+            }
         }
 
         public void ConnectTracks(IndexPos from, Track track1, IndexPos to, Track track2)
         {
             if (!track1.CanConnect() || !track2.CanConnect()) //has 0 or 1 connection
                 return;
-            //var toDir = to - from;
-            var directions = MapLevel.GetAdjacentDirections(from);//.Where(dir => dir != fromDirection).ToList();
-            var tracks = MapLevel.GetAdjacentTracks(from);
 
             var dex1 = from - to;
             var dex2 = to - from;
 
-            var resulting = new Connection(dex1, dex2, null);
-
-            track1.Connect(dex2);
-            track2.Connect(dex1);
-
-            var con = track1.GetConnection();
-            var con2 = track2.GetConnection();
+            Connect(track1, dex2);
+            Connect(track2, dex1);
 
             MatchSprite(track1);
             MatchSprite(track2);
 
-            //if (ResourceStore.ContainsCurve(con))
-            //{
-            //    track1.Texture = ResourceStore.GetCurve(con, track1.TrackLevel).Texture;
-            //    track2.Texture = ResourceStore.GetTex(resulting, track2.TrackLevel);
-            //}
-            //   // DoCurve(from, track1, ResourceStore.GetCurve(con));
-            //else
-            //{
-            //    track1.Texture = ResourceStore.GetTex(resulting, track1.TrackLevel);
-            //    track2.Texture = ResourceStore.GetTex(resulting, track2.TrackLevel);
-            //}
 
 
             LastHover = CurrentHover;
@@ -754,28 +1038,36 @@ namespace MagicalMountainMinery.Main
         {
             try
             {
-                MapLevel.AllowedTracks = 0;
-                MapLevel.AllowedTracksRaised = 0;
-                foreach (var entry in MapLevel.Tracks1)
-                {
-                    if(entry != null)
-                    {
-                        if(entry.TrackLevel == 1)
-                            MapLevel.AllowedTracks++;
-                        else
-                            MapLevel.AllowedTracksRaised++;
-                        if (entry is Junction)
-                            MapLevel.AllowedJunctions++;
-                    }
-                }
-                for (int i = 0; i < MapLevel.IndexHeight; i++)
-                {
-                    if (MapLevel.Tracks1[0,i] != null)
-                    {
-                        MapLevel.StartPositions.Add(new IndexPos(0,i));
-                    }
+                MapLevel.AllowedJunctions = MapLevel.CurrentJunctions;
+                MapLevel.AllowedTracks = MapLevel.CurrentTracks;
+                MapLevel.AllowedTracksRaised = MapLevel.CurrentTracksRaised;
+                MapLevel.CurrentJunctions = 0;
+                MapLevel.CurrentTracks = 0;
+                MapLevel.CurrentTracksRaised = 0;
 
-                }       
+                MapLevel.Blocked = MapBlocks.Keys.ToList();
+
+                //for (int y = 0; y < MapLevel.IndexHeight; y++)
+                //{
+                //    if (MapLevel.Tracks1[0,y] != null)
+                //    {
+                //        MapLevel.StartPositions.Add(new IndexPos(0,y));
+                //    }
+
+                //}
+                for (int y = 0; y < MapLevel.IndexHeight; y++)
+                {
+                    for (int x = 0; x < MapLevel.IndexWidth; x++)
+                    {
+                        var dex = new IndexPos (x, y);
+                        var obgj = MapLevel.MapObjects[x, y];
+                        if (obgj != null && obgj is LevelTarget)
+                        {
+                            MapLevel.EndPositions.Add(dex);
+                        }
+                    } 
+
+                }
                 //this.MapLevel.QueueFree();
                 var obj = SaveLoader.SaveGame(MapLevel);
             //serializer.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
@@ -785,7 +1077,6 @@ namespace MagicalMountainMinery.Main
                 using (var access = Godot.FileAccess.Open(dir + "Level_" + levels++ + ".lvl", Godot.FileAccess.ModeFlags.WriteRead))
                 {
                     access.StoreString(thingy);
-
                 }
             
                 //var resultBytes = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(obj,

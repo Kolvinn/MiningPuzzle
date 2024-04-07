@@ -1,0 +1,83 @@
+[gd_scene load_steps=10 format=3 uid="uid://bcufgs3ng8yr2"]
+
+[ext_resource type="Texture2D" uid="uid://vcbipq3ajfh6" path="res://Assets/UI/Stars/Gold/icons8-pixel-star-40.png" id="1_yh8py"]
+[ext_resource type="Texture2D" uid="uid://ckxesomrsqs14" path="res://Assets/UI/Kasaya's Frames/Inventory & chests/1/dialogues2.png" id="2_jy6vb"]
+[ext_resource type="FontFile" uid="uid://bwxcy1yplwsmm" path="res://Assets/Fonts/Pixel/PrintChar21.ttf" id="3_ddfpp"]
+[ext_resource type="Script" path="res://UI/GameButton.cs" id="4_l42hn"]
+[ext_resource type="Texture2D" uid="uid://3sutkg73jwbw" path="res://Assets/UI/Kasaya's Frames/Inventory & chests/2/shop/buy and sell  button.png" id="4_plen7"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tw3ab"]
+resource_local_to_scene = true
+texture = ExtResource("2_jy6vb")
+texture_margin_left = 1.0
+texture_margin_top = 1.0
+texture_margin_right = 1.0
+texture_margin_bottom = 1.0
+modulate_color = Color(0.286275, 0.705882, 0.819608, 1)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jsj0c"]
+load_path = "res://.godot/imported/dialogues2.png-c02b150d020c43b42eda776824049a3c.ctex"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jfgxb"]
+texture = SubResource("CompressedTexture2D_jsj0c")
+texture_margin_left = 1.0
+texture_margin_top = 1.0
+texture_margin_right = 1.0
+texture_margin_bottom = 1.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_qdi2a"]
+font = ExtResource("3_ddfpp")
+font_size = 64
+font_color = Color(0.160784, 0.160784, 0.160784, 1)
+
+[node name="LevelBox" type="VBoxContainer"]
+offset_right = 63.0
+offset_bottom = 50.0
+theme_override_constants/separation = 1
+
+[node name="Stars" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 0
+
+[node name="Star4" type="TextureRect" parent="Stars"]
+texture_filter = 1
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+texture = ExtResource("1_yh8py")
+expand_mode = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="Stars"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_styles/panel = SubResource("StyleBoxTexture_tw3ab")
+
+[node name="BonusStars" type="HBoxContainer" parent="Stars/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+theme_override_constants/separation = 0
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_jfgxb")
+text = "1-1
+"
+label_settings = SubResource("LabelSettings_qdi2a")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="TextureButton" parent="Label"]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("4_plen7")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_l42hn")

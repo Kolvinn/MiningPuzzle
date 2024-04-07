@@ -3,11 +3,7 @@ using MagicalMountainMinery.Data;
 using MagicalMountainMinery.Data.Load;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MagicalMountainMinery.Obj
 {
@@ -16,12 +12,14 @@ namespace MagicalMountainMinery.Obj
         [StoreCollection(ShouldStore = true)]
         public List<Condition> Conditions { get; set; } = new List<Condition>();
 
-        
+        [StoreCollection(ShouldStore = true)]
+        public List<Condition> BonusConditions { get; set; } = new List<Condition>();
+
         [StoreCollection(ShouldStore = true)]
         public List<int> Batches { get; set; } = new List<int>();
 
         [StoreCollection(ShouldStore = false)]
-        public Dictionary<Condition, TextureRect> ConUI { get; set; }
+        public Dictionary<Condition, PanelContainer> ConUI { get; set; }
 
         [StoreCollection(ShouldStore = false)]
         public Dictionary<int, List<Condition>> BatchedConditions { get; set; }
@@ -39,7 +37,7 @@ namespace MagicalMountainMinery.Obj
 
         public override void _Ready()
         {
-            ConUI = new Dictionary<Condition, TextureRect>();   
+            ConUI = new Dictionary<Condition, PanelContainer>();   
             if (Batches.Count > 0)
             {
                 IsBatched = true;
@@ -69,17 +67,54 @@ namespace MagicalMountainMinery.Obj
                     AddCondition(con);
                 }
             }
+
+            if(BonusConditions.Count > 0)
+            {
+                foreach(var con in BonusConditions)
+                {
+                    try
+                    {
+                        var existing = ConUI.Keys.First(item => item.ConCheck == con.ConCheck && item.ResourceType == con.ResourceType);
+                        var starCon = ConUI[existing].GetNode<HBoxContainer>("HBoxContainer/StarContainer");
+                        var lab = ConUI[existing].GetNode<Label>("HBoxContainer/Divider");
+                        starCon.Visible = true;
+                        starCon.GetNode<Label>("amount").Text = con.Amount.ToString();
+                        lab.Visible = true;
+                    }
+                    catch(Exception ex)
+                    {
+                        AddCondition(con,bonus:true);
+                    }
+
+                }
+            }
+            
             
         }
 
-        public void AddCondition(Condition condition, string batch = "")
+        public void AddCondition(Condition condition, string batch = "", bool bonus = false)
         {
-            var thing = Runner.LoadScene<TextureRect>("res://Obj/ConditionUI.tscn");
+            var thing = Runner.LoadScene<PanelContainer>("res://Obj/ConditionUI.tscn");
             var tex = ResourceStore.Resources[condition.ResourceType];
             this.GetNode<VBoxContainer>("VBoxContainer").AddChild(thing);
+            
+            if (bonus)
+            {
+                var starCon = thing.GetNode<HBoxContainer>("HBoxContainer/StarContainer");
+                starCon.Visible = true;
+                starCon.GetNode<Label>("amount").Text = condition.Amount.ToString();
+            }
+            else
+            {
+                thing.GetNode<Label>("HBoxContainer/amount").Text = "" + condition.Amount;
+                thing.GetNode<Label>("HBoxContainer/amount").Visible = true;
+            }
+
             thing.GetNode<TextureRect>("HBoxContainer/TextureRect").Texture = tex;
             thing.GetNode<Label>("HBoxContainer/con").Text = condition.AsString();
-            thing.GetNode<Label>("HBoxContainer/amount").Text = "" + condition.Amount;
+            
+
+
             thing.ZIndex = 100;
             if (!string.IsNullOrEmpty(batch))
             {
@@ -94,11 +129,19 @@ namespace MagicalMountainMinery.Obj
                 });
             }
             ConUI.Add(condition, thing);
-            Validated.Add(condition, false);
+
+            if(!bonus) 
+                Validated.Add(condition, false);
         }
 
+        private void ValidateBonusConditions(List<GameResource> resources)
+        {
+            var complete = Conditions.Any(con => ValidateOne(con, resources));
+        }
         public bool ValidateCondition(List<GameResource> resources)
         {
+            ValidateBonusConditions(resources);
+
             var complete = true;
             if (IsBatched)
             { 

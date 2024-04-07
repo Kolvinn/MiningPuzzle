@@ -1,10 +1,10 @@
 [gd_scene load_steps=4 format=3 uid="uid://dqil4mcs8hivg"]
 
 [ext_resource type="Texture2D" uid="uid://wls2ecg725ps" path="res://UI/ShieldIcon.tres" id="1_uaygl"]
-[ext_resource type="FontFile" uid="uid://b2d6ktwjsy7x5" path="res://Assets/Fonts/BitPotionExt.ttf" id="2_xmfy1"]
+[ext_resource type="FontFile" uid="uid://b2d6ktwjsy7x5" path="res://Assets/Fonts/Pixel/BitPotionExt.ttf" id="2_243fd"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_g2tsb"]
-font = ExtResource("2_xmfy1")
+font = ExtResource("2_243fd")
 font_size = 17
 outline_size = 7
 outline_color = Color(0, 0, 0, 1)
