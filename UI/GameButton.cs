@@ -33,10 +33,12 @@ public partial class GameButton : TextureButton, IUIComponent
 
 	public void OnEnter()
 	{
-		EventDispatch.HoverUI(this);
+		if(!this.Disabled)
+			EventDispatch.HoverUI(this);
 	}
     public void OnExit()
     {
-        EventDispatch.ExitUI(this);
+        if (!this.Disabled)
+            EventDispatch.ExitUI(this);
     }
 }

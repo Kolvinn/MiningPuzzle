@@ -80,6 +80,7 @@ namespace MagicalMountainMinery.Obj
                         starCon.Visible = true;
                         starCon.GetNode<Label>("amount").Text = con.Amount.ToString();
                         lab.Visible = true;
+                        ConUI.Add(con, ConUI[existing]);
                     }
                     catch(Exception ex)
                     {
@@ -136,7 +137,15 @@ namespace MagicalMountainMinery.Obj
 
         private void ValidateBonusConditions(List<GameResource> resources)
         {
-            var complete = Conditions.Any(con => ValidateOne(con, resources));
+            foreach(var con in BonusConditions)
+            {
+                if (!con.Validated && ValidateOne(con, resources))
+                {
+                    ConUI[con].GetNode<AnimationPlayer>("HBoxContainer/StarContainer/TextureRect/AnimationPlayer").Play("StarReveal", 2);
+                    return;
+                }
+            }
+            var complete = BonusConditions.Any(con => ValidateOne(con, resources));
         }
         public bool ValidateCondition(List<GameResource> resources)
         {

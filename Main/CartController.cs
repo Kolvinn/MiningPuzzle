@@ -12,6 +12,10 @@ namespace MagicalMountainMinery.Main
 {
     public partial class CartController : Node2D
     {
+        public static float CART_SPEED = 40f;
+
+        public static float ANIM_SPEED = 2f;
+
         public delegate void ValidCartEndEventHandler(bool passed, LevelTarget target);
         public Cart Cart { get; set; }
 
@@ -44,6 +48,7 @@ namespace MagicalMountainMinery.Main
         public AudioStreamPlayer Player2 { get; set; }
 
         public Track StartT { get; set; }
+
         public Dictionary<Sprite2D, GameResource> spriteSpawns { get; set; } = new Dictionary<Sprite2D, GameResource>();
 
         public enum CartState
@@ -149,12 +154,12 @@ namespace MagicalMountainMinery.Main
                     LastDirection = NextDirection;
                     NextDirection = CartDirs.Dequeue();
                     var thing = (NextDirection.ToString().Split("_")[1]);
-                    Cart.CurrentPlayer.Play(thing);
+                    Cart.CurrentPlayer.Play(thing, customSpeed:1* Runner.SIM_SPEED);
                 }
             }
             else
             {
-                var thing = Cart.Position.MoveToward(NextVector, (float)delta * 40);
+                var thing = Cart.Position.MoveToward(NextVector, (float)delta * CART_SPEED * Runner.SIM_SPEED);
                 Cart.Position = thing;
             }
         }
@@ -172,7 +177,9 @@ namespace MagicalMountainMinery.Main
 
 
         public void MineableHit(Mineable mineable)
-        {
+        {   
+            if (mineable == null)
+                return;
             if (mineable.Hardness > 0)
             {
                 mineable.Hardness--;
@@ -189,10 +196,13 @@ namespace MagicalMountainMinery.Main
             }
         }
 
+        public void UpdateMineablePositions()
+        {
 
+        }
         public void Start(Color c, Dictionary<Track, List<Track>> trackList)
         {
-            
+            Cart.GetNode<Node2D>("ArrowRot").Visible = false;
             Cart.Position = MapLevel.GetGlobalPosition(StartT.Index);
             Cart.CurrentMiner.Connect(Miner.SignalName.MiningHit, new Callable(this, nameof(MineableHit)));
 
@@ -297,7 +307,7 @@ namespace MagicalMountainMinery.Main
 
                 var thing = (LastDirection.ToString().Split("_")[1]);
 
-                Cart.CurrentPlayer.Play(thing);
+                Cart.CurrentPlayer.Play(thing, customSpeed: Runner.SIM_SPEED);
                 State = CartState.Moving;
             }
             

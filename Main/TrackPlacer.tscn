@@ -117,11 +117,12 @@ scale = Vector2(0.0372946, 0.0416526)
 texture = ExtResource("4_wjk7r")
 
 [node name="CheckBox" type="CheckBox" parent="CanvasLayer"]
-offset_left = 84.0
-offset_top = -1.0
-offset_right = 108.0
-offset_bottom = 23.0
+offset_left = 16.0
+offset_top = 644.0
+offset_right = 40.0
+offset_bottom = 668.0
 focus_mode = 0
+metadata/_edit_use_anchors_ = true
 
 [node name="Label" type="Label" parent="CanvasLayer/CheckBox"]
 layout_mode = 0
@@ -131,6 +132,7 @@ offset_right = 122.0
 offset_bottom = 23.0
 text = "Show Connections"
 label_settings = SubResource("LabelSettings_ly8ku")
+metadata/_edit_use_anchors_ = true
 
 [node name="Normal" type="VBoxContainer" parent="CanvasLayer"]
 anchors_preset = 2

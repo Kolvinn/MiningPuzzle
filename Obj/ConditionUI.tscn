@@ -1,9 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://ey27ahvbuki0"]
+[gd_scene load_steps=12 format=3 uid="uid://ey27ahvbuki0"]
 
 [ext_resource type="Texture2D" uid="uid://rwgvry72mfqk" path="res://Assets/UI/Kasaya's Frames/Inventory & chests/1/dialogues1.png" id="1_e40ej"]
 [ext_resource type="Texture2D" uid="uid://wc1dc7sio13j" path="res://Assets/GameResource/Stone.png" id="2_t570u"]
 [ext_resource type="FontFile" uid="uid://bwxcy1yplwsmm" path="res://Assets/Fonts/Pixel/PrintChar21.ttf" id="3_k8542"]
-[ext_resource type="Texture2D" uid="uid://vcbipq3ajfh6" path="res://Assets/UI/Stars/Gold/icons8-pixel-star-40.png" id="4_e7kpg"]
+[ext_resource type="PackedScene" uid="uid://qru3r3tp0osm" path="res://UI/StarRect.tscn" id="4_trejl"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gova7"]
 content_margin_left = 2.0
@@ -15,6 +15,41 @@ font = ExtResource("3_k8542")
 font_size = 8
 outline_size = 2
 outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Shader" id="Shader_dttp1"]
+code = "shader_type canvas_item;
+uniform bool filled; 
+uniform float alpha;
+void fragment() 
+{
+
+	
+	if(filled && COLOR.r > 0.8)
+	{
+		COLOR.a = alpha;
+	}
+	COLOR.rgb = COLOR.rgb * 1.25;
+	
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r6eeu"]
+resource_local_to_scene = true
+shader = SubResource("Shader_dttp1")
+shader_parameter/filled = true
+shader_parameter/alpha = 0.0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_lfdji"]
+resource_local_to_scene = true
+load_path = "res://.godot/imported/icons8-pixel-star-30.png-3d24435608bef9cf06786dd70d7c38d5.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_6mht8"]
+load_path = "res://.godot/imported/Free Smoke Fx  Pixel 04.png-442981e60253e78c0e5c8e68e721a626.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jn6qh"]
+resource_local_to_scene = true
+atlas = SubResource("CompressedTexture2D_6mht8")
+region = Rect2(2, 314, 450, 71)
 
 [node name="ConditionUI" type="PanelContainer"]
 custom_minimum_size = Vector2(0, 18)
@@ -49,16 +84,19 @@ visible = false
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/StarContainer"]
-self_modulate = Color(1, 1, 1, 0.521569)
-texture_filter = 1
-custom_minimum_size = Vector2(7.955, 0)
+[node name="TextureRect" parent="HBoxContainer/StarContainer" instance=ExtResource("4_trejl")]
+material = SubResource("ShaderMaterial_r6eeu")
+custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 4
 size_flags_vertical = 4
-texture = ExtResource("4_e7kpg")
-expand_mode = 4
-stretch_mode = 5
+texture = SubResource("CompressedTexture2D_lfdji")
+expand_mode = 1
+
+[node name="Sprite2D" parent="HBoxContainer/StarContainer/TextureRect" index="1"]
+position = Vector2(8, 7.80282)
+scale = Vector2(0.4375, 0.605634)
+texture = SubResource("AtlasTexture_jn6qh")
 
 [node name="amount" type="Label" parent="HBoxContainer/StarContainer"]
 layout_mode = 2
@@ -87,3 +125,5 @@ text = "12"
 label_settings = SubResource("LabelSettings_n1dql")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[editable path="HBoxContainer/StarContainer/TextureRect"]

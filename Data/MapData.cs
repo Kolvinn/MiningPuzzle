@@ -7,14 +7,62 @@ using System.Threading.Tasks;
 
 namespace MagicalMountainMinery.Data
 {
-    public class MapData 
+    public abstract class MapDataBase : IComparable<MapDataBase>
+    {
+        public string Region { get; set; } = "";
+        public int LevelIndex { get; set; }
+        public int RegionIndex { get; set; }
+        public override int GetHashCode()
+        {
+            return (LevelIndex + (RegionIndex * 1000));
+
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is not MapDataBase)
+                return false;
+            else
+                return obj.GetHashCode() == this.GetHashCode();
+        }
+
+        public int CompareTo(MapDataBase other)
+        {
+            if (this.GetHashCode() < other.GetHashCode()) return -1;
+            if(this.GetHashCode() > other.GetHashCode()) return 1;
+            return 0;
+        }
+    }
+
+    public class MapLoad: MapDataBase
     {
         public int Difficulty { get; set; }
-        public string Name { get; set; }
         public int BonusStars { get; set; }
-        public bool Completed { get; set; } = false;
         public string DataString { get; set; }
 
-        public int LevelIndex {  get; set; }
+    }
+
+
+    public class MapSave : MapDataBase
+    {
+        
+        public bool Completed { get; set; } = false;
+        
+        public int BonusStarsCompleted { get; set; } = 0;
+
+    }
+
+    
+    public class SaveProfile
+    {
+        public string ProfileName {  get; set; }
+        public string Filename { get; set; }
+        public SortedList<int,MapDataBase> DataList { get; set; }  
+
+        public MapSave Get(MapDataBase data)
+        {
+            return DataList.GetValueOrDefault(data.GetHashCode()) as MapSave;
+        }
+
     }
 }

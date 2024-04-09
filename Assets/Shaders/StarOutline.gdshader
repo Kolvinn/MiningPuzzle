@@ -9,6 +9,6 @@ void fragment()
 	{
 		COLOR.a = alpha;
 	}
-	COLOR.rgb = COLOR.rgb * 1.25;
+	COLOR.rgb = COLOR.rgb * 1.15;
 	
 }

@@ -1,6 +1,5 @@
-[gd_scene load_steps=10 format=3 uid="uid://bcufgs3ng8yr2"]
+[gd_scene load_steps=9 format=3 uid="uid://bcufgs3ng8yr2"]
 
-[ext_resource type="Texture2D" uid="uid://vcbipq3ajfh6" path="res://Assets/UI/Stars/Gold/icons8-pixel-star-40.png" id="1_yh8py"]
 [ext_resource type="Texture2D" uid="uid://ckxesomrsqs14" path="res://Assets/UI/Kasaya's Frames/Inventory & chests/1/dialogues2.png" id="2_jy6vb"]
 [ext_resource type="FontFile" uid="uid://bwxcy1yplwsmm" path="res://Assets/Fonts/Pixel/PrintChar21.ttf" id="3_ddfpp"]
 [ext_resource type="Script" path="res://UI/GameButton.cs" id="4_l42hn"]
@@ -15,15 +14,17 @@ texture_margin_right = 1.0
 texture_margin_bottom = 1.0
 modulate_color = Color(0.286275, 0.705882, 0.819608, 1)
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jsj0c"]
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hvql4"]
 load_path = "res://.godot/imported/dialogues2.png-c02b150d020c43b42eda776824049a3c.ctex"
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jfgxb"]
-texture = SubResource("CompressedTexture2D_jsj0c")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7rrx6"]
+resource_local_to_scene = true
+texture = SubResource("CompressedTexture2D_hvql4")
 texture_margin_left = 1.0
 texture_margin_top = 1.0
 texture_margin_right = 1.0
 texture_margin_bottom = 1.0
+modulate_color = Color(1.5, 1.5, 1.5, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_qdi2a"]
 font = ExtResource("3_ddfpp")
@@ -40,14 +41,9 @@ layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/separation = 0
 
-[node name="Star4" type="TextureRect" parent="Stars"]
-texture_filter = 1
-custom_minimum_size = Vector2(20, 20)
+[node name="NormStars" type="HBoxContainer" parent="Stars"]
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-texture = ExtResource("1_yh8py")
-expand_mode = 1
+size_flags_horizontal = 3
 
 [node name="PanelContainer" type="PanelContainer" parent="Stars"]
 layout_mode = 2
@@ -61,8 +57,9 @@ size_flags_vertical = 4
 theme_override_constants/separation = 0
 
 [node name="Label" type="Label" parent="."]
+self_modulate = Color(0.505882, 0.505882, 0.505882, 1)
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxTexture_jfgxb")
+theme_override_styles/normal = SubResource("StyleBoxTexture_7rrx6")
 text = "1-1
 "
 label_settings = SubResource("LabelSettings_qdi2a")
@@ -77,6 +74,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+disabled = true
 texture_normal = ExtResource("4_plen7")
 ignore_texture_size = true
 stretch_mode = 0

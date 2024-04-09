@@ -21,6 +21,8 @@ namespace MagicalMountainMinery.Main
         public Node2D StartMenu { get; set; }
 
         public EventDispatch EventDispatch { get; set; }
+
+        public static SaveProfile CurrentProfile { get; set; }
         public enum InternalState
         {
             Level,
@@ -29,29 +31,34 @@ namespace MagicalMountainMinery.Main
         }
         public InternalState State { get; set; } = InternalState.Start;
 
-        public Camera Cam { get; set; }
+        //public Camera Cam { get; set; }
         public GameController() 
         { 
 
         }
 
-        public delegate void LoadLevelDelegate(MapData level);
-
+        public delegate void LoadLevelDelegate(MapLoad level);
+        public delegate void LoadHomeDelegate();
+        public delegate void LevelCompleteDelegate(MapSave overwrite, MapLoad data);
         public override void _Ready()
         {
             Runner = Runner.LoadScene<Runner>("res://Main/Main.tscn");
             //this.AddChild(Runner);
             //
 
-            Cam = new Camera();
-            this.AddChild(Cam);
-            Cam.MakeCurrent();
+            CurrentProfile = ResourceStore.SaveProfiles[0];
 
             MapController = Runner.LoadScene<MapController>("res://Main/MapController.tscn");
             //this.AddChild(MapController);
             
             LoadLevelDelegate thing = LoadLevel;
             MapController.LevelCall = thing;
+
+            LoadHomeDelegate home = LoadHome;
+            Runner.HomeCall = home;
+
+            LevelCompleteDelegate level = LevelComplete;
+            Runner.LevelComplete = level;
             //StartMenu = Runner.LoadScene<Node2D>("res://UI/MenuScreen.tscn");
 
             EventDispatch = new EventDispatch();
@@ -59,16 +66,54 @@ namespace MagicalMountainMinery.Main
 
  
             ChangeScene(InternalState.Map);
+            //MapController.LoadProfile(CurrentProfile);
         }
 
-        public void LoadLevel(MapData level)
+        public void LoadLevel(MapLoad level)
         {
             //clear since changing scene
             EventDispatch.ClearAll();
             ChangeScene(InternalState.Level);
+
             Runner.LoadMapLevel(level);
             
             
+        }
+
+        public void LoadHome()
+        {
+            EventDispatch.ClearAll();
+            ChangeScene(InternalState.Map);
+
+        }
+
+
+        public void LevelComplete(MapSave overwrite, MapLoad data)
+        {
+            if (CurrentProfile.DataList.TryGetValue(overwrite.GetHashCode(), out var entry))
+            {
+                ((MapSave)entry).BonusStarsCompleted = overwrite.BonusStarsCompleted;
+                Runner.CurrentMapSave = ((MapSave)entry);
+            }
+            else
+            {
+                overwrite.LevelIndex = data.LevelIndex;
+                overwrite.Region = data.Region;
+                overwrite.RegionIndex = data.RegionIndex;
+                overwrite.Completed = true;
+                CurrentProfile.DataList.Add(overwrite.GetHashCode(), overwrite);
+                Runner.CurrentMapSave = overwrite;
+            }
+
+            using var file = Godot.FileAccess.Open("user://saves/" + CurrentProfile.Filename + ".save", Godot.FileAccess.ModeFlags.ReadWrite);
+            {
+
+                var thingy = JsonConvert.SerializeObject(CurrentProfile, SaveLoader.jsonSerializerSettings);
+                file.StoreString(thingy);
+                file.Close();
+            }
+
+            MapController.CompleteLevel(overwrite);
         }
 
         public void ChangeScene(InternalState newstate)
@@ -88,11 +133,13 @@ namespace MagicalMountainMinery.Main
             {
                 this.AddChild(Runner);
                 CurrentControl = Runner;
+                Runner.Cam.MakeCurrent();
             }
             else
             {
                 this.AddChild(MapController);
                 CurrentControl = MapController;
+                MapController.Cam.MakeCurrent();
             }
 
             State = newstate;
@@ -106,6 +153,7 @@ namespace MagicalMountainMinery.Main
             ResourceStore.LoadJunctions();
             ResourceStore.LoadAudio();
             ResourceStore.LoadLevels();
+            ResourceStore.LoadSaveProfiles();
         }
 
        

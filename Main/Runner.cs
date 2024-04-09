@@ -8,15 +8,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using static MagicalMountainMinery.Main.GameController;
 using FileAccess = Godot.FileAccess;
 using Label = Godot.Label;
 
 public partial class Runner : Node2D
 {
 	public MapLevel MapLevel { get; set; }
-	//public Cart Cart;
-	
-	public TrackPlacer Placer;
+
+    public static float SIM_SPEED = 1f;
+
+    //public Cart Cart;
+
+    public TrackPlacer Placer;
 
     public ColorRect LoadingScreen {  get; set; }	
 
@@ -29,8 +33,17 @@ public partial class Runner : Node2D
     public TextureButton StartButton { get; set; }
     public AudioStreamPlayer player { get; set; } = new AudioStreamPlayer();
 
-    public LevelCompleteUI LevelEndUI { get; set; }    
+    public LevelCompleteUI LevelEndUI { get; set; }
 
+    public LoadHomeDelegate HomeCall { get; set; }
+    public LevelCompleteDelegate LevelComplete { get; set; }
+
+    //public SaveProfile CurrentProfile { get; set; } 
+
+    public  MapSave CurrentMapSave {  get; set; }
+    public MapLoad CurrentMapData { get; set; }
+
+    public Camera Cam { get; set; }
     public override void _Ready()
 	{
 		
@@ -40,9 +53,11 @@ public partial class Runner : Node2D
         LoadingScreen = this.GetNode<ColorRect>("CanvasLayer/ColorRect");
         LevelEndUI = this.GetNode<LevelCompleteUI>("CanvasLayer/LevelCompleteUI");
         LevelEndUI.Connect(LevelCompleteUI.SignalName.NextLevel, Callable.From(_on_next_pressed));
-        // LevelEndUI.Connect(LevelCompleteUI.SignalName.Home, Callable.From(_on_next_pressed));
+        LevelEndUI.Connect(LevelCompleteUI.SignalName.Home, Callable.From(on_home_pressed));
         LevelEndUI.Connect(LevelCompleteUI.SignalName.Reset, Callable.From(OnReset));
 
+        Cam = new Camera();
+        this.AddChild(Cam);
 
         // MapLevel = new MapLevel();
         //MapLevel.GenNodes(5);
@@ -90,13 +105,42 @@ public partial class Runner : Node2D
         LoadSingleLevel(Placer.CurrentLevelDex+1);
     }
 
+    public void on_home_pressed()
+    {
+        LevelEndUI.Visible = false;
+        HomeCall();
+    }
+    public void OnSimSpeedChange(float speed)
+    {
+        if(speed < 0)
+        {
+            var diff = 1 - speed;
+            SIM_SPEED = 1 / diff;
+            
+        }
+        else
+        {
+            SIM_SPEED = speed - 1;
+        }
+    }
 
     
-    public void LoadMapLevel(MapData data, MapLevel existing = null)
+    public void PopulateFromSave(MapLoad baseLevel)
+    {
+        var level = CurrentProfile.Get(baseLevel);
+        CurrentMapSave = level;
+        if (level != null)
+            LevelEndUI.LoadStars(baseLevel.Difficulty, baseLevel.BonusStars);
+        else
+            LevelEndUI.LoadStars(baseLevel.Difficulty, baseLevel.BonusStars);
+
+    }
+    public void LoadMapLevel(MapLoad data, MapLevel existing = null)
     {
 
-        LevelEndUI.LoadStars(data.Difficulty+5, data.BonusStars+3);
 
+        PopulateFromSave(data);
+        CurrentMapData = data;
         var thingy3 = JsonConvert.DeserializeObject(data.DataString, SaveLoader.jsonSerializerSettings);
         var load = (MapLevel)SaveLoader.LoadGame(thingy3 as SaveInstance, this.Placer);
 
@@ -173,16 +217,21 @@ public partial class Runner : Node2D
             startT.Position = MapLevel.GetGlobalPosition(start);
             var list = new List<IndexPos>() { IndexPos.Left, IndexPos.Right, IndexPos.Up, IndexPos.Down };
             var conn = list.First(pos => MapLevel.ValidIndex(pos + startT.Index));
+
             startT.Connect(conn);
+            Placer.SetStart(startT);
 
             var control = new CartController(startT, MapLevel);
             this.AddChild(control);
             CartControllers.Add(control);
+
+            control.Cart.CurrentPlayer.Play(conn.ToString().Split("_")[1]);
+            control.Cart.GetNode<Node2D>("ArrowRot").Visible = true;
         }
 
 
         ValidRun = true;
-        GetViewport().GetCamera2D().Position = new Vector2(MapLevel.GridWith / 2, MapLevel.GridHeight / 2);
+        Cam.Position = new Vector2(MapLevel.GridWith / 2, MapLevel.GridHeight / 2);
         var col = this.StartButton.SelfModulate;
         col.A = 1f;
         this.StartButton.Modulate = col;
@@ -193,11 +242,14 @@ public partial class Runner : Node2D
 	{
         
         GD.Print("loading in level :", index);
-        LoadMapLevel(ResourceStore.Levels["Tutorial Valley"][index], existing);
+
+        LoadMapLevel(ResourceStore.Levels[index], existing);
 
 
     }
 
+
+   
 
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -211,7 +263,35 @@ public partial class Runner : Node2D
 			var success = MapLevel.LevelTargets.All(item => item.CompletedAll);
             if (success)
             {
-                LevelEndUI.Show();
+                var sum = 0;
+                foreach (var target in MapLevel.LevelTargets)
+                {
+                    sum += target.BonusConditions.Where(con => con.Validated).Count();
+                }
+                bool complete = false;
+
+                if(CurrentMapSave != null)
+                {
+
+                    CurrentMapSave.BonusStarsCompleted = Math.Max(CurrentMapSave.BonusStarsCompleted, sum);
+                    complete = true;
+
+                }
+                else
+                {
+                    CurrentMapSave = new MapSave()
+                    {
+                        BonusStarsCompleted = sum,
+                        Completed = true,
+                        LevelIndex = -100
+
+                    };
+                }
+
+                LevelComplete(CurrentMapSave, CurrentMapData);
+
+                LevelEndUI.Show(complete, CurrentMapSave.BonusStarsCompleted);
+
             }
 			//string text = success ? "Success!" : "Fail!";
             //this.LoadingScreen.Visible = true;
@@ -225,13 +305,11 @@ public partial class Runner : Node2D
 
     }
 
-	
-
-	
-	
 
 
-	public string GetOrientationString(IndexPos pos)
+
+
+    public string GetOrientationString(IndexPos pos)
 	{
 		if (pos == IndexPos.Up) return "North";
 		else if (pos == IndexPos.Down) return "South";
@@ -247,6 +325,8 @@ public partial class Runner : Node2D
 
 	public void _on_start_pressed()
 	{
+        if (Placer.MasterTrackList.Count == 0)
+            return;
         var col = this.StartButton.SelfModulate;
         col.A = 0.5f;
         this.StartButton.Modulate = col;

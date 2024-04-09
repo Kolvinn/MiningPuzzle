@@ -1055,32 +1055,51 @@ namespace MagicalMountainMinery.Main
                 //    }
 
                 //}
+                var targets = new List<LevelTarget>();
                 for (int y = 0; y < MapLevel.IndexHeight; y++)
                 {
                     for (int x = 0; x < MapLevel.IndexWidth; x++)
                     {
                         var dex = new IndexPos (x, y);
                         var obgj = MapLevel.MapObjects[x, y];
-                        if (obgj != null && obgj is LevelTarget)
+                        if (obgj != null && obgj is LevelTarget t)
                         {
                             MapLevel.EndPositions.Add(dex);
+                            targets.Add(t);
                         }
                     } 
 
                 }
+
+                
                 //this.MapLevel.QueueFree();
                 var obj = SaveLoader.SaveGame(MapLevel);
             //serializer.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
                 var thingy = JsonConvert.SerializeObject(obj, SaveLoader.jsonSerializerSettings);
                 var dir = "res://Levels/";
-                var levels = Godot.DirAccess.GetFilesAt(dir).Count();
-                using (var access = Godot.FileAccess.Open(dir + "Level_" + levels++ + ".lvl", Godot.FileAccess.ModeFlags.WriteRead))
+                
+
+                MapLoad data = new MapLoad()
+                {
+                    BonusStars = targets.Sum(i => i.BonusConditions.Count),
+                };
+
+                var dataString = JsonConvert.SerializeObject (data, SaveLoader.jsonSerializerSettings);
+
+                dir += this.GetNode<OptionButton>("CanvasLayer/OptionButton").Text + "/";
+                var levels = (Godot.DirAccess.GetFilesAt(dir).Count() / 2) + 1;
+
+                using (var access = Godot.FileAccess.Open(dir + "Level_" + levels + ".data", Godot.FileAccess.ModeFlags.WriteRead))
+                {
+                    access.StoreString(dataString);
+                }
+                using (var access = Godot.FileAccess.Open(dir + "Level_" + levels + ".lvl", Godot.FileAccess.ModeFlags.WriteRead))
                 {
                     access.StoreString(thingy);
                 }
-            
+
                 //var resultBytes = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(obj,
-                    //new JsonSerializerOptions { WriteIndented = false, IgnoreNullValues = true });
+                //new JsonSerializerOptions { WriteIndented = false, IgnoreNullValues = true });
                 //var data = System.Text.Json.JsonSerializer.Deserialize<SaveInstance>(new ReadOnlySpan<byte>(resultBytes));
                 ////var thingy3 = JsonConvert.DeserializeObject(thingy, SaveLoader.jsonSerializerSettings);
                 //var load = (MapLevel)SaveLoader.LoadGame(thingy3 as SaveInstance, this);

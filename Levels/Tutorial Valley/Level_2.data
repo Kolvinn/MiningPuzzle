@@ -1,0 +1,7 @@
+{
+  "$type": "MagicalMountainMinery.Data.MapData, MagicalMountainMinery",
+  "Difficulty": 1,
+  "Name": null,
+  "BonusStars": 1,
+  "Completed": false,
+}

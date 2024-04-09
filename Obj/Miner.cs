@@ -24,7 +24,7 @@ namespace MagicalMountainMinery.Obj
         public TextureProgressBar CooldownBar { get; set; }
         public AnimationPlayer player { get; set; }
 
-        public Mineable MiningTarget;
+        public Queue<Mineable> MiningTargets = new Queue<Mineable>();
 
         [Signal]
         public delegate void MiningHitEventHandler(Mineable mineable);
@@ -73,18 +73,24 @@ namespace MagicalMountainMinery.Obj
 
         public void Hit()
         {
+            if(MiningTargets.Count > 0)
+            {
 
-            GD.Print("hit mining target: ",MiningTarget);
-            EmitSignal(SignalName.MiningHit, MiningTarget);
+                EmitSignal(SignalName.MiningHit, MiningTargets.Dequeue());
+            }
+            else
+            {
+                EmitSignal(SignalName.MiningHit, null);
+            }
         }
 
-        public void Mine(IndexPos dir, Mineable target, float speed = 2f)
+        public void Mine(IndexPos dir, Mineable target, float speed = 3f)
         {
             target.locked = true;
-            this.MiningTarget = target;
+            MiningTargets.Enqueue(target);
             if (!string.IsNullOrEmpty(player.CurrentAnimation))
             {
-                player.Stop();
+                player.Advance(5);
                 player.ClearQueue();
                 player.Play("RESET");
             }
@@ -97,8 +103,7 @@ namespace MagicalMountainMinery.Obj
                 str = "West";
 
 
-            GD.Print("playing animation: ", str, " for target: ", MiningTarget);
-            player.Play(str, speed);
+            player.Play(str, speed * Runner.SIM_SPEED);
             player.Queue("RESET");
             //MiningTarget = target;
             //canMine = false;

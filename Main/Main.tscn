@@ -610,6 +610,42 @@ stretch_mode = 0
 [node name="LevelCompleteUI" parent="CanvasLayer" instance=ExtResource("9_w5gqg")]
 visible = false
 
+[node name="HSlider" type="HSlider" parent="CanvasLayer"]
+offset_left = 97.0
+offset_top = 20.0
+offset_right = 295.0
+offset_bottom = 48.0
+min_value = -3.0
+max_value = 5.0
+step = 2.0
+value = 1.0
+scrollable = false
+tick_count = 5
+ticks_on_borders = true
+
+[node name="Label" type="Label" parent="CanvasLayer/HSlider"]
+layout_mode = 0
+offset_left = -9.0
+offset_top = 23.0
+offset_right = 23.0
+offset_bottom = 49.0
+text = "0.25"
+
+[node name="Label2" type="Label" parent="CanvasLayer/HSlider"]
+layout_mode = 0
+offset_left = 187.0
+offset_top = 21.0
+offset_right = 215.0
+offset_bottom = 47.0
+text = "4"
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+offset_left = 154.0
+offset_top = 3.0
+offset_right = 234.0
+offset_bottom = 29.0
+text = "Sim Speed"
+
 [node name="MapUILayer" type="SubViewportContainer" parent="."]
 visible = false
 texture_filter = 1
@@ -656,3 +692,4 @@ texture = ExtResource("8_obc6q")
 [connection signal="pressed" from="CanvasLayer/ColorRect/Next" to="." method="_on_next_pressed"]
 [connection signal="pressed" from="CanvasLayer/StartButton" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="CanvasLayer/Reset" to="." method="_on_reset_pressed"]
+[connection signal="value_changed" from="CanvasLayer/HSlider" to="." method="OnSimSpeedChange"]

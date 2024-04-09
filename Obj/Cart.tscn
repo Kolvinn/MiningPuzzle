@@ -1,8 +1,14 @@
-[gd_scene load_steps=22 format=3 uid="uid://mxv1hoqyypag"]
+[gd_scene load_steps=25 format=3 uid="uid://mxv1hoqyypag"]
 
-[ext_resource type="Texture2D" uid="uid://8g0mobcxvmax" path="res://Assets/MinerCat.png" id="3_mdvxu"]
+[ext_resource type="Texture2D" uid="uid://b1e7u6agbxfr" path="res://Assets/MinerCatCrop.png" id="3_r8t6t"]
 [ext_resource type="PackedScene" uid="uid://dj771pecqo0re" path="res://Obj/Miner.tscn" id="3_wcrvc"]
+[ext_resource type="Shader" path="res://Assets/Shaders/RepeatScroll.gdshader" id="4_08tsq"]
+[ext_resource type="Texture2D" uid="uid://2nhhuhs7e7a8" path="res://Assets/UI/Wenrexa Interface UI KIT #4/PNG/Icons/ArrowRow.png" id="5_60ei2"]
 [ext_resource type="Script" path="res://Obj/Cart.cs" id="CSharpScript_0a8dh"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tk4th"]
+shader = ExtResource("4_08tsq")
+shader_parameter/speed = -0.2
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jcil7"]
 load_path = "res://.godot/imported/lpc-mine-cart-carts-angles.png-d184b47eabc297767320fc3b481335fe.ctex"
@@ -52,6 +58,30 @@ tracks/2/keys = {
 "update": 0,
 "values": [Vector2(21.5, 23)]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("MinerCat:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-0.0937517, -18.3438)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("ArrowRot:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.5708]
+}
 
 [sub_resource type="Animation" id="Animation_od535"]
 resource_name = "Left"
@@ -92,6 +122,30 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(29.74, 21)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("MinerCat:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-0.0937517, -22.3438)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("ArrowRot:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [3.14159]
 }
 
 [sub_resource type="Animation" id="Animation_e45xn"]
@@ -166,6 +220,30 @@ tracks/2/keys = {
 "update": 0,
 "values": [Vector2(0, -2)]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("MinerCat:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-0.0937517, -22.3438)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("ArrowRot:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
 
 [sub_resource type="Animation" id="Animation_0sgka"]
 resource_name = "Right"
@@ -206,6 +284,30 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(29.74, 21)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("MinerCat:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-0.0937517, -22.3438)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("ArrowRot:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
 }
 
 [sub_resource type="Animation" id="Animation_ttt6p"]
@@ -281,6 +383,30 @@ tracks/2/keys = {
 "update": 0,
 "values": [Vector2(21.5, 23)]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("MinerCat:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-0.0937517, -18.3438)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("ArrowRot:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [4.71239]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ys215"]
 _data = {
@@ -331,6 +457,18 @@ z_index = 3
 collision_layer = 3
 script = ExtResource("CSharpScript_0a8dh")
 
+[node name="ArrowRot" type="Node2D" parent="."]
+visible = false
+
+[node name="ArrowRow" type="Sprite2D" parent="ArrowRot"]
+texture_filter = 2
+texture_repeat = 2
+material = SubResource("ShaderMaterial_tk4th")
+position = Vector2(17.74, 0)
+scale = Vector2(0.154844, 0.243636)
+texture = ExtResource("5_60ei2")
+offset = Vector2(85, 0)
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = SubResource("AtlasTexture_t4aww")
 offset = Vector2(0, -15)
@@ -357,13 +495,13 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_edai0")
 
-[node name="MinerCat" type="Sprite2D" parent="."]
-texture_filter = 1
-position = Vector2(-1, -12)
-scale = Vector2(0.0411987, 0.0419617)
-texture = ExtResource("3_mdvxu")
-
 [node name="Miner" parent="." instance=ExtResource("3_wcrvc")]
+
+[node name="MinerCat" type="Sprite2D" parent="."]
+position = Vector2(-0.0937517, -22.3438)
+scale = Vector2(0.036, 0.037)
+texture = ExtResource("3_r8t6t")

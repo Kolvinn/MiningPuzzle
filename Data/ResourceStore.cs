@@ -1,4 +1,5 @@
 ﻿using Godot;
+using MagicalMountainMinery.Data.Load;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -64,7 +65,11 @@ namespace MagicalMountainMinery.Data
 
         public static Dictionary<string, AudioStream> AudioRef = new Dictionary<string, AudioStream>();
 
-        public static Dictionary<string, List<MapData>> Levels = new Dictionary<string, List<MapData>>();
+       // public static Dictionary<string, List<MapLoad>> Levels = new Dictionary<string, List<MapLoad>>();
+
+        public static SortedList<int, MapLoad> Levels = new SortedList<int, MapLoad>();
+
+        public static List<SaveProfile> SaveProfiles = new List<SaveProfile>();
 
         public static Texture2D GetTex(TrackType type, int level = 1)
         {
@@ -342,42 +347,105 @@ namespace MagicalMountainMinery.Data
         {
  
             var dir = "res://Levels/";
-            var dirList = new List<String>()
+            var regionList = new List<String>()
             {
                 "Tutorial Valley",
                 "Dark Hills"
             };
             //var levels = Godot.DirAccess.GetFilesAt(dir);
-            
-            foreach (var name in dirList)
+            for (int regionDex = 0; regionDex < regionList.Count; regionDex++)
             {
 
-                Levels.Add(name, new List<MapData>());
-                int count = 1;
+                //Levels.Add(name, new List<MapLoad>());
+                var name = regionList[regionDex];
+                int count = 0;
                 while (true)
                 {
-                    var fileDir = dir + name + "/Level_" + count + ".lvl";
-                    if (!Godot.FileAccess.FileExists(fileDir))
+                    var lvlDir = dir + name + "/Level_" + (count + + 1)+".lvl";
+                    var dataDir = dir + name + "/Level_" + (count + 1)+".data";
+                    if (!Godot.FileAccess.FileExists(lvlDir))
                     {
-                        GD.Print("File not found at: ", fileDir);
+                        GD.Print("File not found at: ", lvlDir);
                         break;
                     }
-                    using (var access = Godot.FileAccess.Open(fileDir, Godot.FileAccess.ModeFlags.Read))
+                    var data = new MapLoad()
                     {
-                        var str = access.GetAsText();
-                        var data = new MapData()
-                        {
-                            BonusStars = 0,
-                            Difficulty = 1,
-                            Completed = false,
-                            DataString = str,
-                            LevelIndex = (count-1)
-                        };
-                        //JsonConvert.PopulateObject(, data);
-                        Levels[name].Add(data);
+                        BonusStars = 0,
+                        Difficulty = 1,
+                    };
+
+
+                    using (var access = Godot.FileAccess.Open(dataDir, Godot.FileAccess.ModeFlags.Read))
+                    {
+                        JsonConvert.PopulateObject(access.GetAsText(), data);
+                        access.Close(); 
+                    }
+                    using (var access = Godot.FileAccess.Open(lvlDir, Godot.FileAccess.ModeFlags.Read))
+                    {
+                        data.DataString = access.GetAsText();
+                        data.LevelIndex = count;
+                        data.Region = name;
+                        data.RegionIndex = regionDex;
+
+                        //Levels[name].Add(data);
+                        Levels.Add(data.GetHashCode(),data);
+                        access.Close();
                     }
 
                     count++;
+                }
+            }
+            
+        }
+
+        public static MapLoad GetMapLoad(Int32 uuid)
+        {
+            return Levels.GetValueOrDefault(uuid) as MapLoad;
+        }
+
+
+        public static void LoadSaveProfiles()
+        {
+            var saveFiles = Godot.DirAccess.GetFilesAt("user://saves/");
+            foreach(var file in saveFiles)
+            {
+                if (file.GetExtension() != "save")
+                {
+                    continue;
+                }
+                //using var poop = Godot.FileAccess.Open("user://saves/" + "test.save", Godot.FileAccess.ModeFlags.WriteRead);
+                //{
+                //    var save = new MapSave()
+                //    {
+                //        BonusStarsCompleted = 1,
+                //        Completed = true,
+                //        LevelIndex = 1,
+                //        Region = "Tutorial Valley",
+                //        RegionIndex = 0
+                //    };
+                //    var save2 = new MapSave()
+                //    {
+                //        BonusStarsCompleted = 0,
+                //        Completed = true,
+                //        LevelIndex = 0,
+                //        Region = "Tutorial Valley",
+                //        RegionIndex = 0
+                //    };
+                //    var profile = new SaveProfile()
+                //    {
+                //        ProfileName = "TEST PROFILE",
+                //        DataList = new SortedList<int, MapDataBase>{ { save.GetHashCode(), save }, { save2.GetHashCode(), save2 } }
+
+                //    };
+                //    poop.StoreString(JsonConvert.SerializeObject(profile, SaveLoader.jsonSerializerSettings));
+                //    poop.Close();
+                //}
+                using var saveGame = Godot.FileAccess.Open("user://saves/" + file, Godot.FileAccess.ModeFlags.ReadWrite);
+                {
+                    
+                    
+                    var thingy = JsonConvert.DeserializeObject<SaveProfile>(saveGame.GetAsText(), SaveLoader.jsonSerializerSettings);
+                    SaveProfiles.Add(thingy);
                 }
             }
             

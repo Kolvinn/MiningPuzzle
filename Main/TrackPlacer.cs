@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using static Godot.Control;
+using static MagicalMountainMinery.Main.CartController;
 
 
 namespace MagicalMountainMinery.Main
@@ -61,6 +63,14 @@ namespace MagicalMountainMinery.Main
         public int CurrentLevelDex { get; set; }
 
         public AudioStreamPlayer AudioStream { get; set; }
+
+
+        //public ColorRect[,] MineableLocations { get; set; }
+
+        //public Dictionary<IndexPos, ColorRect> MineableLocations { get; set; } = new Dictionary<IndexPos, ColorRect>();
+
+        //public Dictionary<IndexPos, ColorRect> MineableLocations { get; set; } = new Dictionary<IndexPos, ColorRect>();
+        public Track StartTrack { get; set; }
         public override void _Ready()
         {
             this.Position = Vector2.Zero;
@@ -101,17 +111,199 @@ namespace MagicalMountainMinery.Main
             TutorialUI.CurrentTutorial = null;
             TutorialUI.CurrentIndex = (levelDex + 1);
             TutorialUI.CurrentSubIndex = 1;
+
+            //if(MineableLocations != null && MineableLocations.Count > 0)
+            //{
+            //    foreach (var m in MineableLocations)
+            //    {
+            //        m.Value.QueueFree();
+
+                    
+            //    }
+            //}
+            
+            //MineableLocations = = new Dictionary<IndexPos, ColorRect>();
+
+        }
+
+        public void SetStart(Track start)
+        {
+            this.StartTrack = start;
+            MasterTrackList.Add(start, new List<Track>());
+        }
+        public List<IndexPos> GetMineableIndexes(IndexPos facing)
+        {
+            if (facing == IndexPos.Right)
+                return new List<IndexPos>() { IndexPos.Up, IndexPos.Down };
+            if (facing == IndexPos.Left)
+                return new List<IndexPos>() { IndexPos.Down, IndexPos.Up };
+            if (facing == IndexPos.Up)
+                return new List<IndexPos>() { IndexPos.Left, IndexPos.Right };
+            if (facing == IndexPos.Down)
+                return new List<IndexPos>() { IndexPos.Right, IndexPos.Left };
+            else
+            {
+                return new List<IndexPos>();
+            }
+
+        }
+
+
+        //public void UpdateMineable()
+        //{
+
+
+        //    var starttime = System.DateTime.Now.Millisecond;
+        //    var next = MapLevel.GetTrack(StartTrack.Index + StartTrack.Connection1);
+
+        //    if(next == null ) 
+        //    {
+
+        //        //foreach (var m in MineableLocations)
+        //        //    if (m != null)
+        //        //        m.QueueFree();
+        //        return;
+        //    }
+        //    else if (next.Connection1 + next.Index != StartTrack.Index
+        //            && next.Connection2 + next.Index != StartTrack.Index) 
+        //    {
+        //        //foreach (var m in MineableLocations)
+        //        //    if (m != null)
+        //        //        m.QueueFree();
+        //        return;
+        //    }
             
 
-        }
 
-        public void ResetLevel()
-        {
+        //    var facingDireciton = StartTrack.Connection1; //This should be the opposite of con 1, i.e., connected to start
+        //    var currentTrack = next;
+        //    var visited = new List<IndexPos>() {StartTrack.Index};
+        //    var minedIndexes = new List<IndexPos>();
+        //    var maxinterations = 100;
 
-        }
+
+
+        //    while (currentTrack != null && maxinterations != 0)
+        //    {
+        //        visited.Add(currentTrack.Index);
+
+        //        //var global = (MapLevel.GetGlobalPosition(currentTrack.Index));
+
+        //        var mineableDirections = GetMineableIndexes(facingDireciton);
+
+        //        var mineableList = new List<IndexPos>() { currentTrack.Index + mineableDirections[0], currentTrack.Index + mineableDirections[1]};
+        //        bool foundMineable = false;
+
+        //        foreach( var dir in mineableList)
+        //        {
+        //            if (MapLevel.ValidIndex(dir))
+        //            {
+        //                var mineable = MapLevel.GetMineable(dir);
+
+        //                if (MineableLocations.ContainsKey(currentTrack.Index))
+        //                {
+        //                    break;
+        //                }
+
+        //                if (mineable != null)
+        //                {
+        //                    var rect = new ColorRect()
+        //                    {
+        //                        Position = MapLevel.GetGlobalPosition(dir, false),
+        //                        Color = new Color(0.54f, 0.7f, 0.33f, 0.45f),
+        //                        ZIndex = 5,
+        //                        Size = new Vector2(32,32)
+        //                    };
+        //                    MapLevel.AddChild(rect);
+        //                    foundMineable = true;
+        //                    MineableLocations.Add(currentTrack.Index, rect);
+        //                    minedIndexes.Add(dir);
+        //                    //MineableLocations[currentTrack.Index.X, currentTrack.Index.Y] = rect;
+        //                    break;
+
+
+        //                }
+        //            }
+        //        }
+
+        //        //if (foundMineable)
+        //        //{
+        //        //    continue;
+        //        //}
+
+
+
+        //        var startList = new List<Track>();
+        //        MasterTrackList.TryGetValue(currentTrack, out startList);
+        //        var nextDir = IndexPos.Zero;
+        //        var lastDirection = facingDireciton.Opposite();
+
+                
+        //        if (startList == null || startList.Count == 0)
+        //            break;
+
+        //        else if (currentTrack is Junction junc)
+        //        {
+        //            if (lastDirection == junc.Connection1)
+        //                nextDir = junc.Option;
+        //            else if (lastDirection == junc.Option)
+        //                nextDir = junc.Connection1;
+        //            else
+        //                nextDir = junc.Connection1;
+
+        //            //var track = startList.First(item => item.Index == nextDir + currentTrack.Index);
+        //        }
+        //        else
+        //            nextDir = currentTrack.Connection1 == lastDirection ? currentTrack.Connection2 : currentTrack.Connection1;
+
+        //        if (nextDir == IndexPos.Zero)
+        //            break;
+
+        //        var nextPos = currentTrack.Index + nextDir;
+
+        //        var nextTrack = new Track();
+
+        //        currentTrack = startList.First(item => item.Index == nextPos);
+
+        //        facingDireciton = nextDir;
+
+        //        //if (currentTrack.Connection1 == IndexPos.Zero || currentTrack.Connection2 == IndexPos.Zero)
+        //            //;
+        //        if (MapLevel.EndPositions.Contains(nextPos))
+        //            break;
+        //        else if (visited.Contains(nextPos))
+        //        {
+        //            break;
+        //        }
+
+        //        maxinterations--;
+
+        //    }
+
+        //    for(int x =0; x< MineableLocations.GetLength(0);x++)
+        //    {
+        //        for (int y = 0; y < MineableLocations.GetLength(1); y++)
+        //        {
+        //            var index = new IndexPos(x, y);
+        //            var thing = MineableLocations[x, y];
+        //            if (!minedIndexes.Contains(index) && thing != null)
+        //            {
+        //                MapLevel.RemoveChild(thing);
+        //                thing.QueueFree();
+        //                MineableLocations[x, y] = null;
+        //            }
+        //        }
+        //    }
+
+
+        //    GD.Print("Time taken for ui change: ", System.DateTime.Now.Millisecond - starttime);
+
+        //}
+        
 
         public override void _PhysicsProcess(double delta)
         {
+
             var obj = EventDispatch.PeekHover();
             var env = EventDispatch.FetchLast();
 
@@ -485,6 +677,7 @@ namespace MagicalMountainMinery.Main
                 AudioStream.Play();
                 RemoveTrack(track, index);
             }
+            //UpdateMineable();
         }
 
         public void RemoveTrack(Track t, IndexPos pos, bool update = true)
@@ -860,6 +1053,8 @@ namespace MagicalMountainMinery.Main
                     }
                 }
             }
+
+           // UpdateMineable();
 
             foreach(var pos in MapLevel.StartPositions)
             {
