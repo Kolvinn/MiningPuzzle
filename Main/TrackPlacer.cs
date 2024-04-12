@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using static Godot.Control;
 using static MagicalMountainMinery.Main.CartController;
@@ -43,7 +44,7 @@ namespace MagicalMountainMinery.Main
         public List<IndexPos> DirectionStack { get; set; }
 
 
-        public Dictionary<Track, List<Track>> MasterTrackList { get; set; } = new Dictionary<Track, List<Track>>();
+        public Dictionary<IConnectable, List<IConnectable>> MasterTrackList { get; set; } = new Dictionary<IConnectable, List<IConnectable>>();
 
         public int CurrentTrackLevel = 1;
 
@@ -65,6 +66,7 @@ namespace MagicalMountainMinery.Main
         public AudioStreamPlayer AudioStream { get; set; }
 
 
+        public List<Track> OuterConnections { get; set; } = new List<Track>();
         //public ColorRect[,] MineableLocations { get; set; }
 
         //public Dictionary<IndexPos, ColorRect> MineableLocations { get; set; } = new Dictionary<IndexPos, ColorRect>();
@@ -92,9 +94,10 @@ namespace MagicalMountainMinery.Main
 
         public void LoadLevel(MapLevel level, int levelDex)
         {
+            OuterConnections = new List<Track>();
             CurrentLevelDex = levelDex;
             CurrentState = State.Default;
-            MasterTrackList = new Dictionary<Track, List<Track>>();
+            MasterTrackList = new Dictionary<IConnectable, List<IConnectable>>();
             this.MapLevel = level;
             UpdateUI();
             ShowConnections(false);
@@ -126,11 +129,6 @@ namespace MagicalMountainMinery.Main
 
         }
 
-        public void SetStart(Track start)
-        {
-            this.StartTrack = start;
-            MasterTrackList.Add(start, new List<Track>());
-        }
         public List<IndexPos> GetMineableIndexes(IndexPos facing)
         {
             if (facing == IndexPos.Right)
@@ -148,157 +146,6 @@ namespace MagicalMountainMinery.Main
 
         }
 
-
-        //public void UpdateMineable()
-        //{
-
-
-        //    var starttime = System.DateTime.Now.Millisecond;
-        //    var next = MapLevel.GetTrack(StartTrack.Index + StartTrack.Connection1);
-
-        //    if(next == null ) 
-        //    {
-
-        //        //foreach (var m in MineableLocations)
-        //        //    if (m != null)
-        //        //        m.QueueFree();
-        //        return;
-        //    }
-        //    else if (next.Connection1 + next.Index != StartTrack.Index
-        //            && next.Connection2 + next.Index != StartTrack.Index) 
-        //    {
-        //        //foreach (var m in MineableLocations)
-        //        //    if (m != null)
-        //        //        m.QueueFree();
-        //        return;
-        //    }
-            
-
-
-        //    var facingDireciton = StartTrack.Connection1; //This should be the opposite of con 1, i.e., connected to start
-        //    var currentTrack = next;
-        //    var visited = new List<IndexPos>() {StartTrack.Index};
-        //    var minedIndexes = new List<IndexPos>();
-        //    var maxinterations = 100;
-
-
-
-        //    while (currentTrack != null && maxinterations != 0)
-        //    {
-        //        visited.Add(currentTrack.Index);
-
-        //        //var global = (MapLevel.GetGlobalPosition(currentTrack.Index));
-
-        //        var mineableDirections = GetMineableIndexes(facingDireciton);
-
-        //        var mineableList = new List<IndexPos>() { currentTrack.Index + mineableDirections[0], currentTrack.Index + mineableDirections[1]};
-        //        bool foundMineable = false;
-
-        //        foreach( var dir in mineableList)
-        //        {
-        //            if (MapLevel.ValidIndex(dir))
-        //            {
-        //                var mineable = MapLevel.GetMineable(dir);
-
-        //                if (MineableLocations.ContainsKey(currentTrack.Index))
-        //                {
-        //                    break;
-        //                }
-
-        //                if (mineable != null)
-        //                {
-        //                    var rect = new ColorRect()
-        //                    {
-        //                        Position = MapLevel.GetGlobalPosition(dir, false),
-        //                        Color = new Color(0.54f, 0.7f, 0.33f, 0.45f),
-        //                        ZIndex = 5,
-        //                        Size = new Vector2(32,32)
-        //                    };
-        //                    MapLevel.AddChild(rect);
-        //                    foundMineable = true;
-        //                    MineableLocations.Add(currentTrack.Index, rect);
-        //                    minedIndexes.Add(dir);
-        //                    //MineableLocations[currentTrack.Index.X, currentTrack.Index.Y] = rect;
-        //                    break;
-
-
-        //                }
-        //            }
-        //        }
-
-        //        //if (foundMineable)
-        //        //{
-        //        //    continue;
-        //        //}
-
-
-
-        //        var startList = new List<Track>();
-        //        MasterTrackList.TryGetValue(currentTrack, out startList);
-        //        var nextDir = IndexPos.Zero;
-        //        var lastDirection = facingDireciton.Opposite();
-
-                
-        //        if (startList == null || startList.Count == 0)
-        //            break;
-
-        //        else if (currentTrack is Junction junc)
-        //        {
-        //            if (lastDirection == junc.Connection1)
-        //                nextDir = junc.Option;
-        //            else if (lastDirection == junc.Option)
-        //                nextDir = junc.Connection1;
-        //            else
-        //                nextDir = junc.Connection1;
-
-        //            //var track = startList.First(item => item.Index == nextDir + currentTrack.Index);
-        //        }
-        //        else
-        //            nextDir = currentTrack.Connection1 == lastDirection ? currentTrack.Connection2 : currentTrack.Connection1;
-
-        //        if (nextDir == IndexPos.Zero)
-        //            break;
-
-        //        var nextPos = currentTrack.Index + nextDir;
-
-        //        var nextTrack = new Track();
-
-        //        currentTrack = startList.First(item => item.Index == nextPos);
-
-        //        facingDireciton = nextDir;
-
-        //        //if (currentTrack.Connection1 == IndexPos.Zero || currentTrack.Connection2 == IndexPos.Zero)
-        //            //;
-        //        if (MapLevel.EndPositions.Contains(nextPos))
-        //            break;
-        //        else if (visited.Contains(nextPos))
-        //        {
-        //            break;
-        //        }
-
-        //        maxinterations--;
-
-        //    }
-
-        //    for(int x =0; x< MineableLocations.GetLength(0);x++)
-        //    {
-        //        for (int y = 0; y < MineableLocations.GetLength(1); y++)
-        //        {
-        //            var index = new IndexPos(x, y);
-        //            var thing = MineableLocations[x, y];
-        //            if (!minedIndexes.Contains(index) && thing != null)
-        //            {
-        //                MapLevel.RemoveChild(thing);
-        //                thing.QueueFree();
-        //                MineableLocations[x, y] = null;
-        //            }
-        //        }
-        //    }
-
-
-        //    GD.Print("Time taken for ui change: ", System.DateTime.Now.Millisecond - starttime);
-
-        //}
         
 
         public override void _PhysicsProcess(double delta)
@@ -437,7 +284,7 @@ namespace MagicalMountainMinery.Main
                     {
 
                         //GD.Print("Setting last hover to (success): ", LastHover);
-                        //if we set a new track, that means we've moved on and can no longer use the last hovered track
+                        //if we set a new con, that means we've moved on and can no longer use the last hovered con
                         LastHover = CurrentHover;
                     }
 
@@ -522,11 +369,12 @@ namespace MagicalMountainMinery.Main
             if (existing is Junction junc)
             {
                 var match = ResourceStore.GetRotateMatch(junc.GetJunc(), junc.TrackLevel);
+                junc.Connect(match.From, match.To, junc.Option);
                 //UpdateList(junc, true); //remove junc then add it back with connect
-                Connect(junc, match.From, match.To, junc.Option);
-                //junc.Connect(match.From, match.To, junc.Option);
-                //junc.Connection1 = match.From;
-                //junc.Connection2 = match.To;
+                //ConnectTo(junc, match.From, match.To, junc.Option);
+                //junc.ConnectTo(match.From, match.To, junc.Option);
+                //junc.Direction1 = match.From;
+                //junc.Direction2 = match.To;
 
                 AudioStream.Stream = ResourceStore.GetAudio("TrackPlace2");
                 AudioStream.Play();
@@ -536,7 +384,7 @@ namespace MagicalMountainMinery.Main
             }
         }
 
-        public void UpdateList(Track t, bool remove = false, params Track[] cons)
+        public void UpdateList(IConnectable t, bool remove = false, params IConnectable[] cons)
         {
             //if (RemoveAll)
             //{
@@ -558,7 +406,7 @@ namespace MagicalMountainMinery.Main
                 {
                     foreach (var item in cons)
                     {
-                        //here we replace at a given index, since a track can only be connected to a single track 
+                        //here we replace at a given index, since a con can only be connected to a single con 
                         //at one index
                         var existing = MasterTrackList[t].FirstOrDefault(track => track.Index == item.Index);
                         if(existing != null)
@@ -577,71 +425,59 @@ namespace MagicalMountainMinery.Main
             }
         }
 
-        public void Connect(Track track, params IndexPos[] indexes)
+        public IConnectable GetConnectable(IndexPos index)
         {
-
-
-            if (track.TrackLevel == 2)
+            if (MapLevel.ValidIndex(index))
             {
-                if (track is Junction junc)
+                MapLevel.TryGetConnectable(index, out var connectable);
+                return connectable;
+            }
+
+            var outer = OuterConnections.FirstOrDefault(track => index == track.Index);
+            if (outer != null)
+                return outer;
+            var end = MapLevel.EndTracks.FirstOrDefault(track => index == track.Index);
+            return end;
+        }
+
+
+        public void ConnectTo(IConnectable con, params IConnectable[] connections)
+        {
+            if (con is Portal p && connections.Length == 1)
+            {
+                var fir = connections[0];
+                if (fir is Track track && track.CanConnect() && p.TryConnect(track))
                 {
-                    var v0 = MapLevel.GetTrack(junc.Index + indexes[0]);
-                    var v1 = MapLevel.GetTrack(junc.Index + indexes[1]);
-                    var v2 = MapLevel.GetTrack(junc.Index + indexes[2]);
-
-                    junc.Connect(indexes[0], indexes[1], indexes[2],
-                        v0.TrackLevel,
-                        v1.TrackLevel,
-                        v2.TrackLevel);
-
-                    UpdateList(track, false, v0, v1, v2);
-                }
-                else
-                {
-                    for (var i = 0; i < indexes.Length; i++)
-                    {
-                        var v1 = MapLevel.GetTrack(track.Index + indexes[i]);
-                        track.Connect(indexes[i], v1.TrackLevel);
-                        UpdateList(track, false, v1);
-                    }
-
-
+                    //UpdateList(p, false, track);
+                    //track.Connect(from - to, CurrentTrackLevel);
+                    //UpdateList(track, false, p);
+                    
                 }
             }
-            else
+            else if (con is Junction junc)
             {
-                var dex = track.Index;
-                bool isSlide = false;
-                foreach (var index in indexes)
-                {
-                    var con = MapLevel.GetTrack(dex + index);
-                    if (con != null && con.TrackLevel == 2)
-                        isSlide = true;
-                }
-                var height = isSlide ? 2 : 1;
-                if (track is Junction junc)
-                {
-                    var v0 = MapLevel.GetTrack(junc.Index + indexes[0]);
-                    var v1 = MapLevel.GetTrack(junc.Index + indexes[1]);
-                    var v2 = MapLevel.GetTrack(junc.Index + indexes[2]);
+                var indexes = connections.Select(item => item.Index - con.Index).ToList();
+                var Levels = connections.Select(item => item is Track t ? t.TrackLevel : 1).ToList();
+                //var v0 = MapLevel.GetTrack(junc.Index + indexes[0]);
+                //var v1 = MapLevel.GetTrack(junc.Index + indexes[1]);
+                //var v2 = MapLevel.GetTrack(junc.Index + indexes[2]);
 
-                    junc.Connect(indexes[0], indexes[1], indexes[2],
-                        v0.TrackLevel,
-                        v1.TrackLevel,
-                        v2.TrackLevel);
+                junc.Connect(indexes[0], indexes[1], indexes[2], Levels[0], Levels[1], Levels[2]);
+                //MatchSprite(junc);
 
-                    UpdateList(track, false, v0, v1, v2);
-                }
-                else
-                {
-                    for (var i = 0; i < indexes.Length; i++)
-                    {
-                        var t = MapLevel.GetTrack(track.Index + indexes[i]);
-                        track.Connect(indexes[i], t.TrackLevel);
-                        UpdateList(track, false, t);
-                    }
-                }
             }
+            else if(con is Track t)
+            {
+                var indexes = connections.Select(item => item.Index - con.Index).ToList();
+                var Levels = connections.Select(item => item is Track t ? t.TrackLevel : 1).ToList();
+                for (var i = 0; i < indexes.Count; i++)
+                {
+                    t.Connect(indexes[i], Levels[i]);
+                }
+                MatchSprite(t);
+
+            }
+            UpdateList(con, false, connections);
 
 
 
@@ -656,7 +492,7 @@ namespace MagicalMountainMinery.Main
             var index = FetchMouseIndex();
 
             var direction = LastHover - index;
-            if (!MapLevel.ValidIndex(index) || MapLevel.StartPositions.Contains(index) || MapLevel.EndPositions.Contains(index))
+            if (!MapLevel.ValidIndex(index) || MapLevel.EndPositions.Contains(index))
                 return;
             if (index != CurrentHover)
             {
@@ -669,9 +505,13 @@ namespace MagicalMountainMinery.Main
 
             if (track != null)
             {
-                foreach (var entry in track.GetConnectionList())
+                if (MasterTrackList.ContainsKey(track))
                 {
-                    Disconnect(index + entry, entry.Opposite(), track);
+                    var connections = MasterTrackList[track].ToList();
+                    foreach (var entry in connections)
+                    {
+                        Disconnect(entry, track);
+                    }
                 }
                 AudioStream.Stream = ResourceStore.GetAudio("TrackRemove");
                 AudioStream.Play();
@@ -680,6 +520,66 @@ namespace MagicalMountainMinery.Main
             //UpdateMineable();
         }
 
+        /// <summary>
+        /// Removes the given connection from this con. Will turn a junction back into a regular con
+        /// if is a valid connection.
+        /// this dir is the direction of the connection to the from track.
+        /// i.e.,if fromTrack is being deleted and is at 0,1 and con is at 0,2, the resulting dir is going to be Left(0,-1)
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="dir"></param>
+        public void Disconnect(IConnectable con, Track fromTrack)
+        {
+            
+            var dir = fromTrack.Index - con.Index;
+
+
+            if (con == null || fromTrack == null) 
+                return;
+
+            UpdateList(con, true, fromTrack);
+
+            if (con is Junction junc)
+            {
+                
+
+                var list = new List<IndexPos>() { junc.Option, junc.Direction1, junc.Direction2 };
+
+                list.Remove(dir);
+
+                var t = new Track();
+                MapLevel.RemoveTrack(junc.Index);
+
+                SetTrack(junc.Index, t, false, junc.TrackLevel);
+                t.TrackLevel = junc.TrackLevel;
+                ReplaceRef(junc, t);
+
+                ConnectTo(t, GetConnectable(junc.Index+ list[0]), GetConnectable(junc.Index + list[1]));
+
+                MapLevel.CurrentJunctions--;
+
+
+                UpdateUI();
+
+                
+                MatchSprite(t);
+
+
+
+            }
+            else if(con is Track t)
+            {
+                t.Disconnect(dir, fromTrack.TrackLevel);
+                UpdateList(t, true, fromTrack);
+                MatchSprite(t);
+            }
+            else if(con is Portal p)
+            {
+                p.Disconnect(dir);
+            }
+
+            
+        }
         public void RemoveTrack(Track t, IndexPos pos, bool update = true)
         {
             MasterTrackList.Remove(t);
@@ -696,7 +596,14 @@ namespace MagicalMountainMinery.Main
             MapLevel.RemoveTrack(pos);
         }
 
-
+        /// <summary>
+        /// Replaces the existing track such that the key is removed, and all instances of that key in other list references
+        /// are removed as well.
+        /// 
+        /// Each instance is replaced with the new track
+        /// </summary>
+        /// <param name="existing"></param>
+        /// <param name="newTrack"></param>
         public void ReplaceRef(Track existing, Track newTrack)
         {
             if (MasterTrackList.ContainsKey(existing))
@@ -705,7 +612,7 @@ namespace MagicalMountainMinery.Main
 
                 foreach(var track in MasterTrackList.Keys)
                 {
-                    //if this track is one of the ones connected to existing,
+                    //if this con is one of the ones connected to existing,
                     //then remove existing from its connections
                     if (connectedList.Contains(track))
                     {
@@ -718,63 +625,6 @@ namespace MagicalMountainMinery.Main
                 MasterTrackList.Remove(existing);
                 MasterTrackList.Add(newTrack, connectedList);
             }
-        }
-
-        /// <summary>
-        /// Removes the given connection from this track. Will turn a junction back into a regular track
-        /// if is a valid connection
-        /// </summary>
-        /// <param name="track"></param>
-        /// <param name="dir"></param>
-        public void Disconnect(IndexPos connectedPos, IndexPos dir, Track fromTrack)
-        {
-            var track = new Track();
-            if (MapLevel.StartPositions.Contains(connectedPos))
-            {
-                track = null;  
-            }
-            else
-                track = MapLevel.GetTrack(connectedPos);
-
-            if (track == null) return;
-            if (track is Junction junc)
-            {
-                var list = new List<IndexPos>() { junc.Option, junc.Connection1, junc.Connection2 };
-                list.Remove(dir);
-                
-
-                //MasterTrackList.Remove(junc); //remove the ref to this obj
-               // UpdateList(track, true, fromTrack);
-
-                var t = new Track();
-                //MapLevel.SetTrack(junc.Index, t);
-                SetTrack(junc.Index, t, false, junc.TrackLevel);
-                t.TrackLevel = junc.TrackLevel;
-
-                ReplaceRef(junc, t);
-                Connect(t, list[0], list[1]);
-                MapLevel.CurrentJunctions--;
-
-
-                UpdateUI();
-                //t.Connect(list[0]);
-                //t.Connect(list[1]);
-
-                track = t;
-                junc.QueueFree();
-
-
-
-
-            }
-            else
-            {
-                track.Disconnect(dir, fromTrack.TrackLevel);
-                UpdateList(track, true, fromTrack);
-
-            }
-
-            MatchSprite(track);
         }
 
         public void MatchSprite(Track track)
@@ -829,6 +679,8 @@ namespace MagicalMountainMinery.Main
         {
             if (MapLevel.AllowedJunctions == MapLevel.CurrentJunctions)
                 return false;
+            if (from == to)
+                return false;
 
             var fromTrack = MapLevel.GetTrack(from);
             var toTrack = MapLevel.GetTrack(to);
@@ -840,46 +692,44 @@ namespace MagicalMountainMinery.Main
 
             if (fromTrack == null)
                 return false;
-            
-            if(fromTrack.Connection1 == fromTrack.Connection2 || fromTrack.Connection1 == toDir
-                || fromTrack.Connection2 == toDir)
+
+            if (fromTrack.CanConnect())
+                return false;
+            if (MapLevel.EndPositions.Contains(from) || OuterConnections.Any(item => item.Index == from))
                 return false;
 
-            //cannot connect junctions to differing track levels
+            if (fromTrack.Direction1 == fromTrack.Direction2 || fromTrack.Direction1 == toDir
+                || fromTrack.Direction2 == toDir)
+                return false;
+
+            //cannot connect junctions to differing con levels
             if (toTrack != null && fromTrack.TrackLevel != toTrack.TrackLevel)
                 return false;
             else if (CurrentTrackLevel != fromTrack.TrackLevel)
                 return false;
-            
 
+            var obj = MapLevel.Get(to);
+            if (obj != null)
+                return false;
 
             if (fromTrack is not Junction && !fromTrack.CanConnect())
             {
                 if(toTrack != null && !toTrack.CanConnect())
                     return false;
-                //track has 2 connections and iss not junc, so try make new junction
+                //con has 2 connections and iss not junc, so try make new junction
                 if (toTrack == null)
                 {
                     var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), fromDir, CurrentTrackLevel);
                     SetTrack(to, newT, tracklevel: CurrentTrackLevel);
                     toTrack = newT;
-                    //ConnectTracks(thatTrackDex, connection, index, newT);
+                    //ConnectTo(thatTrackDex, connection, index, newT);
                 }
 
                 //GD.Print("Setting junction from: ", from, " to: ", to);
                 if (toTrack.CanConnect())
                 {
-                    //var option = fromTrack.Connection2;
-                    //if(fromTrack.Type == TrackType.Curve)
-                    //{
 
-                    //}
-                    //if(fromTrack.Connection1 != fromDir && fromTrack.Connection1 != toDir)
-                    //{
-                    //    option = fromTrack.Connection1;
-                    //}
-                    //var j = new Junc(fromDir,toDir,option);
-                    var j = OrientateJunction(fromTrack.Connection1, fromTrack.Connection2, toDir);
+                    var j = OrientateJunction(fromTrack.Direction1, fromTrack.Direction2, toDir);
                     var newJc = new Junc();
                     try
                     {
@@ -889,36 +739,37 @@ namespace MagicalMountainMinery.Main
                     {
                         //GD.Print("shit is wrong");
                     }
-                    MapLevel.RemoveChild(fromTrack);
-
-                   // UpdateList(fromTrack, true);
-                    //UpdateList(toTrack, true);
 
                     var junction = new Junction();
+                    ReplaceRef(fromTrack, junction);
+                    MapLevel.RemoveTrack(from);
                     junction.Texture = newJc.Texture;
                     junction.Index = fromTrack.Index;
                     junction.TrackLevel = fromTrack.TrackLevel;
+
                     SetTrack(from, junction, false);
 
-                    ReplaceRef(fromTrack, junction);
-                    Connect(junction, j.From, j.To, j.Option);
-                    fromTrack.QueueFree();
+                    var conList = new IConnectable[] { GetConnectable(from + j.From), GetConnectable(from + j.To), GetConnectable(from + j.Option) };
+                    ConnectTo(junction, conList);
+                    //now we connect the toTrack back to junction and check it
+                    ConnectTo(toTrack, junction);
+                    //MatchSprite(toTrack);
+
+
                     MapLevel.CurrentJunctions++;
                     UpdateUI();
 
                     AudioStream.Stream = ResourceStore.GetAudio("Junction");
                     AudioStream.Play();
-                    //now we connect the toTrack back to junction and check it
-                    Connect(toTrack, fromDir);
-                    if (ResourceStore.ContainsCurve(toTrack.GetConnection()))
-                    {
-                        toTrack.Texture = ResourceStore.GetCurve(toTrack.GetConnection(), toTrack.TrackLevel).Texture;
-                    }
-                    // DoCurve(from, track1, ResourceStore.GetCurve(con));
-                    else
-                    {
-                        toTrack.Texture = ResourceStore.GetTex(toTrack.GetConnection(), toTrack.TrackLevel);
-                    }
+                    //if (ResourceStore.ContainsCurve(toTrack.GetConnection()))
+                    //{
+                    //    toTrack.Texture = ResourceStore.GetCurve(toTrack.GetConnection(), toTrack.TrackLevel).Texture;
+                    //}
+                    //// DoCurve(from, track1, ResourceStore.GetCurve(con));
+                    //else
+                    //{
+                    //    toTrack.Texture = ResourceStore.GetTex(toTrack.GetConnection(), toTrack.TrackLevel);
+                    //}
                     return true;
 
                 }
@@ -950,7 +801,7 @@ namespace MagicalMountainMinery.Main
                 {
                     var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), to, CurrentTrackLevel);
                     SetTrack(to, newT, tracklevel: CurrentTrackLevel);
-                    ConnectTracks(from, fromTrack, to, newT);
+                    //ConnectTracks(from, fromTrack, to, newT);
                     return true;
                 }
             }
@@ -958,42 +809,32 @@ namespace MagicalMountainMinery.Main
             {
                 if (fromTrack.TrackLevel != CurrentTrackLevel)
                 {
-                    ConnectTracks(from, fromTrack, to, toTrack);
+                    //ConnectTracks(from, fromTrack, to, toTrack);
                     return true;
                 }
             }
             return false;
         }
 
-        public bool SetTrackSingle(IndexPos index)
+
+        public bool ValidateTrack(IndexPos index, IndexData data)
         {
-
-
-
-            var data = MapLevel.GetData(index);
-
-
-            if (MapLevel.ValidIndex(LastHover))
-            {
-                if (CheckJunction(LastHover, index))
-                    return true;
-                else if (CheckRamp(LastHover, index))
-                    return true;
-            }
-            //can't place a level 1 track on an already existing level 1 track
+            
+            
+            //can't place a level 1 con on an already existing level 1 con
             if (data.track1 != null && CurrentTrackLevel == 1)
             {
                 LastHover = index;
-                //GD.Print("rejecting track 1");
+                //GD.Print("rejecting con 1");
 
                 //GD.Print("Setting last hover to (reject1): ", LastHover);
                 return false;
             }
-            //for now, just dont place another track where a track 2 is
+            //for now, just dont place another con where a con 2 is
             if (data.track2 != null)
             {
                 LastHover = index;
-                //GD.Print("rejecting track 2");
+                //GD.Print("rejecting con 2");
 
                 //GD.Print("Setting last hover to (reject2): ", LastHover);
                 return false;
@@ -1006,6 +847,26 @@ namespace MagicalMountainMinery.Main
             {
                 return false;
             }
+            return true;
+        }
+        public bool SetTrackSingle(IndexPos index)
+        {
+
+
+
+            var data = MapLevel.GetData(index);
+
+
+            if (MapLevel.ValidIndex(LastHover) && CheckJunction(LastHover, index))
+            {
+                return true;
+            }
+            else if(!ValidateTrack(index, data))
+                return false;
+
+
+
+
             //if (MapLevel.Get(index) != null && CurrentTrackLevel < 2)
             //{
             //    return;
@@ -1014,62 +875,46 @@ namespace MagicalMountainMinery.Main
 
 
             //GD.Print("  Curent Track level:", CurrentTrackLevel);
-            var directions = MapLevel.GetAdjacentDirections(index);
-            var datas = MapLevel.GetAdjacentData(index);
+            var directions = new List<IndexPos> { IndexPos.Left, IndexPos.Down, IndexPos.Right, IndexPos.Up };
+            //var datas = MapLevel.GetAdjacentConnectables(index);
 
 
 
             //var tracks = MapLevel.GetAdjacentTracks(index).Where(item => item != null).ToList();
-            var level1 = datas.Select(item => item.track1).Where(item => item != null).ToList();
-            var level2 = datas.Select(item => item.track2).Where(item => item != null).ToList();
+            //var level1 = datas.Select(item => item.track1).Where(item => item != null).ToList();
+            // var level2 = datas.Select(item => item.track2).Where(item => item != null).ToList();
 
-            var trackList = CurrentTrackLevel == 1 ? level1 : level2;
+            //get all connections that surround this index that are not null
+            var conList = directions.Select(dir => GetConnectable(index + dir)).Where(item => item != null).ToList();
 
             var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), index, CurrentTrackLevel);
-            //can set track normally if no other surrounding tracks
-            if (trackList.Count == 0)
+            SetTrack(index, newT, tracklevel: CurrentTrackLevel);
+
+            if (conList.Count == 1 && conList[0].CanConnect())
             {
-                //GD.Print("Setting track 1 with data:", data);
-                SetTrack(index, newT, tracklevel: CurrentTrackLevel); 
-            }
-            //can auto connect to level if only 1 exists
-            else if (trackList.Count == 1)
-            {
-                var connection = trackList[0];
+                var connection = conList[0];
                 var thatTrackDex = connection.Index;
-                SetTrack(index, newT, tracklevel: CurrentTrackLevel); ;
-                //GD.Print("Setting track 2");
-                ConnectTracks(thatTrackDex, connection, index, newT);
-            
+
+                ConnectTo(newT,connection);
+                ConnectTo(connection, newT);
+
             }
             else
             { 
-                SetTrack(index, newT, tracklevel: CurrentTrackLevel); ;
-                foreach (var track in trackList)
+                foreach (var connectable in conList )
                 {
-                    if (track.CanConnect() && newT.CanConnect())
+                    if (connectable.CanConnect() && newT.CanConnect())
                     {
-                        ConnectTracks(track.Index, track, index, newT);
+                        ConnectTo(connectable, newT);
+                        ConnectTo(newT, connectable);
                     }
                 }
             }
 
-           // UpdateMineable();
+            // UpdateMineable();
+           // MatchOuter(newT);
 
-            foreach(var pos in MapLevel.StartPositions)
-            {
-                //var t = MapLevel.GetTrack(pos);
-                var dirs = new List<IndexPos>() { IndexPos.Left, IndexPos.Right, IndexPos.Up, IndexPos.Down };
-                var any = dirs.Any(item => item + newT.Index == pos);
-                if (newT.CanConnect() && any)
-                {
-                    var first = dirs.First(item => item + newT.Index == pos);
-                    newT.Connect(first);
 
-                    MatchSprite(newT);
-                }
-            }
-            
             AudioStream.Stream = ResourceStore.GetAudio("TrackPlace2");
             AudioStream.Play();
             return true;
@@ -1081,26 +926,57 @@ namespace MagicalMountainMinery.Main
 
         }
 
-
-        public void ConnectTracks(IndexPos from, Track track1, IndexPos to, Track track2)
+        public void MatchOuter(Track newT)
         {
-            if (!track1.CanConnect() || !track2.CanConnect()) //has 0 or 1 connection
-                return;
+            var dirs = new List<IndexPos>() { IndexPos.Left, IndexPos.Right, IndexPos.Up, IndexPos.Down };
+            //get first track that is beside this placed one
+            var outer = OuterConnections.FirstOrDefault(track => dirs.Any(dir => dir + newT.Index == track.Index));
+            if (outer != null)
+            {
+                var dir = newT.Index - outer.Index;
+                newT.Connect(dir.Opposite());
+                MatchSprite(newT);
+                UpdateList(newT, false, outer);
+                UpdateList(outer, false, newT);
 
-            var dex1 = from - to;
-            var dex2 = to - from;
-
-            Connect(track1, dex2);
-            Connect(track2, dex1);
-
-            MatchSprite(track1);
-            MatchSprite(track2);
-
-
-
-            LastHover = CurrentHover;
-
+                outer.Connect(dir);
+                MatchSprite(outer);
+            }
         }
+
+
+        /// <summary>
+        /// From will always be the static object. I.e., portal, target, etc.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="fromC"></param>
+        /// <param name="to"></param>
+        /// <param name="toC"></param>
+        //public void Connect(IndexPos from, IConnectable fromC, IndexPos to, IConnectable toC)
+        //{
+        //    if(fromC is Track t1 &&  toC is Track t2)
+        //        ConnectTo(from, t1, to,t2);
+        //    else 
+        //}
+        //public void ConnectTo(IndexPos from, Track track1, IndexPos to, Track track2)
+        //{
+        //    if (!track1.CanConnect() || !track2.CanConnect()) //has 0 or 1 connection
+        //        return;
+
+        //    var dex1 = from - to;
+        //    var dex2 = to - from;
+
+        //    ConnectTo(track1, track2);
+        //    ConnectTo(track2, track1);
+
+        //    MatchSprite(track1);
+        //    MatchSprite(track2);
+
+
+
+        //    LastHover = CurrentHover;
+
+        //}
 
         public void Save()
         {

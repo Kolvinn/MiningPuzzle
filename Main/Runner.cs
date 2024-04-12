@@ -43,6 +43,7 @@ public partial class Runner : Node2D
     public  MapSave CurrentMapSave {  get; set; }
     public MapLoad CurrentMapData { get; set; }
 
+
     public Camera Cam { get; set; }
     public override void _Ready()
 	{
@@ -71,7 +72,7 @@ public partial class Runner : Node2D
 
 
         //var select = this.GetNode<OptionButton>("CanvasLayer/LevelSelect");
-		//select.Connect(OptionButton.SignalName.ItemSelected, new Callable(this, nameof(OnResetSingle)));
+		//select.ConnectTo(OptionButton.SignalName.ItemSelected, new Callable(this, nameof(OnResetSingle)));
 
         //LoadSingleLevel(0);
 
@@ -110,6 +111,40 @@ public partial class Runner : Node2D
         LevelEndUI.Visible = false;
         HomeCall();
     }
+
+    public void StopLevelPressed()
+    {
+        this.GetNode<Control>("CanvasLayer/Container").Visible = false;
+        OnRetry();
+    }
+
+    public void PauseLevelPressed()
+    {
+
+        BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Pause"), false);
+        BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Play"), true);
+        foreach (var item in CartControllers)
+        {
+            item.State = CartController.CartState.Paused;
+        }
+    }
+
+    public void BtnEnable(BaseButton b, bool enable)
+    {
+        b.Modulate = enable ? Colors.White: new Color(1, 1, 1, 0.5f);
+        b.Disabled = !enable;
+    }
+    public void PlayLevelPressed()
+    {
+        BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Pause"), true);
+        BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Play"), false);
+
+        foreach (var item in CartControllers)
+        {
+            item.State = CartController.CartState.Moving;
+        }
+    }
+
     public void OnSimSpeedChange(float speed)
     {
         if(speed < 0)
@@ -206,28 +241,8 @@ public partial class Runner : Node2D
             }
         }
         MapLevel.EndTracks = endTs;
-        foreach (var start in MapLevel.StartPositions)
-        {
 
-
-            var startT = new Track(ResourceStore.GetTex(TrackType.Straight), start);
-            MapLevel.AddChild(startT);
-            startT.Index = start;
-            startT.ZIndex = 5;
-            startT.Position = MapLevel.GetGlobalPosition(start);
-            var list = new List<IndexPos>() { IndexPos.Left, IndexPos.Right, IndexPos.Up, IndexPos.Down };
-            var conn = list.First(pos => MapLevel.ValidIndex(pos + startT.Index));
-
-            startT.Connect(conn);
-            Placer.SetStart(startT);
-
-            var control = new CartController(startT, MapLevel);
-            this.AddChild(control);
-            CartControllers.Add(control);
-
-            control.Cart.CurrentPlayer.Play(conn.ToString().Split("_")[1]);
-            control.Cart.GetNode<Node2D>("ArrowRot").Visible = true;
-        }
+        PopluateStartTracks();
 
 
         ValidRun = true;
@@ -249,59 +264,113 @@ public partial class Runner : Node2D
     }
 
 
+    public void PopluateStartTracks()
+    {
+        foreach (var start in MapLevel.StartData)
+        {
+
+
+            var startT = new Track(ResourceStore.GetTex(TrackType.Straight), start.From);
+            MapLevel.AddChild(startT);
+            startT.Index = start.From;
+            startT.ZIndex = 5;
+            startT.Position = MapLevel.GetGlobalPosition(start.From);
+
+            
+            
+            var directionIndex = IndexPos.Left;
+
+            if (start.From.X < 0)
+                directionIndex = IndexPos.Right;
+            else if (start.From.Y < 0)
+                directionIndex = IndexPos.Down;
+            if (start.From.Y > MapLevel.IndexHeight)
+                directionIndex = IndexPos.Up;
+
+            var last = startT;
+            var nextPos = start.From + directionIndex;
+
+            while(!MapLevel.ValidIndex(nextPos))
+            {
+                var track = new Track(ResourceStore.GetTex(TrackType.Straight), directionIndex);
+                MapLevel.AddChild(track);
+                track.Index = nextPos;
+                track.ZIndex = 5;
+                track.Position = MapLevel.GetGlobalPosition(nextPos);
+
+                Placer.UpdateList(last, false, track);
+                Placer.UpdateList(track, false, last);
+
+                last.Connect(directionIndex);
+                track.Connect(directionIndex.Opposite());
+
+                last = track;
+                nextPos += directionIndex;
+            }
+
+            Placer.OuterConnections.Add(last);
+            var control = new CartController(startT, MapLevel, start);
+            this.AddChild(control);
+            CartControllers.Add(control);
+
+            
+        }
+    }
+
    
 
+    public void ValidLevelComplete()
+    {
+        var sum = 0;
+        foreach (var target in MapLevel.LevelTargets)
+        {
+            sum += target.BonusConditions.Where(con => con.Validated).Count();
+        }
+        bool complete = false;
 
+        if (CurrentMapSave != null)
+        {
+
+            CurrentMapSave.BonusStarsCompleted = Math.Max(CurrentMapSave.BonusStarsCompleted, sum);
+            complete = true;
+
+        }
+        else
+        {
+            CurrentMapSave = new MapSave()
+            {
+                BonusStarsCompleted = sum,
+                Completed = true,
+                LevelIndex = -100
+
+            };
+        }
+
+        LevelComplete(CurrentMapSave, CurrentMapData);
+
+        LevelEndUI.Show(complete, CurrentMapSave.BonusStarsCompleted);
+    }
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(double delta)
 	{
 		LastEvent = EventDispatch.PopGameEvent();
 
-        var fin = CartControllers.Count > 0 && CartControllers.All(item => item.Finished) ;
-		if (fin && ValidRun)
-		{
-			var success = MapLevel.LevelTargets.All(item => item.CompletedAll);
-            if (success)
-            {
-                var sum = 0;
-                foreach (var target in MapLevel.LevelTargets)
-                {
-                    sum += target.BonusConditions.Where(con => con.Validated).Count();
-                }
-                bool complete = false;
+        var fin = CartControllers.Count > 0 && CartControllers.All(item => item.Finished);
+        var success = MapLevel.LevelTargets.All(item => item.CompletedAll);
 
-                if(CurrentMapSave != null)
-                {
+        if (success)
+        {
+            foreach (var control in CartControllers)
+                control.Finished = true;
 
-                    CurrentMapSave.BonusStarsCompleted = Math.Max(CurrentMapSave.BonusStarsCompleted, sum);
-                    complete = true;
+            ValidLevelComplete();
 
-                }
-                else
-                {
-                    CurrentMapSave = new MapSave()
-                    {
-                        BonusStarsCompleted = sum,
-                        Completed = true,
-                        LevelIndex = -100
-
-                    };
-                }
-
-                LevelComplete(CurrentMapSave, CurrentMapData);
-
-                LevelEndUI.Show(complete, CurrentMapSave.BonusStarsCompleted);
-
-            }
-			//string text = success ? "Success!" : "Fail!";
-            //this.LoadingScreen.Visible = true;
-			//spriteSpawns.Clear();
-			//this.LoadingScreen.GetNode<Label>("Label").Text = text;
+        }
+        else if (fin && ValidRun)
+        {
             ValidRun = false;
         }
-
-
-		
+        	
 
     }
 
@@ -327,16 +396,16 @@ public partial class Runner : Node2D
 	{
         if (Placer.MasterTrackList.Count == 0)
             return;
-        var col = this.StartButton.SelfModulate;
-        col.A = 0.5f;
-        this.StartButton.Modulate = col;
-        this.StartButton.Disabled = true;
-		var colors = new List<Color>() { Colors.AliceBlue, Colors.RebeccaPurple, Colors.Yellow, Colors.Green };
+        this.GetNode<Control>("CanvasLayer/Container").Visible = true;
+        BtnEnable(StartButton, false);
+        //BtnEnable(StartButton, false);
+
+        var colors = new List<Color>() { Colors.AliceBlue, Colors.RebeccaPurple, Colors.Yellow, Colors.Green };
 		int i = 0;
 
         foreach (var control in CartControllers)
 		{
-            control.Start(colors[i++], Placer.MasterTrackList);
+            control.Start(colors[i++], Placer.MasterTrackList, control.StartT.Direction1);
 		}
 
 		
@@ -373,57 +442,5 @@ public partial class Runner : Node2D
 
 }
 
-public class MiningLevelModel
-{
-	//contains all the data for spawning the mine susch as..
-	//all the objects that can be found
-	//spawn rate per row
-	//row type
-	//speed/
-	//difficulty? 
-	//spawn chance modifiers
-}
-
-public class MinableObject
-{
-	//contains data for things like
-	//accuracy requirements
-	//strength requirements 
-}
-
-public static class RuleSet
-{
-	//contains default spawning rules, mining strengths, etc.
-}
 
 
-public interface IInteractable : GameObject
-{
-
-}
-
-public interface IUIComponent
-{
-    [Export]
-    public string UIID { get; set; }
-}
-
-public interface ISaveable
-{
-	public virtual List<string> GetSaveRefs()
-	{
-		return new List<string>();
-	}
-}
-
-public interface GameObject
-{
-
-}
-
-public enum TrackType
-{
-	Straight,
-	Curve,
-	Junction
-}

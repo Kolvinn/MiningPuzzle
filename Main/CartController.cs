@@ -21,23 +21,18 @@ namespace MagicalMountainMinery.Main
 
         public MapLevel MapLevel { get; set; }
 
-        public Queue<Vector2> CartVectors { get; set; }  = new Queue<Vector2>();
+        public Queue<Vector2> CartVectors { get; set; } = new Queue<Vector2>();
         public Queue<IndexPos> CartDirs { get; set; } = new Queue<IndexPos>();
 
-        public Queue<Track> TrackQueue = new Queue<Track>();
+        public Queue<IConnectable> ConnectionQueue = new Queue<IConnectable>();
 
         public bool Finished { get; set; } = false;
-
-       // public IndexPos StartPos { get; set; }
-
-        public IndexPos CartDex {  get; set; }  
-
-        public Vector2 LastVector { get; set; }
+        //public Vector2 LastVector { get; set; }
         public Vector2 NextVector { get; set; }
-        public Track LastTrack { get; set; } = new Track();
-        public Track NextTrack { get; set; } = new Track();
+        //public Track LastTrack { get; set; } = new Track();
+        public IConnectable NextConnection { get; set; } = new Track();
 
-        public Track CurrentTrack { get; set; } = new Track();
+        public IConnectable CurrentConnection { get; set; } = new Track();
         public IndexPos LastDirection { get; set; } = IndexPos.Zero;
         public IndexPos NextDirection { get; set; } = IndexPos.Zero;
         public Line2D CartLine { get; set; }
@@ -49,6 +44,7 @@ namespace MagicalMountainMinery.Main
 
         public Track StartT { get; set; }
 
+        public CartStartData StartData { get; set; }
         public Dictionary<Sprite2D, GameResource> spriteSpawns { get; set; } = new Dictionary<Sprite2D, GameResource>();
 
         public enum CartState
@@ -58,62 +54,144 @@ namespace MagicalMountainMinery.Main
             WaitOnFinish,
             Finished,
             Success,
+            Paused,
             Fail,
 
         }
-        public CartState State { get; set; } = CartState.Stopped;
+        public CartState State { get; set; } = CartState.Paused;
+
+        public Dictionary<IConnectable, List<IConnectable>> Connections { get; set; }
         public override void _Ready()
         {
             Cart = Runner.LoadScene<Cart>("res://Obj/Cart.tscn");
             MapLevel.AddChild(Cart);
             Cart.Position = MapLevel.GetGlobalPosition(StartT.Index);
 
+            Cart.CurrentPlayer.Play(StartT.Direction1.ToString().Split("_")[1]);
+            Cart.GetNode<Node2D>("ArrowRot").Visible = true;
+            Cart.CurrentMiner.Connect(Miner.SignalName.MiningHit, new Callable(this, nameof(MineableHit)));
+            Cart.ZIndex = 6;
+            if(StartData.Type == CartType.Double)
+            {
+                Cart.GetNode<Sprite2D>("Sprite2D").Modulate = Colors.Red;
+            }
+
         }
         public override void _PhysicsProcess(double delta)
         {
-            
-            if (Finished)
+            if (Finished || State == CartState.Paused)
                 return;
-            if (State == CartState.Moving)
+            else if (State == CartState.Stopped)
             {
-                CartDex = FetchCartIndex();
-                DoMine();
+                if (spriteSpawns.Count > 0)
+                {
+                    DoSprites((float)delta);
+                }
+                else
+                {
+                    CheckFinish(delta);
+                    if (StartData.Type == CartType.Double)
+                    {
+                        StartT = CurrentConnection as Track; 
+                        Start(Colors.Beige, Connections, LastDirection.Opposite());
+
+                    }
+                    else
+                    {
+                        Finished = true;
+                        Cart.Completed = true;
+                    }
+                }
+            } 
+            else if (State == CartState.Moving)
+            {
+                FetchCartIndex();
                 Move(delta);
+                DoMine();
                 DoSprites((float)delta);
             }
-            else if(State == CartState.WaitOnFinish)
+            else if (State == CartState.WaitOnFinish)
             {
                 CheckFinish(delta);
             }
-            
+
         }
 
         public void CheckFinish(double delta)
         {
-            if (spriteSpawns.Count > 0)
+            if (LevelTarget != null)
             {
-                DoSprites((float)delta);
+                var res = Cart.StoredResources.Values.Select(item => item.GameResource).ToList();
+                LevelTarget.ValidateCondition(res);
             }
-            else
-            {
-                if (LevelTarget != null)
-                {
-                    var res = Cart.StoredResources.Values.Select(item => item.GameResource).ToList();
-                    LevelTarget.ValidateCondition(res);
-                }
-                
-                Finished = true;
-                Cart.Completed = true;
 
+        }
+
+
+        public void PortalEnterEnd()
+        {
+            var p = NextConnection as Portal;
+            //LastVector = p.From;
+            // LastTrack = NextTrack;
+
+
+            //the next things to get should be the sibling portal, if it exists
+            //otherwise get next track
+
+            NextConnection = ConnectionQueue.Dequeue();
+            NextVector = CartVectors.Dequeue();
+            NextDirection = CartDirs.Dequeue();
+            LastDirection = NextDirection;
+
+            if (NextConnection is Portal portal)
+            {
+                Cart.Position = portal.Position + new Vector2(15, 9);
+
+                //do this again to get whatever track is connected to the sibling portal
+                NextConnection = ConnectionQueue.Dequeue();
+                NextVector = CartVectors.Dequeue();
+                NextDirection = CartDirs.Dequeue();
+                LastDirection = NextDirection;
             }
-            
+
+
+
+
+            //check for portal end
+
+            Tween tween = GetTree().CreateTween();
+            tween.SetParallel(true);
+
+
+            var nextDir = new Vector2(MapLevel.TrackX / 2 * NextDirection.X, MapLevel.TrackY / 2 * NextDirection.Y);
+
+            nextDir = new Vector2(nextDir.X == 0 ? 1 : nextDir.X, nextDir.Y == 0 ? 1 : nextDir.Y);
+
+
+            var newPos = NextVector - nextDir; // i.e., the edge of portal and connection
+
+            tween.TweenProperty(Cart, "position", newPos, 0.5f).
+            SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+
+            tween.Parallel().TweenProperty(Cart, "scale", new Vector2(1, 1), 0.5f).
+            SetTrans(Tween.TransitionType.Quart).
+                    SetEase(Tween.EaseType.In);
+
+
+            //tween.TweenProperty(Cart, "visible", true, 0.2f);
+            tween.Connect(Tween.SignalName.Finished, Callable.From(PortalLeaveEnd));
+        }
+
+        public void PortalLeaveEnd()
+        {
+            State = CartState.Moving;
         }
         public void Move(double delta)
         {
-            if(Cart.HasOverlappingAreas())
+            if (Cart.HasOverlappingAreas())
             {
 
-               //Finished = true;
+                //Finished = true;
                 var cart = Cart.GetOverlappingAreas().Where(item => item is Cart).FirstOrDefault() as Cart;
 
                 if (cart.CurrentLevel == Cart.CurrentLevel)
@@ -121,7 +199,7 @@ namespace MagicalMountainMinery.Main
                     //cart.Completed = this.Cart.Completed = true;
 
                     //this.Cart.Completed = true;
-                   // this.Finished = true;
+                    // this.Finished = true;
 
                     if (cart.Completed)
                     {
@@ -133,28 +211,48 @@ namespace MagicalMountainMinery.Main
                 }
                 //State = CartState.Fail;
             }
-            if (Cart.Position == NextVector)
+
+            if (NextConnection is Portal portal && Cart.CurrentIndex == portal.Index)
             {
-                
+                State = CartState.Paused;
+                //TWEEN
+                Tween tween = GetTree().CreateTween();
+                tween.SetParallel(true);
+                var newPos = Cart.Position + new Vector2(15, 9);
+                tween.TweenProperty(Cart, "position", newPos, 0.5f).
+                SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.In);
+
+                tween.TweenProperty(Cart, "scale", new Vector2(0.2f, 0.2f), 0.5f).
+                SetTrans(Tween.TransitionType.Quart).
+                        SetEase(Tween.EaseType.In);
+
+                //tween.TweenProperty(Cart, "visible", false, 0.4f);
+                tween.Connect(Tween.SignalName.Finished, Callable.From(PortalEnterEnd));
+
+            }
+
+            else if (Cart.Position == NextVector)
+            {
+                LastDirection = NextDirection;
                 if (CartVectors.Count == 0)
                 {
-                    State = CartState.WaitOnFinish;
+                    State = CartState.Stopped;
                     CheckEnd(Cart.CurrentIndex);
                     return;
                 }
                 else
                 {
 
-                    LastVector = Cart.Position;
-                    LastTrack = NextTrack;
+                    //LastVector = Cart.From;
+                    //LastTrack = NextTrack;
 
                     NextVector = CartVectors.Dequeue();
-                    NextTrack = TrackQueue.Dequeue();
+                    NextConnection = ConnectionQueue.Dequeue();
 
-                    LastDirection = NextDirection;
+                    
                     NextDirection = CartDirs.Dequeue();
                     var thing = (NextDirection.ToString().Split("_")[1]);
-                    Cart.CurrentPlayer.Play(thing, customSpeed:1* Runner.SIM_SPEED);
+                    Cart.CurrentPlayer.Play(thing, customSpeed: 1 * Runner.SIM_SPEED);
                 }
             }
             else
@@ -163,21 +261,22 @@ namespace MagicalMountainMinery.Main
                 Cart.Position = thing;
             }
         }
-        public CartController() 
+        public CartController()
         {
         }
 
-       
-        public CartController(Track start, MapLevel map)
+
+        public CartController(Track start, MapLevel map, CartStartData startData)
         {
-            //this.StartPos = start;
+
             this.StartT = start;
             this.MapLevel = map;
+            this.StartData = startData;
         }
 
 
         public void MineableHit(Mineable mineable)
-        {   
+        {
             if (mineable == null)
                 return;
             if (mineable.Hardness > 0)
@@ -200,11 +299,13 @@ namespace MagicalMountainMinery.Main
         {
 
         }
-        public void Start(Color c, Dictionary<Track, List<Track>> trackList)
+
+        public void Start(Color c, Dictionary<IConnectable, List<IConnectable>> conList, IndexPos StartDirection)
         {
+
+            Connections = conList;
             Cart.GetNode<Node2D>("ArrowRot").Visible = false;
             Cart.Position = MapLevel.GetGlobalPosition(StartT.Index);
-            Cart.CurrentMiner.Connect(Miner.SignalName.MiningHit, new Callable(this, nameof(MineableHit)));
 
             CartLine = new Line2D()
             {
@@ -212,87 +313,119 @@ namespace MagicalMountainMinery.Main
                 ZIndex = -1,
                 Visible = false,
             };
+            CartVectors.Clear();
+            CartDirs.Clear();
+            ConnectionQueue.Clear();
+            IConnectable next = null;
 
-            var next = MapLevel.GetTrack(StartT.Index + StartT.Connection1);
+            if(conList.TryGetValue(StartT, out var subList))
+            {
+                next = subList.FirstOrDefault(item => StartT.Index + StartDirection == item.Index);
+                
+            }
+            if (next == null)
+            {
+                Finished = true;
+                return;
+            }
 
             CartLine.AddPoint(MapLevel.GetGlobalPosition(next.Index));
             CartVectors.Enqueue(MapLevel.GetGlobalPosition(next.Index));
-            CartDirs.Enqueue(StartT.Connection1);
-            TrackQueue.Enqueue(next);
+            CartDirs.Enqueue(StartDirection);
+            ConnectionQueue.Enqueue(next);
 
 
-            var lastDirection = StartT.Connection1.Opposite(); //This should be the opposite of con 1, i.e., connected to start
-            var currentTrack = next;
+            var lastDirection = StartDirection.Opposite(); //This should be the opposite of con 1, i.e., connected to start
+            IConnectable currentConnection = next;
 
-            
+
             State = CartState.Moving;
             //var startList = new List<Track>();
-            //trackList.TryGetValue(MapLevel.GetTrack(StartPos), out startList);
+            //conList.TryGetValue(MapLevel.GetTrack(StartPos), out startList);
 
             var maxinterations = 100;
-            while (currentTrack != null && maxinterations != 0)
+            while (currentConnection != null && maxinterations != 0)
             {
 
-                var startList = new List<Track>();
-                trackList.TryGetValue(currentTrack, out startList);
+                var startList = new List<IConnectable>();
+                conList.TryGetValue(currentConnection, out startList);
                 var nextDir = IndexPos.Zero;
-                //normal track, i.e. start or non junc
+
+
+                //normal con, i.e. start or non junc
                 if (startList == null || startList.Count == 0)
                     break;
-                else if (currentTrack is Junction junc)
+
+                if (currentConnection is Portal p && p.Sibling != null)
                 {
-                    if (lastDirection == junc.Connection1)
+                    var global = (MapLevel.GetGlobalPosition(p.Sibling.Index));
+                    nextDir = lastDirection.Opposite();
+
+                    CartLine.AddPoint(global);
+                    CartVectors.Enqueue(global);
+                    CartDirs.Enqueue(nextDir);
+                    ConnectionQueue.Enqueue(p.Sibling);
+
+                    //since we keep the same direciton over portals, dont change nextdir or lastdir
+                    currentConnection = p.Sibling;
+                    conList.TryGetValue(currentConnection, out startList);
+                }
+
+
+
+                else if (currentConnection is Junction junc)
+                {
+                    if (lastDirection == junc.Direction1)
                         nextDir = junc.Option;
                     else if (lastDirection == junc.Option)
-                        nextDir = junc.Connection1;
+                        nextDir = junc.Direction1;
                     else
-                        nextDir = junc.Connection1;
+                        nextDir = junc.Direction1;
 
-                    //var track = startList.First(item => item.Index == nextDir + currentTrack.Index);
+                    //var con = startList.First(item => item.From == nextDir + currentConnection.From);
                 }
-                else
+                else if (currentConnection is Track track)
                 {
-                    //var dir1 = currentTrack.Index + currentTrack.Connection1;
-                    //var dir2 = currentTrack.Index + currentTrack.Connection2;
 
-                    nextDir = currentTrack.Connection1 == lastDirection ? currentTrack.Connection2 : currentTrack.Connection1;
-                    
+                    nextDir = track.Direction1 == lastDirection ? track.Direction2 : track.Direction1;
                 }
-                
-
-                var nextPos = currentTrack.Index + nextDir;
-
-                var nextTrack = new Track();
-                
-                nextTrack = startList.First(item => item.Index == nextPos);
-                
-                var global = (MapLevel.GetGlobalPosition(nextPos));
-
-                CartLine.AddPoint(global);
-                CartVectors.Enqueue(global);
-                CartDirs.Enqueue(nextDir);
-                TrackQueue.Enqueue(nextTrack);
 
 
-                currentTrack = nextTrack;
-                lastDirection = nextDir.Opposite();
+                var nextPos = currentConnection.Index + nextDir;
+                var nextCon = startList.FirstOrDefault(item => item.Index == nextPos);
 
 
-                //var item1 = MapLevel.Get(currentTrack.Index + currentTrack.Connection1);
-                //var item2 = MapLevel.Get(currentTrack.Index + currentTrack.Connection2);
-                if (currentTrack.Connection1 == IndexPos.Zero || currentTrack.Connection2 == IndexPos.Zero)
+
+                if (nextCon != null)
+                {
+                    var global = (MapLevel.GetGlobalPosition(nextPos));
+                    CartLine.AddPoint(global);
+                    CartVectors.Enqueue(global);
+                    CartDirs.Enqueue(nextDir);
+                    ConnectionQueue.Enqueue(nextCon);
+                    lastDirection = nextDir.Opposite();
+
+                }
+
+                currentConnection = nextCon;
+
+                if (CurrentConnection == null)
                     break;
-                else if(MapLevel.EndPositions.Contains(nextPos))
+                if (currentConnection is Track t)
+                {
+                    if (t.Direction1 == IndexPos.Zero || t.Direction2 == IndexPos.Zero)
                         break;
-               // if ((item1 != null && item1 is LevelTarget) || (item2 != null && item2 is LevelTarget))
-                   // break;
+                }
+                if (MapLevel.EndPositions.Contains(nextPos))
+                    break;
+
                 maxinterations--;
 
             }
 
             if (CartVectors.Count == 0)
             {
-                State = CartState.WaitOnFinish;
+                State = CartState.Stopped;
                 CheckEnd(Cart.CurrentIndex);
                 return;
             }
@@ -301,18 +434,18 @@ namespace MagicalMountainMinery.Main
                 MapLevel.AddChild(CartLine);
                 CartLine.ZIndex = 100;
 
-                LastVector = NextVector = CartVectors.Dequeue();
-                LastTrack = NextTrack = TrackQueue.Dequeue();
+                NextVector = CartVectors.Dequeue();
+                NextConnection = ConnectionQueue.Dequeue();
                 LastDirection = NextDirection = CartDirs.Dequeue();
-
+                CurrentConnection = StartT;
                 var thing = (LastDirection.ToString().Split("_")[1]);
 
                 Cart.CurrentPlayer.Play(thing, customSpeed: Runner.SIM_SPEED);
                 State = CartState.Moving;
             }
-            
 
-            
+
+
         }
         public void Free(Node node)
         {
@@ -322,7 +455,7 @@ namespace MagicalMountainMinery.Main
 
         public void DeleteSelf()
         {
-            
+
             Cart?.QueueFree();
             CartLine?.QueueFree();
             this.QueueFree();
@@ -353,45 +486,59 @@ namespace MagicalMountainMinery.Main
             var global = Cart.GlobalPosition;
             var dexX = (global.X / (MapLevel.TrackX));
             var dexY = (global.Y / (MapLevel.TrackY));
+
+            if (dexX < 0)
+                dexX += -1;
+            if (dexY < 0)
+                dexY += -1;
+
             var index = new IndexPos(dexX, dexY); //index auto chops floats to ints
-            var track = MapLevel.GetTrack(index);
-            CurrentTrack = track;
-            
-            if (index != Cart.CurrentIndex)
+
+            if(CurrentConnection?.Index != index)
             {
-                Cart.CurrentLevel = track.TrackLevel;
-                Cart.CurrentIndex = track.Index;
-                Cart.ZIndex = (Cart.CurrentLevel * 5) + 1;
+                //we have moved onto new square, so update !
+                var dir = index - CurrentConnection.Index;
+                if(Connections.TryGetValue(CurrentConnection, out var conList))
+                {
+                    var first = conList.FirstOrDefault(item => item.Index == CurrentConnection.Index + dir);
+                    if (first == null)
+                        return index;
 
-                //everytime we move to a different index, update lastminedindex
-
+                    if (first is Track t)
+                        Cart.CurrentLevel = t.TrackLevel;
+                    CurrentConnection = first;
+                    Cart.CurrentIndex = first.Index;
+                    Cart.ZIndex = (Cart.CurrentLevel * 5) + 1;
+                }
             }
+
+
 
             return index;
         }
 
-        public bool CheckEnd(IndexPos endDex) 
+        public bool CheckEnd(IndexPos endDex)
         {
             // var endDex = 
             if (MapLevel.EndPositions.Contains(endDex))
             {
                 var t = MapLevel.GetTrack(endDex);
-                var con = !MapLevel.ValidIndex(t.Connection1 + endDex) ? t.Connection1 + endDex : t.Connection2 +endDex;
+                var con = !MapLevel.ValidIndex(t.Direction1 + endDex) ? t.Direction1 + endDex : t.Direction2 + endDex;
                 var levelPos = MapLevel.GetGlobalPosition(con);
-                var levels = MapLevel.GetChildren().Where(child => child is LevelTarget).Select(i=>i as LevelTarget).ToList();
+                var levels = MapLevel.GetChildren().Where(child => child is LevelTarget).Select(i => i as LevelTarget).ToList();
                 var level = levels.FirstOrDefault(item => item.Position == levelPos);
-                if(level != null)
+                if (level != null)
                 {
                     LevelTarget = level;
                     return true;
                 }
             }
 
-            return false;   
+            return false;
         }
 
 
-        
+
         public void DoMine()
         {
 
@@ -400,22 +547,26 @@ namespace MagicalMountainMinery.Main
             // return;  //one per square
 
             //Cart.CurrentIndex = CartDex;
-            if (CurrentTrack.TrackLevel == 2)
+            if (CurrentConnection is not Track)
                 return;
-            if (CurrentTrack.HeightLabel.Text == "1.5")
+
+            var t = CurrentConnection as Track;
+            if (t.TrackLevel == 2)
+                return;
+            if (t.HeightLabel.Text == "1.5")
                 return;
             if (Cart.LastMinedIndex == Cart.CurrentIndex)
                 return;
 
 
             var list = Cart.GetMineableIndexes().Where(pos => MapLevel.ValidIndex(Cart.CurrentIndex + pos)).ToList();
-            
+
 
             foreach (var dex in list)
             {
                 var index = Cart.CurrentIndex + dex;
                 var mineable = MapLevel.GetMineable(index);
-                if (  mineable != null && IsInstanceValid(mineable) &&!mineable.locked)
+                if (mineable != null && IsInstanceValid(mineable) && !mineable.locked)
                 {
 
                     Cart.LastMinedIndex = Cart.CurrentIndex;

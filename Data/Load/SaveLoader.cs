@@ -4,6 +4,7 @@ using MagicalMountainMinery.Obj;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -32,7 +33,8 @@ namespace MagicalMountainMinery.Data.Load
     public static class SaveLoader
     {
 
-        static Dictionary<object, object> parsedClasses;
+        static Dictionary<object, object> parsedClasses { get; set; }
+        
         public static JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings()
         {
             TypeNameHandling = TypeNameHandling.Objects,
@@ -44,11 +46,12 @@ namespace MagicalMountainMinery.Data.Load
         public static SaveInstance SaveGame(Node rootNode)
         {
             parsedClasses = new Dictionary<object, object>();
+            //storedSelfReferences = new Dictionary<object, object>();
             return CreateSaveInstance(rootNode);
         }
 
         #region SaveGame
-        public static SaveInstance CreateSaveInstance(object o, bool endNode = false, bool isEnum = false)
+        public static SaveInstance CreateSaveInstance(object o, params object[] ignore)
         {
             Type objectType = o.GetType();
 
@@ -61,9 +64,8 @@ namespace MagicalMountainMinery.Data.Load
                 s.ResPath = ((Node)o).SceneFilePath;
             }
 
-            //this.objectType = o.GetType();
-            //this.fieldBook = new Dictionary<string, object>();
-
+            var storedSelfReferences = new Dictionary<object, object>();
+            
 
 
             var fields = objectType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
@@ -81,92 +83,34 @@ namespace MagicalMountainMinery.Data.Load
                 //properties.Union(extra.Where(item => data.Contains(item.Name)));
             }
 
-            //if not endnode, we need to store private and public fields
-            //if (!endNode)
-            //{
-            //    foreach (FieldInfo f in fields)
-            //    {
-
-            //        object fieldObject = f.GetValue(o);
-
-            //        if (fieldObject == null)
-            //        {
-            //            continue;
-            //        }
-
-            //        object ret;
-            //        if (parsedClasses.Keys.Contains(fieldObject))
-            //        {
-            //            ////GD.Print("      Already parsed object: ",fieldObject, " for parent", o.GetType());
-            //            object savedRef;
-            //            parsedClasses.TryGetValue(fieldObject, out savedRef);
-            //            ret = new ObjectRef(savedRef);
-            //        }
-            //        else if (f.GetCustomAttribute(typeof(StoreCollectionAttribute)) != null)
-            //        {
-            //            var att = (StoreCollectionAttribute)f.GetCustomAttribute(typeof(StoreCollectionAttribute));
-            //            if (att.ShouldStore)
-            //                ret = StoreCollection(f.Name, fieldObject, o);
-            //            else
-            //                ret = null;
-            //        }
-            //        else
-            //        {
-            //            ret = ParseSaveObject(f.Name, fieldObject, o);
-
-            //            if (ret != null && ret.GetType() == typeof(SaveInstance))
-            //                parsedClasses.Add(fieldObject, ret);
-            //        }
-
-            //        //make sure that we aren't storing something null that we can't parse!
-            //        if (ret != null)
-            //        {
-            //            //////GD.Print("Adding field object: ", fieldObject, " with type: ", fieldObject.GetType());
-
-            //            s.fieldBook.Add(f.Name, ret);
-            //            ////////GD.Print("writing field: ",f.Name,": ", ret, " as ",ret.GetType(), " under Namespace: ",ret.GetType().Namespace);
-            //        }
-            //        // }
-            //    }
-
-            //}
-
-            //always store public properties if you can for this SaveInstance
             foreach (PropertyInfo p in properties)
             {
-                //just make sure we aren't storing the same thing twice.
-                //or anything weird like globals
-                //if (fieldList.FindIndex(item => item.Name == p.Name) >= 0
-                //|| p.GetValue(o) == null || p.GetValue(o) == o
-                //|| new List<string>() { "Owner", "NativeInstance", "Scale" }.Contains(p.Name)
-                //|| p.Name.ToLower().Contains("ptr") || p.Name.ToLower().Contains("memory") || p.Name.ToLower().Contains("global")
-                //|| p.Name.Contains("Scale") || p.Name.Contains("Rotation")
-                // || p.Name.ToLower().Contains("ptr") || p.Name.ToLower().Contains("memory")
-                // )
-                //{
-                //    continue;
-                //}
-                //else
-                // {
+                
                 object fieldObject = p.GetValue(o);
                 if (fieldObject == null)
                 {
                     continue;
                 }
-                object ret;
-                if (parsedClasses.Keys.Contains(fieldObject))
-                {
-                    ////GD.Print("      Already parsed object: ",fieldObject, " for parent", o.GetType());
-                    object savedRef;
-                    parsedClasses.TryGetValue(fieldObject, out savedRef);
-                    ret = new ObjectRef(savedRef);
-                }
-                else if ((StoreCollectionAttribute)p.GetCustomAttribute(typeof(StoreCollectionAttribute)) != null)
+                object ret = null ;
+                //if (parsedClasses.TryGetValue(fieldObject, out var savedRef))
+                //{
+                //    if(savedRef != null)
+                //    {
+                //        ret = new ObjectRef(savedRef);
+                //    }
+                //    else
+                //    {
+                //        storedSelfReferences.Add(fieldObject, o);
+                //    }
+                //    //we have a stored object so just reference it
+                //}
+                if ((StoreCollectionAttribute)p.GetCustomAttribute(typeof(StoreCollectionAttribute)) != null)
                 {
                     ret = StoreCollection(p.Name, fieldObject, o);
                 }
                 else
                 {
+                    //parsedClasses.Add(fieldObject, null);
                     ret = ParseSaveObject(p.Name, fieldObject, o);
 
                     if (ret != null && ret.GetType() == typeof(SaveInstance))
@@ -181,34 +125,7 @@ namespace MagicalMountainMinery.Data.Load
                 //}
 
             }
-            //if(o is Node node)
-            //{
-            //    var sprites = node.GetChildren().Where(item => item is Mineable).ToList();
-            //    foreach (var child in node.GetChildren())
-            //    {
-            //        object ret;
-            //        if (parsedClasses.Keys.Contains(child))
-            //        {
-            //            ////GD.Print("      Already parsed object: ",fieldObject, " for parent", o.GetType());
-            //            object savedRef;
-            //            parsedClasses.TryGetValue(child, out savedRef);
-            //            ret = new ObjectRef(savedRef);
-            //        }
-            //        else
-            //        {
-            //            ret = ParseSaveObject(node.Name, child, o);
-            //            if(ret!=null)
-            //            {
-            //                s.childBook.Add(child.Name,)
-            //            }
-            //            if (ret != null && ret.GetType() == typeof(SaveInstance))
-            //            {
-            //                parsedClasses.Add(child, ret);
-            //            }
-            //        }
-            //    }
-            //}
-
+           
             return s;
         }
 
@@ -230,7 +147,8 @@ namespace MagicalMountainMinery.Data.Load
             //need to expand on nodes that are GameObjects, otherwise we can just store a generic Node
             if (typeof(Node).IsInstanceOfType(o) && o.GetType() != typeof(Godot.AnimationPlayer))
             {
-                returnValue = !typeof(GameObject).IsInstanceOfType(o) ? CreateSaveInstance(o, endNode: true) : CreateSaveInstance(o);
+                //returnValue = !typeof(IGameObject).IsInstanceOfType(o) ? CreateSaveInstance(o, endNode: true) : CreateSaveInstance(o);
+                returnValue= CreateSaveInstance(o);
             }
 
             else if (!typeof(Node).IsInstanceOfType(o))
@@ -485,6 +403,10 @@ namespace MagicalMountainMinery.Data.Load
             {
                 return JsonConvert.DeserializeObject<Condition>(str);
             }
+            else if (origin == typeof(CartStartData))
+            {
+                return JsonConvert.DeserializeObject<CartStartData>(str);
+            }
             return null;
         }
 
@@ -719,16 +641,16 @@ namespace MagicalMountainMinery.Data.Load
             List<object> objList = new List<object>();
             Dictionary<object, object> objDict = new Dictionary<object, object>();
             Queue<object> objQueue = new Queue<object>();
-            IInteractable[,] MapObjects;
+            IGameObject[,] MapObjects;
             Track[,] Tracks;
             object[,] doubleObj;
             if (parent.GetType() == typeof(MapLevel))
             {
                 if (fieldName == "MapObjects")
                 {
-                    var array = ((IInteractable[,])o);
-                    int w = ((IInteractable[,])o).GetLength(0);
-                    int h = ((IInteractable[,])o).GetLength(1);
+                    var array = ((IGameObject[,])o);
+                    int w = ((IGameObject[,])o).GetLength(0);
+                    int h = ((IGameObject[,])o).GetLength(1);
                     doubleObj = new object[w, h];
                     for (int i = 0; i < w; i++)
                     {
@@ -743,6 +665,16 @@ namespace MagicalMountainMinery.Data.Load
                 {
                     objList = new List<object>();
                     var list = (List<IndexPos>)o;
+                    foreach (var c in list)
+                    {
+                        objList.Add(ParseSaveObject(null, c, null));
+                    }
+                    return objList;
+                }
+                else if(fieldName == "StartData")
+                {
+                    objList = new List<object>();
+                    var list = (IList)o;
                     foreach (var c in list)
                     {
                         objList.Add(ParseSaveObject(null, c, null));
@@ -790,12 +722,12 @@ namespace MagicalMountainMinery.Data.Load
                     var str = JArray.Parse(jArray.ToString()).ToString();
                     var mapObjects = JsonConvert.DeserializeObject<SaveInstance[,]>(str);
 
-                    var rocks = new IInteractable[mapObjects.GetLength(0), mapObjects.GetLength(1)];
+                    var rocks = new IGameObject[mapObjects.GetLength(0), mapObjects.GetLength(1)];
                     for (int i = 0; i < mapObjects.GetLength(0); i++)
                     {
                         for (int j = 0; j < mapObjects.GetLength(1); j++)
                         {
-                            rocks[i, j] = (IInteractable)LoadSingleProperty(null, mapObjects[i, j]);
+                            rocks[i, j] = (IGameObject)LoadSingleProperty(null, mapObjects[i, j]);
                         }
 
                     }
@@ -812,6 +744,19 @@ namespace MagicalMountainMinery.Data.Load
                     foreach (var c in list)
                     {
                         objList.Add((IndexPos)LoadSingleProperty(null, c));
+                    }
+                    return objList;
+                }
+                else if(fieldName == "StartData")
+                {
+                    var jArray = (JArray)o;
+                    //var array = ((object[,])o);
+                    var str = JArray.Parse(jArray.ToString()).ToString();
+                    var list = JsonConvert.DeserializeObject<List<string>>(str);
+                    var objList = new List<CartStartData>();
+                    foreach (var c in list)
+                    {
+                        objList.Add((CartStartData)LoadSingleProperty(null, c));
                     }
                     return objList;
                 }

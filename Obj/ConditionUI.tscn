@@ -33,13 +33,13 @@ void fragment()
 }
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_r6eeu"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2vrjv"]
 resource_local_to_scene = true
 shader = SubResource("Shader_dttp1")
 shader_parameter/filled = true
 shader_parameter/alpha = 0.0
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_lfdji"]
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8h8rs"]
 resource_local_to_scene = true
 load_path = "res://.godot/imported/icons8-pixel-star-30.png-3d24435608bef9cf06786dd70d7c38d5.ctex"
 
@@ -85,12 +85,12 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="TextureRect" parent="HBoxContainer/StarContainer" instance=ExtResource("4_trejl")]
-material = SubResource("ShaderMaterial_r6eeu")
+material = SubResource("ShaderMaterial_2vrjv")
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-texture = SubResource("CompressedTexture2D_lfdji")
+texture = SubResource("CompressedTexture2D_8h8rs")
 expand_mode = 1
 
 [node name="Sprite2D" parent="HBoxContainer/StarContainer/TextureRect" index="1"]

@@ -12,7 +12,7 @@ namespace MagicalMountainMinery.Main
     {
         private static Queue<EventType> eventTypes = new Queue<EventType>();
 
-        private static HashSet<IInteractable> interactables = new HashSet<IInteractable>();
+        private static HashSet<IGameObject> interactables = new HashSet<IGameObject>();
 
         private static Vector2 mousePos;
 
@@ -121,7 +121,7 @@ namespace MagicalMountainMinery.Main
             return eventTypes.Count == 0 ? EventType.Nill : eventTypes.Dequeue();
         }
 
-        public static IInteractable FetchInteractable()
+        public static IGameObject FetchInteractable()
         {
             return interactables.Count == 0 ? null : interactables.First();
         }
@@ -160,12 +160,12 @@ namespace MagicalMountainMinery.Main
             return null;
         }
 
-        public static void Entered(IInteractable interactable)
+        public static void Entered(IGameObject interactable)
         {
             interactables.Add(interactable);
         }
 
-        public static void Exited(IInteractable interactable)
+        public static void Exited(IGameObject interactable)
         {
             if(interactables.Contains(interactable))
                 interactables.Remove(interactable);

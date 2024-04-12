@@ -50,6 +50,7 @@ namespace MagicalMountainMinery.Main
 
         public Dictionary<IndexPos, TextureRect> MapBlocks { get; set; } = new Dictionary<IndexPos, TextureRect>();
 
+        public Dictionary<CartStartData, TextureRect> CartStarts { get; set; } = new Dictionary<CartStartData, TextureRect>();
         public int CurrentTrackLevel = 1;
         public enum State
         {
@@ -63,16 +64,26 @@ namespace MagicalMountainMinery.Main
             Resource,
             Track,
             EndCon,
-            Block
+            Block,
+            Portal,
+            Cart,
         }
 
+        public CartType cartType { get; set; } = CartType.Single;
+
+        public Portal PortalPair { get; set; }
+
+        public Stack<Portal> PortalStack { get; set; } = new Stack<Portal>();
+
+        public Color[] portalColors = new Color[] { Colors.Blue, Colors.Green, Colors.Red, Colors.Purple };
+        public int portalDex = 0;
         public ObjectFocus focus { get; set; } = ObjectFocus.Track;
 
-        [JsonProperty(ItemConverterType = typeof(StringEnumConverter))]
         public MineableType mineable { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
         public ResourceType resource { get; set; }
+
+        public IndexPos MouseIndex {  get; set; }   
         public override void _Ready()
         {
             ResourceStore.LoadTracks();
@@ -103,7 +114,7 @@ namespace MagicalMountainMinery.Main
             cam.MakeCurrent();
         }
 
-        public class MapBlock : IInteractable
+        public class MapBlock : IGameObject
         {
 
         }
@@ -122,7 +133,7 @@ namespace MagicalMountainMinery.Main
                 if (MapLevel.IndexHeight == width && MapLevel.IndexHeight == height)
                     return;
 
-                var newObj = new IInteractable[width, height];
+                var newObj = new IGameObject[width, height];
                 var newTracks1 = new Track[width, height];
                 var newTracks2 = new Track[width, height];
                 for (int i = 0; i < MapLevel.MapObjects.GetLength(0); i++)
@@ -195,16 +206,34 @@ namespace MagicalMountainMinery.Main
         
         public void HandleUI(EventType env, IUIComponent comp)
         {
-            if(comp.UIID == "block" && env == EventType.Left_Action)
+            if (env != EventType.Left_Action)
+                return;
+            if(comp.UIID == "block")
             {
                 focus = ObjectFocus.Block;
+            }
+            else if (comp.UIID == "portal")
+            {
+                focus = ObjectFocus.Portal;
+            }
+            else if(comp.UIID == "Single") 
+            {
+                focus = ObjectFocus.Cart;
+                cartType = CartType.Single;
+
+            }
+            else if (comp.UIID == "Double")
+            {
+                focus = ObjectFocus.Cart;
+                cartType = CartType.Double;
+
             }
         }
         public override void _PhysicsProcess(double delta)
         {
             var obj = EventDispatch.PeekHover();
             var env = EventDispatch.FetchLast();
-
+            MouseIndex = FetchMouseIndex();
             if (obj != null)
             {
                 //obj = EventDispatch.FetchInteractable();
@@ -256,12 +285,43 @@ namespace MagicalMountainMinery.Main
             }
         }
 
+
+        public void SetCart(IndexPos index)
+        {
+            if (CartStarts.Any(item => item.Key.From == index))
+                return;
+
+            var data = new CartStartData
+            {
+                From = index,
+                Type = cartType,
+            };
+            var tex = new TextureRect()
+            {
+                Texture = this.GetNode<GameButton>("CanvasLayer/NormalCart").TextureNormal,
+                SelfModulate = cartType == CartType.Single ? Colors.White : Colors.Black,
+                Position = MapLevel.GetGlobalPosition(index, false),
+                StretchMode = TextureRect.StretchModeEnum.Scale,
+                ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+                Size = new Vector2(MapLevel.TrackX, MapLevel.TrackY)
+            };
+
+            CartStarts.Add(data,tex);
+            this.AddChild(tex);
+
+        }
+
         public void ValidateState()
         {
             if (CurrentState == State.Constructing)
             {
-                var index = FetchMouseIndex();
-                if (focus == ObjectFocus.Track)
+                var index = MouseIndex;
+                if(focus == ObjectFocus.Cart)
+                {
+                    SetCart(index);
+                    CurrentState = State.Default;
+                }
+                else if (focus == ObjectFocus.Track)
                 {
                     
 
@@ -301,6 +361,10 @@ namespace MagicalMountainMinery.Main
                 {
                     SetBlock(index);
                 }
+                else if(focus == ObjectFocus.Portal)
+                {
+                    SetPortal(index);
+                }
 
 
 
@@ -310,6 +374,12 @@ namespace MagicalMountainMinery.Main
             else if (CurrentState == State.Deleting)
             {
                 var index = FetchMouseIndex();
+                if (CartStarts.Any(item => item.Key.From == index))
+                {
+                    var first = CartStarts.First(item => item.Key.From == index);
+                    first.Value.QueueFree();
+                    CartStarts.Remove(first.Key);
+                }
                 if (!MapLevel.ValidIndex(index))
                     return;
                 if (MapBlocks.ContainsKey(index))
@@ -323,17 +393,56 @@ namespace MagicalMountainMinery.Main
             }
         }
 
-        
+        public void SetPortal(IndexPos pos)
+        {
+            if (!MapLevel.ValidIndex(pos))
+                return;
+            var thing = MapLevel.Get(pos);
+            if (MapLevel.Get(pos) != null)
+                return;
+            if (MapBlocks.ContainsKey(pos))
+                return;
+            var p = Runner.LoadScene<Portal>("res://Assets/Portal/Portal.tscn");
+            p.Index = pos;
+            PortalStack.Push(p);
+            if (PortalPair == null)
+            {
+                PortalPair = p;
+                p.Shader.SetShaderParameter("modulate", portalColors[portalDex]);
+                //p.Shader.SetShaderParameter("modulate", Colors.Blue);
+            }
+            else
+            {
+                PortalPair.Sibling = p;
+                p.Sibling = PortalPair;
+
+                PortalPair = null;
+                p.Shader.SetShaderParameter("modulate", portalColors[portalDex]);
+                //p.Shader.SetShaderParameter("modulate", Colors.Blue);
+                portalDex++;
+
+            }
+            MapLevel.MapObjects[pos.X, pos.Y] = p;
+            MapLevel.AddChild(p);
+            p.Position = MapLevel.GetGlobalPosition(pos);
+        }
         public IndexPos FetchMouseIndex()
         {
             var global = GetGlobalMousePosition();
             var dexX = (global.X / (MapLevel.TrackX));
             var dexY = (global.Y / (MapLevel.TrackY));
+
             if (dexX < 0)
-                dexX = -1;
+                dexX += -1;
             if(dexY < 0)
-                dexY = -1;
+                dexY += -1;
+
             var index = new IndexPos(dexX, dexY); //index auto chops floats to ints
+            if(index != MouseIndex)
+            {
+                MouseIndex = index;
+            }
+            this.GetNode<TextureRect>("HoverSquare").Position = MapLevel.GetGlobalPosition(index, false) + new Vector2(-5, -5);
             return index;
         }
         
@@ -375,8 +484,8 @@ namespace MagicalMountainMinery.Main
             {
                 var match = ResourceStore.GetRotateMatch(junc.GetJunc(), junc.TrackLevel);
                 junc.Connect(match.From, match.To, junc.Option);
-                junc.Connection1 = match.From;
-                junc.Connection2 = match.To;
+                junc.Direction1 = match.From;
+                junc.Direction2 = match.To;
 
 
                 junc.Texture = match.Texture;
@@ -514,10 +623,20 @@ namespace MagicalMountainMinery.Main
             {
                 return;
             }
+
             var item = Runner.LoadScene<LevelTarget>("res://Obj/Target.tscn");
 
-            MapLevel.SetInteractable(index, item);
+            SetInteractable(index, item);
             item.AddChild(new TextEditMod());
+        }
+
+        public void SetInteractable(IndexPos pos, IGameObject item)
+        {
+            //var rock = Runner.LoadScene<Mineable>("res://Obj/Rock.tscn");
+            var node = item as Node2D;
+            this.AddChild(node);
+            node.Position = MapLevel.GetGlobalPosition(pos);
+            MapLevel.MapObjects[pos.X, pos.Y] = item;
         }
 
 
@@ -567,7 +686,7 @@ namespace MagicalMountainMinery.Main
 
 
             var direction = LastHover - index;
-            if (!MapLevel.ValidIndex(index) || MapLevel.StartPositions.Contains(index))
+            if (!MapLevel.ValidIndex(index))
                 return;
             if (index != CurrentHover)
             {
@@ -587,7 +706,30 @@ namespace MagicalMountainMinery.Main
                 RemoveTrack(track, index);
                 return;
             }
-            else {
+            var obj = MapLevel.MapObjects[index.X, index.Y];
+            if(obj == null)
+                return;
+            else if(obj is Portal)
+            {
+                var portal = PortalStack.Pop();
+
+                if (PortalPair != null) 
+                {
+                    PortalPair = null; //remove ref to the only one of it's pair
+ 
+                }
+                else if (portalDex > 0)
+                {
+                    portalDex--;
+                    //there is a pair, so get the obj we are deleting and remove ref;
+                    portal.Sibling.Sibling = null; 
+                }
+
+                MapLevel.RemoveAt(portal.Index);
+
+            }
+            else 
+            {
                 MapLevel.RemoveAt(index);
             }
         }
@@ -695,7 +837,7 @@ namespace MagicalMountainMinery.Main
             if (track == null) return;
             if (track is Junction junc)
             {
-                var list = new List<IndexPos>() { junc.Option, junc.Connection1, junc.Connection2 };
+                var list = new List<IndexPos>() { junc.Option, junc.Direction1, junc.Direction2 };
                 list.Remove(dir);
 
 
@@ -703,7 +845,7 @@ namespace MagicalMountainMinery.Main
                 // UpdateList(track, true, fromTrack);
 
                 var t = new Track();
-                //MapLevel.SetTrack(junc.Index, t);
+                //MapLevel.SetTrack(junc.From, t);
                 SetTrack(junc.Index, t, false, junc.TrackLevel);
                 t.TrackLevel = junc.TrackLevel;
 
@@ -711,8 +853,8 @@ namespace MagicalMountainMinery.Main
                 Connect(t, list[0], list[1]);
                 MapLevel.CurrentJunctions--;
 
-                //t.Connect(list[0]);
-                //t.Connect(list[1]);
+                //t.ConnectTo(list[0]);
+                //t.ConnectTo(list[1]);
 
                 track = t;
                 junc.QueueFree();
@@ -807,22 +949,22 @@ namespace MagicalMountainMinery.Main
                     var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), fromDir, CurrentTrackLevel);
                     MapLevel.SetTrack(to, newT);
                     toTrack = newT;
-                    //ConnectTracks(thatTrackDex, connection, index, newT);
+                    //ConnectTo(thatTrackDex, connection, index, newT);
                 }
 
                 if (toTrack.CanConnect())
                 {
-                    //var option = fromTrack.Connection2;
+                    //var option = fromTrack.Direction2;
                     //if(fromTrack.Type == TrackType.Curve)
                     //{
 
                     //}
-                    //if(fromTrack.Connection1 != fromDir && fromTrack.Connection1 != toDir)
+                    //if(fromTrack.Direction1 != fromDir && fromTrack.Direction1 != toDir)
                     //{
-                    //    option = fromTrack.Connection1;
+                    //    option = fromTrack.Direction1;
                     //}
                     //var j = new Junc(fromDir,toDir,option);
-                    var j = OrientateJunction(fromTrack.Connection1, fromTrack.Connection2, toDir);
+                    var j = OrientateJunction(fromTrack.Direction1, fromTrack.Direction2, toDir);
                     var newJc = ResourceStore.GetJunc(j, fromTrack.TrackLevel);
                     MapLevel.RemoveChild(fromTrack);
                     
@@ -1047,14 +1189,7 @@ namespace MagicalMountainMinery.Main
 
                 MapLevel.Blocked = MapBlocks.Keys.ToList();
 
-                //for (int y = 0; y < MapLevel.IndexHeight; y++)
-                //{
-                //    if (MapLevel.Tracks1[0,y] != null)
-                //    {
-                //        MapLevel.StartPositions.Add(new IndexPos(0,y));
-                //    }
-
-                //}
+                MapLevel.StartData = CartStarts.Keys.ToList();
                 var targets = new List<LevelTarget>();
                 for (int y = 0; y < MapLevel.IndexHeight; y++)
                 {
@@ -1071,6 +1206,20 @@ namespace MagicalMountainMinery.Main
 
                 }
 
+                foreach(var entry in PortalStack)
+                {
+                    entry.PortalId = "portal"+entry.GetInstanceId().ToString();
+                    if (entry.Sibling != null)
+                    {
+                        
+                        entry.SiblingId = "portal" + entry.Sibling.GetInstanceId().ToString();
+                        entry.Sibling.SiblingId = "portal" + entry.GetInstanceId().ToString();
+
+
+                        entry.Sibling.Sibling = null; //remove ref to entry
+                        entry.Sibling = null; //remove ref to sibling
+                    }
+                }
                 
                 //this.MapLevel.QueueFree();
                 var obj = SaveLoader.SaveGame(MapLevel);

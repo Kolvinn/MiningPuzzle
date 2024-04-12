@@ -1,11 +1,16 @@
-[gd_scene load_steps=7 format=3 uid="uid://dkkff16y666hq"]
+[gd_scene load_steps=11 format=3 uid="uid://dkkff16y666hq"]
 
 [ext_resource type="Shader" path="res://Assets/Shaders/portal.gdshader" id="1_m4o17"]
 [ext_resource type="Texture2D" uid="uid://ddy22daucmahq" path="res://Assets/Portal/portal-full.png" id="2_xldl6"]
+[ext_resource type="Script" path="res://Assets/Portal/Portal.cs" id="3_drg7m"]
+[ext_resource type="Shader" path="res://Assets/Shaders/RepeatScroll.gdshader" id="4_da0vw"]
+[ext_resource type="Texture2D" uid="uid://2nhhuhs7e7a8" path="res://Assets/UI/Wenrexa Interface UI KIT #4/PNG/Icons/ArrowRow.png" id="5_aaxc1"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_i6lhk"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ih7ue"]
+resource_local_to_scene = true
 shader = ExtResource("1_m4o17")
-shader_parameter/amount = 0.2
+shader_parameter/amount = 0.07
+shader_parameter/modulate = Color(1, 1, 1, 1)
 
 [sub_resource type="Animation" id="Animation_2ya76"]
 resource_name = "Portal"
@@ -45,13 +50,85 @@ _data = {
 "RESET": SubResource("Animation_6j6xj")
 }
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4gw88"]
+shader = ExtResource("4_da0vw")
+shader_parameter/speed = -0.2
+
 [node name="Sprite2D" type="Sprite2D"]
-material = SubResource("ShaderMaterial_i6lhk")
+texture_filter = 1
+material = SubResource("ShaderMaterial_ih7ue")
+position = Vector2(0, 1)
+rotation = 1.5708
+scale = Vector2(0.140955, 0.144142)
 texture = ExtResource("2_xldl6")
 hframes = 5
 vframes = 2
+script = ExtResource("3_drg7m")
+Shader = SubResource("ShaderMaterial_ih7ue")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+show_behind_parent = true
+offset_top = -59.0
+offset_right = 79.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 1)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "Portal"
 libraries = {
 "": SubResource("AnimationLibrary_c3i0j")
 }
+
+[node name="Up" type="Node2D" parent="."]
+visible = false
+rotation = 3.14159
+
+[node name="ArrowRow" type="Sprite2D" parent="Up"]
+texture_filter = 2
+texture_repeat = 2
+material = SubResource("ShaderMaterial_4gw88")
+position = Vector2(36.7422, 0.0441895)
+scale = Vector2(0.546648, 0.717394)
+texture = ExtResource("5_aaxc1")
+offset = Vector2(85, 0)
+
+[node name="Right" type="Node2D" parent="."]
+visible = false
+position = Vector2(-6.93759, 4.76837e-07)
+rotation = 4.71239
+
+[node name="ArrowRow" type="Sprite2D" parent="Right"]
+texture_filter = 2
+texture_repeat = 2
+material = SubResource("ShaderMaterial_4gw88")
+position = Vector2(36.7422, 0.0441895)
+scale = Vector2(0.546648, 0.717394)
+texture = ExtResource("5_aaxc1")
+offset = Vector2(85, 0)
+
+[node name="Down" type="Node2D" parent="."]
+visible = false
+position = Vector2(-6.93759, 4.76837e-07)
+
+[node name="ArrowRow" type="Sprite2D" parent="Down"]
+texture_filter = 2
+texture_repeat = 2
+material = SubResource("ShaderMaterial_4gw88")
+position = Vector2(36.7422, 0.0441895)
+scale = Vector2(0.546648, 0.717394)
+texture = ExtResource("5_aaxc1")
+offset = Vector2(85, 0)
+
+[node name="Left" type="Node2D" parent="."]
+visible = false
+position = Vector2(-6.93759, 4.76837e-07)
+rotation = 1.5708
+
+[node name="ArrowRow" type="Sprite2D" parent="Left"]
+texture_filter = 2
+texture_repeat = 2
+material = SubResource("ShaderMaterial_4gw88")
+position = Vector2(36.7422, 0.0441895)
+scale = Vector2(0.546648, 0.717394)
+texture = ExtResource("5_aaxc1")
+offset = Vector2(85, 0)

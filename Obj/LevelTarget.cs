@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace MagicalMountainMinery.Obj
 {
-    public partial class LevelTarget : Sprite2D, IInteractable, ISaveable
+    public partial class LevelTarget : Sprite2D, IConnectable, ISaveable
     {
         [StoreCollection(ShouldStore = true)]
         public List<Condition> Conditions { get; set; } = new List<Condition>();
@@ -29,6 +29,8 @@ namespace MagicalMountainMinery.Obj
 
         public bool CompletedAll { get => Validated.Values.All(con => con); }
         public bool IsBatched { get; set; }
+
+        public IndexPos Index { get; set; }
 
         public LevelTarget() 
         { 
@@ -206,7 +208,9 @@ namespace MagicalMountainMinery.Obj
             };
         }
 
-
-
+        public bool CanConnect()
+        {
+            return true;
+        }
     }
 }

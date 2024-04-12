@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://mxv1hoqyypag"]
+[gd_scene load_steps=26 format=3 uid="uid://mxv1hoqyypag"]
 
 [ext_resource type="Texture2D" uid="uid://b1e7u6agbxfr" path="res://Assets/MinerCatCrop.png" id="3_r8t6t"]
 [ext_resource type="PackedScene" uid="uid://dj771pecqo0re" path="res://Obj/Miner.tscn" id="3_wcrvc"]
@@ -182,6 +182,56 @@ tracks/0/keys = {
 "values": [Rect2(160, 0, 64, 64)]
 }
 
+[sub_resource type="Animation" id="Animation_x34qa"]
+resource_name = "PortalEnter"
+length = 0.55
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(0.19, 0.19)]
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:x")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(9.53674e-07, -0.25, 0, 0.25, 0, 15, -0.24, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.4)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:position:y")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(3.5, -0.25, 0, 0, -6.5, 9, 0, -10.5, 0, 28.5),
+"times": PackedFloat32Array(0, 0.4)
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
 [sub_resource type="Animation" id="Animation_6gjcb"]
 length = 0.001
 tracks/0/type = "value"
@@ -243,6 +293,52 @@ tracks/4/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath(".:scale")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/6/type = "bezier"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath(".:position:x")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(9.53674e-07, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/7/type = "bezier"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath(".:position:y")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath(".:visible")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
 }
 
 [sub_resource type="Animation" id="Animation_0sgka"]
@@ -414,6 +510,7 @@ _data = {
 "Left": SubResource("Animation_od535"),
 "NorthEast": SubResource("Animation_e45xn"),
 "NorthWest": SubResource("Animation_vykgt"),
+"PortalEnter": SubResource("Animation_x34qa"),
 "RESET": SubResource("Animation_6gjcb"),
 "Right": SubResource("Animation_0sgka"),
 "SouthEast": SubResource("Animation_ttt6p"),
@@ -454,6 +551,7 @@ size = Vector2(21.5, 23)
 
 [node name="Cart" type="Area2D"]
 z_index = 3
+position = Vector2(9.53674e-07, 0)
 collision_layer = 3
 script = ExtResource("CSharpScript_0a8dh")
 

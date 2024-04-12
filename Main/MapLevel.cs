@@ -14,10 +14,10 @@ namespace MagicalMountainMinery.Main
     {
         public Track track1 { get; set; }
         public Track track2 { get; set; }
-        public IInteractable obj { get; set; }
+        public IGameObject obj { get; set; }
         public IndexPos pos { get; set; }
 
-        public IndexData(Track track1, Track track2, IInteractable obj, IndexPos pos)
+        public IndexData(Track track1, Track track2, IGameObject obj, IndexPos pos)
         {
             this.track1 = track1;
             this.track2 = track2;
@@ -46,7 +46,7 @@ namespace MagicalMountainMinery.Main
         private static int height = 6;
 
         [StoreCollection(ShouldStore =true)]
-        public IInteractable[,] MapObjects { get; set; }
+        public IGameObject[,] MapObjects { get; set; }
 
 
         [StoreCollection(ShouldStore = false)]
@@ -58,8 +58,12 @@ namespace MagicalMountainMinery.Main
         [StoreCollection(ShouldStore = false)]
         public List<LevelTarget> LevelTargets { get; set; } = new List<LevelTarget>();
 
+        //[StoreCollection(ShouldStore = true)]
+        //public List<IndexPos> StartPositions { get; set; } = new List<IndexPos>();
+
         [StoreCollection(ShouldStore = true)]
-        public List<IndexPos> StartPositions { get; set; } = new List<IndexPos>();
+        public List<CartStartData> StartData { get; set; } = new List<CartStartData>();
+        
         [StoreCollection(ShouldStore = true)]
         public List<IndexPos> EndPositions { get; set; } = new List<IndexPos>();
 
@@ -143,7 +147,7 @@ namespace MagicalMountainMinery.Main
                 { ///column 0,1,2,3 etc.
                     var dex = new IndexPos(x,y);
 
-                    if (!Blocked.Contains(dex) && !StartPositions.Contains(dex) && !EndPositions.Contains(dex))
+                    if (!Blocked.Contains(dex) && !EndPositions.Contains(dex))
                     {
                         boxLine = new Line2D()
                         {
@@ -204,9 +208,10 @@ namespace MagicalMountainMinery.Main
             //}
 
         }
+
         public override void _Ready()
         {
-            MapObjects = new IInteractable[IndexWidth, IndexHeight];
+            MapObjects = new IGameObject[IndexWidth, IndexHeight];
             Tracks1 = new Track[IndexWidth, IndexHeight];
             Tracks2 = new Track[IndexWidth, IndexHeight];
             RedrawGrid();
@@ -214,11 +219,13 @@ namespace MagicalMountainMinery.Main
             this.Position = new Vector2(0,0);
         }
 
-        public void AddMapObjects(IInteractable[,] objects)
+        public void AddMapObjects(IGameObject[,] objects)
         {
             if (objects == null)
                 return;
             MapObjects = objects;
+            var portals = new Dictionary<string,Portal>();
+
             for (int i = 0; i < objects.GetLength(0); i++)
             {
                 for (int j = 0; j < objects.GetLength(1); j++)
@@ -233,6 +240,21 @@ namespace MagicalMountainMinery.Main
                         {
                             LevelTargets.Add(t);
                         }
+                        else if(m is Portal p)
+                        {
+                            if (portals.TryGetValue(p.SiblingId, out var existingPortal))
+                            {
+                                p.Sibling = existingPortal;
+                                existingPortal.Sibling = p;
+                                portals.Remove(p.SiblingId);
+                            }
+                            else
+                            {
+                                portals.Add(p.PortalId, p);
+                            }
+
+                            p.Index = ((Portal)obj).Index;
+                        }
                         else
                         {
                             var rock = (Mineable)obj;
@@ -244,7 +266,7 @@ namespace MagicalMountainMinery.Main
             }
         }
 
-        public void ReplaceObjects(IInteractable[,] objects)
+        public void ReplaceObjects(IGameObject[,] objects)
         {
             LevelTargets.Clear();
             for (int i = 0;i < objects.GetLength(0); i++)
@@ -266,6 +288,10 @@ namespace MagicalMountainMinery.Main
                         if (replacement is LevelTarget t)
                         {
                             LevelTargets.Add(t);
+                        }
+                        else if (replacement is Portal p)
+                        {
+                            p.Index = new IndexPos(i, j);
                         }
                         else if(replacement is Mineable m )
                         {
@@ -300,13 +326,22 @@ namespace MagicalMountainMinery.Main
                 }
             }
         }
-
+        public Portal GetPortal(IndexPos pos)
+        {
+            if (!ValidIndex(pos))
+                return null;
+            var p = MapObjects[pos.X, pos.Y];
+            if(p != null && p is Portal pp)
+                return pp;
+            return null;
+        }
         public IndexData GetData(IndexPos pos)
         {
             if(this.ValidIndex(pos))
                 return new IndexData(Tracks1[pos.X, pos.Y], Tracks2[pos.X, pos.Y], MapObjects[pos.X, pos.Y], pos);
             return new IndexData();
         }
+
         public bool ValidIndex(IndexPos index)
         {
             var rows = IndexWidth > index.X && index.X > -1;
@@ -330,17 +365,32 @@ namespace MagicalMountainMinery.Main
             MapObjects[pos.X,pos.Y] = t;
 
         }
-        public IInteractable Get(IndexPos pos)
+        public IGameObject Get(IndexPos pos)
         {
             return MapObjects[pos.X, pos.Y];
         }
 
-        public IInteractable GetObj(IndexPos pos)
+        public IGameObject GetObj(IndexPos pos)
         {
             var obj = MapObjects[pos.X, pos.Y];
             if(obj == null)
                 return Tracks1[pos.X, pos.Y];
             return obj;
+        }
+
+        public bool TryGetMineable(IndexPos pos, out Mineable mineable)
+        {
+            mineable = null;
+            if (ValidIndex(pos))
+            {
+                var mine = MapObjects[pos.X, pos.Y];
+                if (mine != null && mine is Mineable m)
+                {
+                    mineable = m;
+                    return true;
+                }
+            }
+            return false;
         }
 
         public Mineable GetMineable(IndexPos pos)
@@ -379,11 +429,13 @@ namespace MagicalMountainMinery.Main
             var t1 = Tracks1[pos.X, pos.Y];
             if (t2 != null)
             {
+                RemoveChild(Tracks2[pos.X, pos.Y]);
                 Tracks2[pos.X, pos.Y] = null;
                 t2.QueueFree();
             }
             else if(t1 != null)
             {
+                RemoveChild(Tracks1[pos.X, pos.Y]);
                 Tracks1[pos.X, pos.Y] = null;
                 t1.QueueFree();
             }
@@ -502,9 +554,9 @@ namespace MagicalMountainMinery.Main
 
         }
 
-        public List<IInteractable> GetAdjacentRocks(IndexPos pos)
+        public List<IGameObject> GetAdjacentRocks(IndexPos pos)
         {
-            var list = new List<IInteractable>();
+            var list = new List<IGameObject>();
             if (ValidIndex(pos + IndexPos.Left))
                 list.Add(Get(pos + IndexPos.Left));
             if (ValidIndex(pos + IndexPos.Right))
@@ -516,6 +568,11 @@ namespace MagicalMountainMinery.Main
             return list;
 
         }
+        /// <summary>
+        /// Test Doco ?
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
         public List<Track> GetAdjacentTracks(IndexPos pos) 
         {
             var list = new List<Track>();
@@ -530,6 +587,34 @@ namespace MagicalMountainMinery.Main
             return list;
         }
 
+        /// <summary>
+        /// Attempts to get the connectable at position. Will prioritize getting tracks first. 
+        /// Use another method if you want a a specific connectable
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="connectable"></param>
+        public bool TryGetConnectable(IndexPos pos, out IConnectable connectable)
+        {
+            connectable = null;
+            if (ValidIndex(pos))
+            {
+                var thing = Tracks1[pos.X, pos.Y] as IConnectable;
+                if (thing != null) 
+                {
+                    connectable = thing; 
+                    return true;
+                }
+                var other = MapObjects[pos.X, pos.Y];
+                if(other != null && other is IConnectable)
+                {
+                    connectable = other as IConnectable;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
         public List<IndexData> GetAdjacentData(IndexPos pos)
         {
             var list = new List<IndexData>();
@@ -540,9 +625,25 @@ namespace MagicalMountainMinery.Main
             return list;
         }
 
-        public List<IInteractable> GetAdjacentEightTracks(IndexPos pos)
+        public List<IConnectable> GetAdjacentConnectables(IndexPos pos)
         {
-            var list = new List<IInteractable>();
+            var list = new List<IConnectable>();
+            IConnectable con;
+            if (TryGetConnectable(pos + IndexPos.Left, out con))
+                list.Add(con);
+            if (TryGetConnectable(pos + IndexPos.Right, out con))
+                list.Add(con);
+            if (TryGetConnectable(pos + IndexPos.Down, out con))
+                list.Add(con);
+            if (TryGetConnectable(pos + IndexPos.Up, out con))
+                list.Add(con);
+
+            return list;
+        }
+
+        public List<IGameObject> GetAdjacentEightTracks(IndexPos pos)
+        {
+            var list = new List<IGameObject>();
             if (ValidIndex(pos + IndexPos.Left))
                 list.Add(Get(pos + IndexPos.Left));
             if (ValidIndex(pos + IndexPos.Right))
@@ -563,13 +664,6 @@ namespace MagicalMountainMinery.Main
             return list;
         }
 
-        public void SetInteractable(IndexPos pos, IInteractable item)
-        {
-            //var rock = Runner.LoadScene<Mineable>("res://Obj/Rock.tscn");
-            var node = item as Node2D;
-            this.AddChild(node);
-            node.Position = GetGlobalPosition(pos);
-            MapObjects[pos.X, pos.Y] = item;
-        }
+        
     }
 }

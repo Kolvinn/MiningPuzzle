@@ -22,6 +22,9 @@ public partial class Cart : Area2D
 
     public Miner CurrentMiner { get; set; } 
 
+
+    public bool DoubleSided {  get; set; }
+
     public Dictionary<ResourceType, ResourceIcon> StoredResources { get; set; } = new Dictionary<ResourceType, ResourceIcon>();
 
     public override void _Ready()

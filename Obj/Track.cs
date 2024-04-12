@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MagicalMountainMinery.Obj
 {
-    public partial class Track : Sprite2D, IInteractable
+    public partial class Track : Sprite2D, IConnectable
     {
         public TrackType Type { get; set; }
         //enum rotation -> horizontal -> vertical
@@ -18,8 +18,12 @@ namespace MagicalMountainMinery.Obj
         // recipe? 
         // enum track category -> "wooden, basic etc.
         //weight capacity
-        public IndexPos Connection1 { get; set; } = IndexPos.Zero;
-        public IndexPos Connection2 { get; set; } = IndexPos.Zero;
+        public IndexPos Direction1 { get; set; } = IndexPos.Zero;
+        public IndexPos Direction2 { get; set; } = IndexPos.Zero;
+
+        public IConnectable Connection1 { get; set; }
+        public IConnectable Connection2 { get; set; }
+
         public IndexPos Index { get; set; } = IndexPos.Zero;
         public TrackConnectionUI ConnectionUI { get; set; }
 
@@ -119,7 +123,7 @@ namespace MagicalMountainMinery.Obj
 
         public virtual List<IndexPos> GetConnectionList()
         {
-            return new List<IndexPos>() { Connection1, Connection2 };
+            return new List<IndexPos>() { Direction1, Direction2 };
         }
 
         public override void _PhysicsProcess(double delta)
@@ -143,21 +147,25 @@ namespace MagicalMountainMinery.Obj
 
         public Connection GetConnection()
         {
-            return new Connection(Connection1, Connection2, null);
+            return new Connection(Direction1, Direction2, null);
         }
         public virtual bool CanConnect()
         {
-            return Connection1 == IndexPos.Zero || Connection2 == IndexPos.Zero;
+            return Direction1 == IndexPos.Zero || Direction2 == IndexPos.Zero;
 
         }
 
+        public void Connect(IConnectable con1,  IConnectable con2 = null)
+        {
+            
+        }
         
         public void Connect(IndexPos dir, int fromHeight = 1)
         {
-            if (Connection1 == IndexPos.Zero)
-                Connection1 = dir;
+            if (Direction1 == IndexPos.Zero)
+                Direction1 = dir;
             else
-                Connection2 = dir;
+                Direction2 = dir;
             ConnectionUI.Connect(dir);
 
             UpdateHeightLabel( dir, fromHeight);
@@ -165,10 +173,10 @@ namespace MagicalMountainMinery.Obj
 
         public void Disconnect(IndexPos dir, int fromHeight = 1)
         {
-            if (Connection1 == dir)
-                Connection1 = IndexPos.Zero;
-            else if (Connection2 == dir)
-                Connection2 = IndexPos.Zero;
+            if (Direction1 == dir)
+                Direction1 = IndexPos.Zero;
+            else if (Direction2 == dir)
+                Direction2 = IndexPos.Zero;
 
             ConnectionUI.Disconnect(dir);
             UpdateHeightLabel(dir, fromHeight, true);
@@ -229,8 +237,8 @@ namespace MagicalMountainMinery.Obj
             ConnectionUI.Connect(fromDir);
             ConnectionUI.Connect(toDir);
             ConnectionUI.Connect(optionDir);
-            this.Connection1 = fromDir;
-            this.Connection2 = toDir;
+            this.Direction1 = fromDir;
+            this.Direction2 = toDir;
             this.Option = optionDir;
 
             DoArrow();
@@ -242,26 +250,26 @@ namespace MagicalMountainMinery.Obj
 
         public void DoArrow()
         {
-            if (Connection1 == IndexPos.Up && Option == IndexPos.Right
-                || Option == IndexPos.Up && Connection1 == IndexPos.Right)
+            if (Direction1 == IndexPos.Up && Option == IndexPos.Right
+                || Option == IndexPos.Up && Direction1 == IndexPos.Right)
             {
                 Arrow.Position = new Vector2(3, -4);
                 Arrow.RotationDegrees = 0;
             }
-            else if (Connection1 == IndexPos.Up && Option == IndexPos.Left
-                || Option == IndexPos.Up && Connection1 == IndexPos.Left)
+            else if (Direction1 == IndexPos.Up && Option == IndexPos.Left
+                || Option == IndexPos.Up && Direction1 == IndexPos.Left)
             {
                 Arrow.Position = new Vector2(-3, -4);
                 Arrow.RotationDegrees = -90;
             }
-            else if (Connection1 == IndexPos.Down && Option == IndexPos.Right
-                || Option == IndexPos.Down && Connection1 == IndexPos.Right)
+            else if (Direction1 == IndexPos.Down && Option == IndexPos.Right
+                || Option == IndexPos.Down && Direction1 == IndexPos.Right)
             {
                 Arrow.Position = new Vector2(3, 4);
                 Arrow.RotationDegrees = 90;
             }
-            else if (Connection1 == IndexPos.Left && Option == IndexPos.Down
-                || Option == IndexPos.Left && Connection1 == IndexPos.Down)
+            else if (Direction1 == IndexPos.Left && Option == IndexPos.Down
+                || Option == IndexPos.Left && Direction1 == IndexPos.Down)
             {
                 Arrow.Position = new Vector2(-3, 4);
                 Arrow.RotationDegrees = 180;
@@ -270,7 +278,7 @@ namespace MagicalMountainMinery.Obj
 
         public Junc GetJunc()
         {
-            return new Junc(Connection1, Connection2, Option);
+            return new Junc(Direction1, Direction2, Option);
         }
         public override List<IndexPos> GetConnectionList()
         {

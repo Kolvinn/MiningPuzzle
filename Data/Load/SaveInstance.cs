@@ -163,7 +163,7 @@ namespace MagicalMountainMinery.Data.Load
         //    List<object> objList = new List<object>();
         //    Dictionary<object, object> objDict = new Dictionary<object, object>();
         //    Queue<object> objQueue = new Queue<object>();
-        //    IInteractable[,] MapObjects;
+        //    IGameObject[,] MapObjects;
         //    Track[,] Tracks1;
         //    if(parent.GetType() == typeof(MapLevel))
         //    {

@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-public partial class Mineable : Sprite2D, IInteractable, ISaveable
+public partial class Mineable : Sprite2D, IGameObject, ISaveable
 {
 	public bool locked = false;
 	public int Hardness { get; set; } = 0;

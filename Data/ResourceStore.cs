@@ -49,7 +49,7 @@ namespace MagicalMountainMinery.Data
 
         public static List<Connection> Curves = new List<Connection>();
 
-        public static List<Junc> Junctions = new List<Junc>();
+        public static List<Junc> Junctions { get; set; } = new List<Junc>();
 
         public static Dictionary<Connection, Texture2D> TrackTextures_Raised { get; set; } = new Dictionary<Connection, Texture2D>();
 

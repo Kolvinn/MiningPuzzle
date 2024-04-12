@@ -40,8 +40,8 @@ namespace MagicalMountainMinery.Data
             var s = "";
             if (this == Left) s += "_Left";
             else if (this == Right) s += "_Right";
-            else if(this == Up) s += "_Up";
-            else if(this == Down)
+            else if (this == Up) s += "_Up";
+            else if (this == Down)
                 s += "_Down";
 
             return "X: " + this.X + ", " + this.Y + ")" + s;
@@ -83,13 +83,13 @@ namespace MagicalMountainMinery.Data
         }
         public static IndexPos MatchDirection(string dir)
         {
-            if(dir.ToLower() == "left")
+            if (dir.ToLower() == "left")
                 return Left;
-            if(dir.ToLower() == "right")
+            if (dir.ToLower() == "right")
                 return Right;
-            if( dir.ToLower() == "up") 
+            if (dir.ToLower() == "up")
                 return Up;
-            if(dir.ToLower() == "down")
+            if (dir.ToLower() == "down")
                 return Down;
             return Zero;
         }
@@ -119,10 +119,10 @@ namespace MagicalMountainMinery.Data
 
         }
 
-        
+
         public static bool operator ==(Connection c1, Connection c2)
         {
-            return (c1.Incoming == c2.Incoming || c1.Outgoing == c2.Incoming) 
+            return (c1.Incoming == c2.Incoming || c1.Outgoing == c2.Incoming)
                  && (c1.Outgoing == c2.Incoming || c1.Outgoing == c2.Outgoing);
         }
         public static bool operator !=(Connection c1, Connection c2)
@@ -135,7 +135,9 @@ namespace MagicalMountainMinery.Data
 
     }
 
-    public struct Junc 
+
+
+    public struct Junc
     {
         public IndexPos From { get; set; }
         public IndexPos To { get; set; }
@@ -166,11 +168,16 @@ namespace MagicalMountainMinery.Data
     }
 
 
-  
+    public struct CartStartData
+    {
+        public IndexPos From { get; set; }
+        public IndexPos To { get; set; }
+        public CartType Type { get; set; }
+    }
     public class GameResource
     {
         //[JsonProperty(ItemConverterType = typeof(StringEnumConverter))]
-       // [JsonProperty(ItemConverterType = typeof(StringEnumConverter))]
+        // [JsonProperty(ItemConverterType = typeof(StringEnumConverter))]
         //[JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty(ItemConverterType = typeof(StringEnumConverter))]
         public ResourceType ResourceType { get; set; }
@@ -191,7 +198,7 @@ namespace MagicalMountainMinery.Data
     }
     //
     public enum ResourceType
-    {   
+    {
         Stone,
         Copper_Ore,
         Iron_Ore,
@@ -203,6 +210,11 @@ namespace MagicalMountainMinery.Data
         Emerald,
     }
 
+    public enum CartType
+    {
+        Single,
+        Double
+    }
     public enum EventType
     {
         Right_Action,
@@ -225,12 +237,12 @@ namespace MagicalMountainMinery.Data
 
     public enum OreType
     {
-        
+
     }
 
     public enum Mineral
     {
-        
+
     }
 
     public enum MineableType
@@ -283,9 +295,9 @@ namespace MagicalMountainMinery.Data
         {
             if (ConCheck is ConCheck.gt && val > Amount)
                 Validated = true;
-            if(ConCheck is ConCheck.lt && val < Amount)
+            if (ConCheck is ConCheck.lt && val < Amount)
                 Validated = true;
-            if (ConCheck is ConCheck.eq && val == Amount) 
+            if (ConCheck is ConCheck.eq && val == Amount)
                 Validated = true;
             return Validated;
         }
@@ -311,8 +323,8 @@ namespace MagicalMountainMinery.Data
         public override int GetHashCode()
         {
             var re = this.ResourceType.GetHashCode() * 100;
-            var rt = this.ConCheck.GetHashCode(); 
-            var am =  Amount.GetHashCode();
+            var rt = this.ConCheck.GetHashCode();
+            var am = Amount.GetHashCode();
             return re + rt + am;//base.GetHashCode();
         }
 
@@ -327,7 +339,7 @@ namespace MagicalMountainMinery.Data
         }
         public bool Validate(GameResource res)
         {
-            if(res.ResourceType != ResourceType) 
+            if (res.ResourceType != ResourceType)
                 return false;
             return Validate(res.Amount);
         }
@@ -337,7 +349,7 @@ namespace MagicalMountainMinery.Data
         {
             if (ConCheck is ConCheck.eq)
                 return "=";
-            if(ConCheck is ConCheck.gt) 
+            if (ConCheck is ConCheck.gt)
                 return ">";
             else
                 return "<";
