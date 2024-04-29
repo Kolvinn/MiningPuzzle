@@ -71,7 +71,10 @@ public partial class Portal : Sprite2D, IConnectable, ISaveable
             return Up;
         return null;
     }
+    public void Connect(IndexPos pos)
+    {
 
+    }
     public bool TryConnect(Track track)
     {
         if(track == null)

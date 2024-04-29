@@ -9,7 +9,7 @@ public partial class TutorialUI : Control
 {
 	public Dictionary<int, TutorialBox> levelTutorials = new Dictionary<int, TutorialBox>();
 
-    private int currentDex = 1;
+    private int currentDex = 0;
 	public int CurrentIndex { get => currentDex; 
         set 
         {
@@ -22,22 +22,54 @@ public partial class TutorialUI : Control
     }
 	public int CurrentSubIndex { get; set; }
 
+    public string Region { get; set; }
     public TutorialBox CurrentTutorial { get; set; }
 
+    public Control CurrentLevelControl { get; set; }
     //public int Level { get; set; } = 1;
-
-	public override void _Ready()
+    public Control RegionControl { get; set; }
+    public ColorRect Background { get; set; }
+    public override void _Ready()
 	{
+        Background = this.GetNode<ColorRect>("ColorRect");
 
-	}
+    }
+
+    public bool HasTutorial { get; set; } = false;
+    public void Load(MapLoad load)
+    {
+        var region = RegionControl = this.GetNode<Control>(load.Region);
+        if (region != null)
+        {
+            CurrentLevelControl = region.GetNode<Control>((load.LevelIndex + 1).ToString());
+
+            //only load tutorial if it exists
+            if(CurrentLevelControl != null && CurrentLevelControl.GetChildCount() > 0)
+            {
+                Region = load.Region;
+                CurrentSubIndex = 0;
+                CurrentTutorial = ((TutorialBox)CurrentLevelControl.GetChild(CurrentSubIndex));
+                region.Visible = CurrentLevelControl.Visible = CurrentTutorial.Visible = true;
+                Background.Visible = HasTutorial = true;
+
+            }
+            else
+            {
+                Background.Visible = HasTutorial = false;
+                _ExitTree();
+            } 
+        }
+    }
 
     public bool TryPass(EventType env, IUIComponent comp)
     {
-        if(!this.GetChildren().Any(item=>item.Name == CurrentIndex + "") ||
-            !this.GetNode<Control>("" + CurrentIndex).GetChildren().Any(item => item.Name == CurrentSubIndex + ""))
-            return false;
+        //if(!this.GetChildren().Any(item=>item.Name == CurrentIndex + "") ||
+        //    !this.GetNode<Control>("" + CurrentIndex).GetChildren().Any(item => item.Name == CurrentSubIndex + ""))
+        //    return false;
 
-        var current = this.GetNode<Control>("" + CurrentIndex).GetNode<TutorialBox>("" + CurrentSubIndex);
+        //var current = this.GetNode<Control>("" + CurrentIndex).GetNode<TutorialBox>("" + CurrentSubIndex);
+        var current = CurrentTutorial;
+        //var index = CurrentTutorial.GetIndex();
 
         if (current != null)
         {
@@ -56,6 +88,7 @@ public partial class TutorialUI : Control
             }
             else if(current.ExitType == TutorialBox.ActionType.Any && env ==EventType.Space)
             {
+                //CurrentTutorial.LabelSettings.FontSize = 64;
                 CurrentSubIndex++;
                 CurrentTutorial.Visible = false;
                 CurrentTutorial = null;
@@ -68,22 +101,43 @@ public partial class TutorialUI : Control
 
     public bool GetNext(EventType env, IUIComponent comp)
     {
-        if (!this.GetChildren().Any(item => item.Name == CurrentIndex + "") ||
-            !this.GetNode<Control>("" + CurrentIndex).GetChildren().Any(item => item.Name == CurrentSubIndex + ""))
-            return false;
-        var current = this.GetNode<Control>("" + CurrentIndex).GetNode<TutorialBox>("" + CurrentSubIndex);
 
-        if (current != null)
+        
+
+        if (CurrentTutorial == null)
         {
-            if (current.EntryType == TutorialBox.ActionType.Any)
+            if(CurrentLevelControl.GetChildCount() <= CurrentSubIndex)
             {
-                CurrentTutorial = current;
+                Background.Visible = HasTutorial = false;
+                _ExitTree();
+                return false;
+            }
+            var next = CurrentLevelControl.GetChild<TutorialBox>(CurrentSubIndex);
+            if (next != null && next.EntryType == TutorialBox.ActionType.Any)
+            {
+                CurrentTutorial = next;
                 CurrentTutorial.Visible = true;
                 return true;
+            }
+            else
+            {
+                Background.Visible = HasTutorial = false;
+                _ExitTree();
             }
 
         }
         return false;
     }
-   
+
+    public override void _ExitTree()
+    {
+        if(CurrentLevelControl != null)
+            CurrentLevelControl.Visible = false;
+        if (CurrentTutorial != null)
+            CurrentTutorial.Visible = false;
+        if (RegionControl != null)
+            RegionControl.Visible = false;
+        Background.Visible = false;
+    }
+
 }

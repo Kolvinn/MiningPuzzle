@@ -1,11 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://4l3ar3f8u4iq"]
+[gd_scene load_steps=3 format=3 uid="uid://4l3ar3f8u4iq"]
 
 [ext_resource type="FontFile" uid="uid://cipymmhxrwq2p" path="res://Assets/Fonts/Pixel/Stepalange-x3BLm.otf" id="1_s2rgl"]
-[ext_resource type="Texture2D" uid="uid://dnrwb2dqyxuys" path="res://Assets/UI/UIDifferentFree03Wenrexa/PNG/Arrow01.png" id="3_wdwk5"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_623u1"]
 font = ExtResource("1_s2rgl")
-font_size = 180
+font_size = 148
 
 [node name="Control" type="VBoxContainer"]
 anchors_preset = 15
@@ -21,13 +20,6 @@ mouse_filter = 2
 layout_mode = 2
 mouse_filter = 2
 
-[node name="TextureRect2" type="TextureRect" parent="TitleBox"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("3_wdwk5")
-stretch_mode = 2
-flip_h = true
-
 [node name="Label" type="Label" parent="TitleBox"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -36,17 +28,15 @@ label_settings = SubResource("LabelSettings_623u1")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="TitleBox"]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("3_wdwk5")
-stretch_mode = 2
+size_flags_vertical = 3
 
-[node name="GridContainer" type="GridContainer" parent="."]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
 mouse_filter = 2
-theme_override_constants/h_separation = 50
-theme_override_constants/v_separation = 20
+theme_override_constants/h_separation = 60
+theme_override_constants/v_separation = 30
 columns = 5

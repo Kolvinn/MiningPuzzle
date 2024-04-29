@@ -1,0 +1,3105 @@
+(
+,Anchovy
+,A small silver fish found in the ocean.
+,data-sort-value="30"
+	30g
+	37g
+	45g
+	60g
+,data-sort-value="37"
+	37g
+	46g
+	56g
+	75g
+,data-sort-value="45"
+	45g
+	55g
+	67g
+	90g
+,Ocean
+,Anytime
+, Spring Fall
+,Any
+,1–17
+,30 dart
+,13
+,
+),
+(,30g
+	),
+(,37g
+	),
+(,45g
+	),
+(,60g
+	),
+(,37g
+	),
+(,46g
+	),
+(,56g
+	),
+(,75g
+	),
+(,45g
+	),
+(,55g
+	),
+(,67g
+	),
+(,90g
+	),
+
+(
+,Sardine
+,A common ocean fish.
+,data-sort-value="40"
+	40g
+	50g
+	60g
+	80g
+,data-sort-value="50"
+	50g
+	62g
+	75g
+	100g
+,data-sort-value="60"
+	60g
+	75g
+	90g
+	120g
+,Ocean
+,6am – 7pm
+, Spring Fall Winter
+,Any
+,1–13
+,30 dart
+,13
+, Ocean Fish Bundle Dish O' The Sea
+),
+(,40g
+	),
+(,50g
+	),
+(,60g
+	),
+(,80g
+	),
+(,50g
+	),
+(,62g
+	),
+(,75g
+	),
+(,100g
+	),
+(,60g
+	),
+(,75g
+	),
+(,90g
+	),
+(,120g
+	),
+(
+,Bream
+,A fairly common river fish that becomes active at night.
+,data-sort-value="45"
+	45g
+	56g
+	67g
+	90g
+,data-sort-value="56"
+	56g
+	70g
+	83g
+	112g
+,data-sort-value="67"
+	67g
+	84g
+	100g
+	135g
+,River (Town+Forest)
+,6pm – 2am
+,All Seasons
+,Any
+,12–31
+,35 smooth
+,14
+, Night Fishing Bundle Baked Fish
+),
+(,45g
+	),
+(,56g
+	),
+(,67g
+	),
+(,90g
+	),
+(,56g
+	),
+(,70g
+	),
+(,83g
+	),
+(,112g
+	),
+(,67g
+	),
+(,84g
+	),
+(,100g
+	),
+(,135g
+	),
+(
+,Largemouth Bass
+,A popular fish that lives in lakes.
+,data-sort-value="100"
+	100g
+	125g
+	150g
+	200g
+,data-sort-value="125"
+	125g
+	156g
+	187g
+	250g
+,data-sort-value="150"
+	150g
+	187g
+	225g
+	300g
+,The Mountain Lake
+,6am – 7pm
+,All Seasons
+,Any
+,11–31
+,50 mixed
+,19
+, Lake Fish Bundle Quality Fish Bundle Crispy Bass "Fish Casserole" Quest
+),
+(,100g
+	),
+(,125g
+	),
+(,150g
+	),
+(,200g
+	),
+(,125g
+	),
+(,156g
+	),
+(,187g
+	),
+(,250g
+	),
+(,150g
+	),
+(,187g
+	),
+(,225g
+	),
+(,300g
+	),
+(
+,Smallmouth Bass
+,A freshwater fish that is very sensitive to pollution.
+,data-sort-value="50"
+	50g
+	62g
+	75g
+	100g
+,data-sort-value="62"
+	62g
+	77g
+	93g
+	125g
+,data-sort-value="75"
+	75g
+	93g
+	112g
+	150g
+,River (Town)Forest Pond
+,Anytime
+, Spring Fall
+,Any
+,12–25
+,28 mixed
+,12
+,
+),
+(,50g
+	),
+(,62g
+	),
+(,75g
+	),
+(,100g
+	),
+(,62g
+	),
+(,77g
+	),
+(,93g
+	),
+(,125g
+	),
+(,75g
+	),
+(,93g
+	),
+(,112g
+	),
+(,150g
+	),
+
+(
+,Perch
+,A freshwater fish of the winter.
+,data-sort-value="55"
+	55g
+	68g
+	82g
+	110g
+,data-sort-value="68"
+	68g
+	85g
+	102g
+	137g
+,data-sort-value="82"
+	82g
+	102g
+	123g
+	165g
+,River (Town+Forest)Forest PondThe Mountain Lake
+,Anytime
+, Winter
+,Any
+,10–25
+,35 dart
+,14
+,
+),
+(,55g
+	),
+(,68g
+	),
+(,82g
+	),
+(,110g
+	),
+(,68g
+	),
+(,85g
+	),
+(,102g
+	),
+(,137g
+	),
+(,82g
+	),
+(,102g
+	),
+(,123g
+	),
+(,165g
+	),
+(
+,Carp
+,A common pond fish.
+,data-sort-value="30"
+	30g
+	37g
+	45g
+	60g
+,data-sort-value="37"
+	37g
+	46g
+	56g
+	75g
+,data-sort-value="45"
+	45g
+	55g
+	67g
+	90g
+,The Mountain LakeSecret Woods PondThe Sewers
+,Anytime
+,All Seasons
+,Any
+,15–51
+,15 mixed
+,8
+, Lake Fish Bundle Carp Surprise
+),
+(,30g
+	),
+(,37g
+	),
+(,45g
+	),
+(,60g
+	),
+(,37g
+	),
+(,46g
+	),
+(,56g
+	),
+(,75g
+	),
+(,45g
+	),
+(,55g
+	),
+(,67g
+	),
+(,90g
+	),
+(
+,Catfish
+,An uncommon fish found in streams.
+,data-sort-value="200"
+	200g
+	250g
+	300g
+	400g
+,data-sort-value="250"
+	250g
+	312g
+	375g
+	500g
+,data-sort-value="300"
+	300g
+	375g
+	450g
+	600g
+,River (Town+Forest)Secret Woods PondWitch's Swamp
+,6am – 12am
+, Spring Fall( Spring & Summer in Secret Woods Pond)
+, Rain
+,12–73
+,75 mixed
+,28
+, River Fish Bundle Willy (loved gift)
+),
+(,200g
+	),
+(,250g
+	),
+(,300g
+	),
+(,400g
+	),
+(,250g
+	),
+(,312g
+	),
+(,375g
+	),
+(,500g
+	),
+(,300g
+	),
+(,375g
+	),
+(,450g
+	),
+(,600g
+	),
+
+(
+,Sunfish
+,A common river fish.
+,data-sort-value="30"
+	30g
+	37g
+	45g
+	60g
+,data-sort-value="37"
+	37g
+	46g
+	56g
+	75g
+,data-sort-value="45"
+	45g
+	55g
+	67g
+	90g
+,River (Town+Forest)
+,6am – 7pm
+, Spring Summer
+, Sun Wind
+,5–16
+,30 mixed
+,13
+, River Fish Bundle Baked Fish
+),
+(,30g
+	),
+(,37g
+	),
+(,45g
+	),
+(,60g
+	),
+(,37g
+	),
+(,46g
+	),
+(,56g
+	),
+(,75g
+	),
+(,45g
+	),
+(,55g
+	),
+(,67g
+	),
+(,90g
+	),
+(
+,Red Mullet
+,Long ago these were kept as pets.
+,data-sort-value="75"
+	75g
+	93g
+	112g
+	150g
+,data-sort-value="93"
+	93g
+	116g
+	140g
+	187g
+,data-sort-value="112"
+	112g
+	139g
+	168g
+	225g
+,Ocean
+,6am – 7pm
+, Summer Winter
+,Any
+,8–23
+,55 smooth
+,21
+,
+),
+(,75g
+	),
+(,93g
+	),
+(,112g
+	),
+(,150g
+	),
+(,93g
+	),
+(,116g
+	),
+(,140g
+	),
+(,187g
+	),
+(,112g
+	),
+(,139g
+	),
+(,168g
+	),
+(,225g
+	),
+(
+,Herring
+,A common ocean fish.
+,data-sort-value="30"
+	30g
+	37g
+	45g
+	60g
+,data-sort-value="37"
+	37g
+	46g
+	56g
+	75g
+,data-sort-value="45"
+	45g
+	55g
+	67g
+	90g
+,Ocean
+,Anytime
+, Spring Winter
+,Any
+,8–21
+,25 dart
+,11
+,
+),
+(,30g
+	),
+(,37g
+	),
+(,45g
+	),
+(,60g
+	),
+(,37g
+	),
+(,46g
+	),
+(,56g
+	),
+(,75g
+	),
+(,45g
+	),
+(,55g
+	),
+(,67g
+	),
+(,90g
+	),
+(
+,Eel
+,A long, slippery little fish.
+,data-sort-value="85"
+	85g
+	106g
+	127g
+	170g
+,data-sort-value="106"
+	106g
+	132g
+	158g
+	212g
+,data-sort-value="127"
+	127g
+	159g
+	190g
+	255g
+,Ocean
+,4pm – 2am
+, Spring Fall
+, Rain
+,12–81
+,70 smooth
+,26
+, Night Fishing Bundle Fried Eel Spicy Eel
+),
+(,85g
+	),
+(,106g
+	),
+(,127g
+	),
+(,170g
+	),
+(,106g
+	),
+(,132g
+	),
+(,158g
+	),
+(,212g
+	),
+(,127g
+	),
+(,159g
+	),
+(,190g
+	),
+(,255g
+	),
+(
+,Octopus
+,A mysterious and intelligent creature.
+,data-sort-value="150"
+	150g
+	187g
+	225g
+	300g
+,data-sort-value="187"
+	187g
+	233g
+	281g
+	375g
+,data-sort-value="225"
+	225g
+	280g
+	337g
+	450g
+,Ocean
+,6am – 1pm
+, Summer
+,Any
+,12–49
+,95 sinker
+,34
+, Master Fisher's Bundle Willy (loved gift)
+),
+(,150g
+	),
+(,187g
+	),
+(,225g
+	),
+(,300g
+	),
+(,187g
+	),
+(,233g
+	),
+(,281g
+	),
+(,375g
+	),
+(,225g
+	),
+(,280g
+	),
+(,337g
+	),
+(,450g
+	),
+(
+,Red Snapper
+,A popular fish with a nice red color.
+,data-sort-value="50"
+	50g
+	62g
+	75g
+	100g
+,data-sort-value="62"
+	62g
+	77g
+	93g
+	125g
+,data-sort-value="75"
+	75g
+	93g
+	112g
+	150g
+,Ocean
+,6am – 7pm
+, Summer Fall Winter with Rain Totem
+, Rain
+,8–26
+,40 mixed
+,16
+, Ocean Fish Bundle
+),
+(,50g
+	),
+(,62g
+	),
+(,75g
+	),
+(,100g
+	),
+(,62g
+	),
+(,77g
+	),
+(,93g
+	),
+(,125g
+	),
+(,75g
+	),
+(,93g
+	),
+(,112g
+	),
+(,150g
+	),
+(
+,Squid
+,A deep sea creature that can grow to enormous size.
+,data-sort-value="80"
+	80g
+	100g
+	120g
+	160g
+,data-sort-value="100"
+	100g
+	125g
+	150g
+	200g
+,data-sort-value="120"
+	120g
+	150g
+	180g
+	240g
+,Ocean
+,6pm – 2am
+, Winter
+,Any
+,12–49
+,75 sinker
+,28
+, Fried Calamari "Catch a Squid" Quest
+),
+(,80g
+	),
+(,100g
+	),
+(,120g
+	),
+(,160g
+	),
+(,100g
+	),
+(,125g
+	),
+(,150g
+	),
+(,200g
+	),
+(,120g
+	),
+(,150g
+	),
+(,180g
+	),
+(,240g
+	),
+(
+,Sea Cucumber
+,A slippery, slimy creature found on the ocean floor.
+,data-sort-value="75"
+	75g
+	93g
+	112g
+	150g
+,data-sort-value="93"
+	93g
+	116g
+	140g
+	187g
+,data-sort-value="112"
+	112g
+	139g
+	168g
+	225g
+,Ocean
+,6am – 7pm
+, Fall Winter
+,Any
+,3–21
+,40 sinker
+,16
+, Lucky Lunch Willy (loved gift)
+),
+(,75g
+	),
+(,93g
+	),
+(,112g
+	),
+(,150g
+	),
+(,93g
+	),
+(,116g
+	),
+(,140g
+	),
+(,187g
+	),
+(,112g
+	),
+(,139g
+	),
+(,168g
+	),
+(,225g
+	),
+(
+,Super Cucumber
+,A rare, purple variety of sea cucumber.
+,data-sort-value="250"
+	250g
+	312g
+	375g
+	500g
+,data-sort-value="312"
+	312g
+	390g
+	468g
+	625g
+,data-sort-value="375"
+	375g
+	468g
+	562g
+	750g
+,Ocean, Ginger Island oceans
+,6pm – 2am
+, Summer Fall(All Seasons on Ginger Island)
+,Any
+,12–37
+,80 sinker
+,29
+, Wizard (loved gift)
+),
+(,250g
+	),
+(,312g
+	),
+(,375g
+	),
+(,500g
+	),
+(,312g
+	),
+(,390g
+	),
+(,468g
+	),
+(,625g
+	),
+(,375g
+	),
+(,468g
+	),
+(,562g
+	),
+(,750g
+	),
+(
+,Ghostfish
+,A pale, blind fish found in underground lakes.
+,data-sort-value="45"
+	45g
+	56g
+	67g
+	90g
+,data-sort-value="56"
+	56g
+	70g
+	83g
+	112g
+,data-sort-value="67"
+	67g
+	84g
+	100g
+	135g
+,The Mines 20F & 60FGhost drops
+,Anytime
+,All Seasons
+,Any
+,10–36
+,50 mixed
+,19
+, Specialty Fish Bundle
+),
+(,45g
+	),
+(,56g
+	),
+(,67g
+	),
+(,90g
+	),
+(,56g
+	),
+(,70g
+	),
+(,83g
+	),
+(,112g
+	),
+(,67g
+	),
+(,84g
+	),
+(,100g
+	),
+(,135g
+	),
+(
+,Stonefish
+,A bizarre fish that's shaped like a brick.
+,data-sort-value="300"
+	300g
+	375g
+	450g
+	600g
+,data-sort-value="375"
+	375g
+	468g
+	562g
+	750g
+,data-sort-value="450"
+	450g
+	562g
+	675g
+	900g
+,The Mines 20F
+,Anytime
+,All Seasons
+,Any
+,14–16
+,65 sinker
+,24
+,
+),
+(,300g
+	),
+(,375g
+	),
+(,450g
+	),
+(,600g
+	),
+(,375g
+	),
+(,468g
+	),
+(,562g
+	),
+(,750g
+	),
+(,450g
+	),
+(,562g
+	),
+(,675g
+	),
+(,900g
+	),
+(
+,Ice Pip
+,A rare fish that thrives in extremely cold conditions.
+,data-sort-value="500"
+	500g
+	625g
+	750g
+	1,000g
+,data-sort-value="625"
+	625g
+	781g
+	937g
+	1,250g
+,data-sort-value="750"
+	750g
+	937g
+	1,125g
+	1,500g
+,Mines 60F
+,Anytime
+,All Seasons
+,Any
+,7–9
+,85 dart
+,31
+,
+),
+(,500g
+	),
+(,625g
+	),
+(,750g
+	),
+(,1,000g
+	),
+(,625g
+	),
+(,781g
+	),
+(,937g
+	),
+(,1,250g
+	),
+(,750g
+	),
+(,937g
+	),
+(,1,125g
+	),
+(,1,500g
+	),
+(
+,Lava Eel
+,It can somehow survive in pools of red-hot lava.
+,data-sort-value="700"
+	700g
+	875g
+	1,050g
+	1,400g
+,data-sort-value="875"
+	875g
+	1,093g
+	1,312g
+	1,750g
+,data-sort-value="1050"
+	1,050g
+	1,312g
+	1,575g
+	2,100g
+,The Mines 100FVolcano Caldera
+,Anytime
+,All Seasons
+,Any
+,31–33
+,90 mixed
+,33
+, Master Fisher's Bundle
+),
+(,700g
+	),
+(,875g
+	),
+(,1,050g
+	),
+(,1,400g
+	),
+(,875g
+	),
+(,1,093g
+	),
+(,1,312g
+	),
+(,1,750g
+	),
+(,1,050g
+	),
+(,1,312g
+	),
+(,1,575g
+	),
+(,2,100g
+	),
+(
+,Sandfish
+,It tries to hide using camouflage.
+,data-sort-value="75"
+	75g
+	93g
+	112g
+	150g
+,data-sort-value="93"
+	93g
+	116g
+	140g
+	187g
+,data-sort-value="112"
+	112g
+	139g
+	168g
+	225g
+,The Desert
+,6am – 8pm
+,All Seasons
+,Any
+,8–25
+,65 mixed
+,24
+, Specialty Fish Bundle Penny (loved gift)
+),
+(,75g
+	),
+(,93g
+	),
+(,112g
+	),
+(,150g
+	),
+(,93g
+	),
+(,116g
+	),
+(,140g
+	),
+(,187g
+	),
+(,112g
+	),
+(,139g
+	),
+(,168g
+	),
+(,225g
+	),
+(
+,Scorpion Carp
+,It's like a regular carp but with a sharp stinger.
+,data-sort-value="150"
+	150g
+	187g
+	225g
+	300g
+,data-sort-value="187"
+	187g
+	233g
+	281g
+	375g
+,data-sort-value="225"
+	225g
+	280g
+	337g
+	450g
+,The DesertRequires fishing level 4
+,6am – 8pm
+,All Seasons
+,Any
+,12–33
+,90 dart
+,33
+, Master Fisher's Bundle
+),
+(,150g
+	),
+(,187g
+	),
+(,225g
+	),
+(,300g
+	),
+(,187g
+	),
+(,233g
+	),
+(,281g
+	),
+(,375g
+	),
+(,225g
+	),
+(,280g
+	),
+(,337g
+	),
+(,450g
+	),
+(
+,Flounder
+,It lives on the bottom, so both eyes are on top of its head.
+,data-sort-value="100"
+	100g
+	125g
+	150g
+	200g
+,data-sort-value="125"
+	125g
+	156g
+	187g
+	250g
+,data-sort-value="150"
+	150g
+	187g
+	225g
+	300g
+,Ocean, Ginger Island oceans
+,6am – 8pm
+, Spring Summer(All Seasons on Ginger Island)
+,Any
+,4–17
+,50 sinker
+,19
+, Seafoam Pudding
+),
+(,100g
+	),
+(,125g
+	),
+(,150g
+	),
+(,200g
+	),
+(,125g
+	),
+(,156g
+	),
+(,187g
+	),
+(,250g
+	),
+(,150g
+	),
+(,187g
+	),
+(,225g
+	),
+(,300g
+	),
+(
+,Midnight Carp
+,This shy fish only feels comfortable at night.
+,data-sort-value="150"
+	150g
+	187g
+	225g
+	300g
+,data-sort-value="187"
+	187g
+	233g
+	281g
+	375g
+,data-sort-value="225"
+	225g
+	280g
+	337g
+	450g
+,Mountain Lake,Cindersap Forest pond,Ginger Island pond and river
+,10pm – 2am
+, Fall Winter(All Seasons on Ginger Island)
+,Any
+,12–53
+,55 mixed
+,21
+, Seafoam Pudding
+),
+(,150g
+	),
+(,187g
+	),
+(,225g
+	),
+(,300g
+	),
+(,187g
+	),
+(,233g
+	),
+(,281g
+	),
+(,375g
+	),
+(,225g
+	),
+(,280g
+	),
+(,337g
+	),
+(,450g
+	),
+(
+,Sturgeon
+,An ancient bottom-feeder with a dwindling population. Females can live up to 150 years.
+,data-sort-value="200"
+	200g
+	250g
+	300g
+	400g
+,data-sort-value="250"
+	250g
+	312g
+	375g
+	500g
+,data-sort-value="300"
+	300g
+	375g
+	450g
+	600g
+,Mountain Lake
+,6am – 7pm
+, Summer Winter
+,Any
+,12–61
+,78 mixed
+,29
+, Lake Fish Bundle Willy (loved gift)
+),
+(,200g
+	),
+(,250g
+	),
+(,300g
+	),
+(,400g
+	),
+(,250g
+	),
+(,312g
+	),
+(,375g
+	),
+(,500g
+	),
+(,300g
+	),
+(,375g
+	),
+(,450g
+	),
+(,600g
+	),
+(
+,Tiger Trout
+,A rare hybrid trout that cannot bear offspring of its own.
+,data-sort-value="150"
+	150g
+	187g
+	225g
+	300g
+,data-sort-value="187"
+	187g
+	233g
+	281g
+	375g
+,data-sort-value="225"
+	225g
+	280g
+	337g
+	450g
+,River (Town+Forest)
+,6am – 7pm
+, Fall Winter
+,Any
+,10–21
+,60 dart
+,23
+, River Fish Bundle
+),
+(,150g
+	),
+(,187g
+	),
+(,225g
+	),
+(,300g
+	),
+(,187g
+	),
+(,233g
+	),
+(,281g
+	),
+(,375g
+	),
+(,225g
+	),
+(,280g
+	),
+(,337g
+	),
+(,450g
+	),
+(
+,Bullhead
+,A relative of the catfish that eats a variety of foods off the lake bottom.
+,data-sort-value="75"
+	75g
+	93g
+	112g
+	150g
+,data-sort-value="93"
+	93g
+	116g
+	140g
+	187g
+,data-sort-value="112"
+	112g
+	139g
+	168g
+	225g
+,Mountain Lake
+,Anytime
+,All Seasons
+,Any
+,12–31
+,46 smooth
+,18
+, Lake Fish Bundle
+),
+(,75g
+	),
+(,93g
+	),
+(,112g
+	),
+(,150g
+	),
+(,93g
+	),
+(,116g
+	),
+(,140g
+	),
+(,187g
+	),
+(,112g
+	),
+(,139g
+	),
+(,168g
+	),
+(,225g
+	),
+(
+,Tilapia
+,A primarily vegetarian fish that prefers warm water.
+,data-sort-value="75"
+	75g
+	93g
+	112g
+	150g
+,data-sort-value="93"
+	93g
+	116g
+	140g
+	187g
+,data-sort-value="112"
+	112g
+	139g
+	168g
+	225g
+,Ocean, Ginger Island rivers
+,6am – 2pm
+, Summer Fall(All Seasons on Ginger Island)
+,Any
+,11–31
+,50 mixed
+,19
+, Ocean Fish Bundle
+),
+(,75g
+	),
+(,93g
+	),
+(,112g
+	),
+(,150g
+	),
+(,93g
+	),
+(,116g
+	),
+(,140g
+	),
+(,187g
+	),
+(,112g
+	),
+(,139g
+	),
+(,168g
+	),
+(,225g
+	),
+(
+,Chub
+,A common freshwater fish known for its voracious appetite.
+,data-sort-value="50"
+	50g
+	62g
+	75g
+	100g
+,data-sort-value="62"
+	62g
+	77g
+	93g
+	125g
+,data-sort-value="75"
+	75g
+	93g
+	112g
+	150g
+,Cindersap Forest River,Mountain Lake
+,Anytime
+,All Seasons
+,Any
+,12–25
+,35 dart
+,14
+, Field Research Bundle
+),
+(,50g
+	),
+(,62g
+	),
+(,75g
+	),
+(,100g
+	),
+(,62g
+	),
+(,77g
+	),
+(,93g
+	),
+(,125g
+	),
+(,75g
+	),
+(,93g
+	),
+(,112g
+	),
+(,150g
+	),
+(
+,Dorado
+,A fierce carnivore with brilliant orange scales.
+,data-sort-value="100"
+	100g
+	125g
+	150g
+	200g
+,data-sort-value="125"
+	125g
+	156g
+	187g
+	250g
+,data-sort-value="150"
+	150g
+	187g
+	225g
+	300g
+,Cindersap Forest River
+,6am – 7pm
+, Summer
+,Any
+,24–33
+,78 mixed
+,29
+,
+),
+(,100g
+	),
+(,125g
+	),
+(,150g
+	),
+(,200g
+	),
+(,125g
+	),
+(,156g
+	),
+(,187g
+	),
+(,250g
+	),
+(,150g
+	),
+(,187g
+	),
+(,225g
+	),
+(,300g
+	),
+(
+,Albacore
+,Prefers temperature "edges" where cool and warm water meet.
+,data-sort-value="75"
+	75g
+	93g
+	112g
+	150g
+,data-sort-value="93"
+	93g
+	116g
+	140g
+	187g
+,data-sort-value="112"
+	112g
+	139g
+	168g
+	225g
+,Ocean
+,6am – 11am6pm – 2am
+, Fall Winter
+,Any
+,20–41
+,60 mixed
+,23
+, "Fish Stew" Quest
+),
+(,75g
+	),
+(,93g
+	),
+(,112g
+	),
+(,150g
+	),
+(,93g
+	),
+(,116g
+	),
+(,140g
+	),
+(,187g
+	),
+(,112g
+	),
+(,139g
+	),
+(,168g
+	),
+(,225g
+	),
+(
+,Shad
+,Lives in a school at sea, but returns to the rivers to spawn.
+,data-sort-value="60"
+	60g
+	75g
+	90g
+	120g
+,data-sort-value="75"
+	75g
+	93g
+	112g
+	150g
+,data-sort-value="90"
+	90g
+	112g
+	135g
+	180g
+,River (Town+Forest)
+,9am – 2am
+, Spring Summer Fall
+, Rain
+,20–49
+,45 smooth
+,18
+, River Fish Bundle Quality Fish Bundle
+),
+(,60g
+	),
+(,75g
+	),
+(,90g
+	),
+(,120g
+	),
+(,75g
+	),
+(,93g
+	),
+(,112g
+	),
+(,150g
+	),
+(,90g
+	),
+(,112g
+	),
+(,135g
+	),
+(,180g
+	),
+(
+,Lingcod
+,A fearsome predator that will eat almost anything it can cram into its mouth.
+,data-sort-value="120"
+	120g
+	150g
+	180g
+	240g
+,data-sort-value="150"
+	150g
+	187g
+	225g
+	300g
+,data-sort-value="180"
+	180g
+	225g
+	270g
+	360g
+,River (Town+Forest)Mountain Lake
+,Any time
+, Winter
+,Any
+,30–51
+,85 mixed
+,31
+, "Catch a Lingcod" Quest
+),
+(,120g
+	),
+(,150g
+	),
+(,180g
+	),
+(,240g
+	),
+(,150g
+	),
+(,187g
+	),
+(,225g
+	),
+(,300g
+	),
+(,180g
+	),
+(,225g
+	),
+(,270g
+	),
+(,360g
+	),
+(
+,Halibut
+,A flat fish that lives on the ocean floor.
+,data-sort-value="80"
+	80g
+	100g
+	120g
+	160g
+,data-sort-value="100"
+	100g
+	125g
+	150g
+	200g
+,data-sort-value="120"
+	120g
+	150g
+	180g
+	240g
+,Ocean
+,6am – 11am7pm – 2am
+, Spring Summer Winter
+,Any
+,10–34
+,50 sinker
+,19
+,
+),
+(,80g
+	),
+(,100g
+	),
+(,120g
+	),
+(,160g
+	),
+(,100g
+	),
+(,125g
+	),
+(,150g
+	),
+(,200g
+	),
+(,120g
+	),
+(,150g
+	),
+(,180g
+	),
+(,240g
+	),
+(
+,Woodskip
+,A very sensitive fish that can only live in pools deep in the forest.
+,data-sort-value="75"
+	75g
+	93g
+	112g
+	150g
+,data-sort-value="93"
+	93g
+	116g
+	140g
+	187g
+,data-sort-value="112"
+	112g
+	139g
+	168g
+	225g
+,Secret Woods PondForest Farm
+,Anytime
+,All Seasons
+,Any
+,11–31
+,50 mixed
+,19
+, Specialty Fish Bundle
+),
+(,75g
+	),
+(,93g
+	),
+(,112g
+	),
+(,150g
+	),
+(,93g
+	),
+(,116g
+	),
+(,140g
+	),
+(,187g
+	),
+(,112g
+	),
+(,139g
+	),
+(,168g
+	),
+(,225g
+	),
+(
+,Void Salmon
+,A salmon, twisted by void energy. The fresh meat is jet black, but rapidly turns pink when exposed to air.
+,data-sort-value="150"
+	150g
+	187g
+	225g
+	300g
+,data-sort-value="187"
+	187g
+	233g
+	281g
+	375g
+,data-sort-value="225"
+	225g
+	280g
+	337g
+	450g
+,Witch's Swamp
+,Anytime
+,All Seasons
+,Any
+,24–66
+,80 mixed
+,29
+, The Missing Bundle
+),
+(,150g
+	),
+(,187g
+	),
+(,225g
+	),
+(,300g
+	),
+(,187g
+	),
+(,233g
+	),
+(,281g
+	),
+(,375g
+	),
+(,225g
+	),
+(,280g
+	),
+(,337g
+	),
+(,450g
+	),
+(
+,Slimejack
+,He's coated in a very thick layer of slime. He keeps slipping out of your hands!
+,data-sort-value="100"
+	100g
+	125g
+	150g
+	200g
+,data-sort-value="125"
+	125g
+	156g
+	187g
+	250g
+,data-sort-value="150"
+	150g
+	187g
+	225g
+	300g
+,Mutant Bug Lair
+,Anytime
+,All Seasons
+,Any
+,8–26
+,55 dart
+,21
+,
+),
+(,100g
+	),
+(,125g
+	),
+(,150g
+	),
+(,200g
+	),
+(,125g
+	),
+(,156g
+	),
+(,187g
+	),
+(,250g
+	),
+(,150g
+	),
+(,187g
+	),
+(,225g
+	),
+(,300g
+	),
+(
+,Stingray
+,Despite having a toxic stinger, these fish are shy and prefer to avoid humans.
+,data-sort-value="180"
+	180g
+	225g
+	270g
+	360g
+,data-sort-value="225"
+	225g
+	281g
+	337g
+	450g
+,data-sort-value="270"
+	270g
+	337g
+	405g
+	540g
+,Pirate Cove (Ginger Island)
+,Anytime
+,All Seasons
+,Any
+,18–61
+,80 sinker
+,29
+,
+),
+(,180g
+	),
+(,225g
+	),
+(,270g
+	),
+(,360g
+	),
+(,225g
+	),
+(,281g
+	),
+(,337g
+	),
+(,450g
+	),
+(,270g
+	),
+(,337g
+	),
+(,405g
+	),
+(,540g
+	),
+(
+,Lionfish
+,An aggressive, predatory fish with venomous spines.
+,data-sort-value="100"
+	100g
+	125g
+	150g
+	200g
+,data-sort-value="125"
+	125g
+	156g
+	187g
+	250g
+,data-sort-value="150"
+	150g
+	187g
+	225g
+	300g
+,Ginger Island Ocean
+,Anytime
+,All Seasons
+,Any
+,3–13
+,50 smooth
+,19
+,
+),
+(,100g
+	),
+(,125g
+	),
+(,150g
+	),
+(,200g
+	),
+(,125g
+	),
+(,156g
+	),
+(,187g
+	),
+(,250g
+	),
+(,150g
+	),
+(,187g
+	),
+(,225g
+	),
+(,300g
+	),
+(
+,Blue Discus
+,A brightly colored tropical fish that is popular in aquariums.
+,data-sort-value="120"
+	120g
+	150g
+	180g
+	240g
+,data-sort-value="150"
+	150g
+	187g
+	225g
+	300g
+,data-sort-value="180"
+	180g
+	225g
+	270g
+	360g
+,Ginger Island Pond and Rivers
+,Anytime
+,All Seasons
+,Any
+,2–10
+,60 dart
+,23
+,
+),
+(,120g
+	),
+(,150g
+	),
+(,180g
+	),
+(,240g
+	),
+(,150g
+	),
+(,187g
+	),
+(,225g
+	),
+(,300g
+	),
+(,180g
+	),
+(,225g
+	),
+(,270g
+	),
+(,360g
+	),
+(
+,Goby
+,Some types of Gobies can climb up waterfalls.
+,data-sort-value="150"
+	150g
+	187g
+	225g
+	300g
+,data-sort-value="187"
+	187g
+	233g
+	281g
+	375g
+,data-sort-value="225"
+	225g
+	280g
+	337g
+	450g
+,In waterfalls (Cindersap Forest)
+,Anytime
+,All Seasons
+,Any
+,3–13
+,55 dart
+,21
+,
+),
+(,150g
+	),
+(,187g
+	),
+(,225g
+	),
+(,300g
+	),
+(,187g
+	),
+(,233g
+	),
+(,281g
+	),
+(,375g
+	),
+(,225g
+	),
+(,280g
+	),
+(,337g
+	),
+(,450g
+	),
+(
+,Midnight Squid
+,A strange and mysterious denizen of the ocean's twilight depths.
+,data-sort-value="100"
+	100g
+	125g
+	150g
+	200g
+,data-sort-value="125"
+	125g
+	156g
+	187g
+	250g
+,data-sort-value="150"
+	150g
+	187g
+	225g
+	300g
+,8–26
+,55 sinker
+,21
+,
+),
+(,100g
+	),
+(,125g
+	),
+(,150g
+	),
+(,200g
+	),
+(,125g
+	),
+(,156g
+	),
+(,187g
+	),
+(,250g
+	),
+(,150g
+	),
+(,187g
+	),
+(,225g
+	),
+(,300g
+	),
+(
+,Spook Fish
+,The huge eyes can detect the faint silhouettes of prey.
+,data-sort-value="220"
+	220g
+	275g
+	330g
+	440g
+,data-sort-value="275"
+	275g
+	343g
+	412g
+	550g
+,data-sort-value="330"
+	330g
+	412g
+	495g
+	660g
+,8–26
+,60 dart
+,23
+,
+),
+(,220g
+	),
+(,275g
+	),
+(,330g
+	),
+(,440g
+	),
+(,275g
+	),
+(,343g
+	),
+(,412g
+	),
+(,550g
+	),
+(,330g
+	),
+(,412g
+	),
+(,495g
+	),
+(,660g
+	),
+(
+,Blobfish
+,This odd creature floats above the ocean floor, consuming any edible material in its path.
+,data-sort-value="500"
+	500g
+	625g
+	750g
+	1,000g
+,data-sort-value="625"
+	625g
+	781g
+	937g
+	1,250g
+,data-sort-value="750"
+	750g
+	937g
+	1,125g
+	1,500g
+,8–26
+,75 floater
+,28
+, Master Fisher's Bundle
+),
+(,500g
+	),
+(,625g
+	),
+(,750g
+	),
+(,1,000g
+	),
+(,625g
+	),
+(,781g
+	),
+(,937g
+	),
+(,1,250g
+	),
+(,750g
+	),
+(,937g
+	),
+(,1,125g
+	),
+(,1,500g
+	),
+(
+,Crimsonfish
+,Lives deep in the ocean but likes to lay its eggs in the warm summer water.
+,data-sort-value="1500"
+	1,500g
+	1,875g
+	2,250g
+	3,000g
+,data-sort-value="1875"
+	1,875g
+	2,343g
+	2,812g
+	3,750g
+,data-sort-value="2250"
+	2,250g
+	2,812g
+	3,375g
+	4,500g
+,East Pier on The Beach. Requires level 5 fishing.
+,Any
+, Summer
+,Any
+,19–21
+,95 mixed
+,170
+),
+(,1,500g
+	),
+(,1,875g
+	),
+(,2,250g
+	),
+(,3,000g
+	),
+(,1,875g
+	),
+(,2,343g
+	),
+(,2,812g
+	),
+(,3,750g
+	),
+(,2,250g
+	),
+(,2,812g
+	),
+(,3,375g
+	),
+(,4,500g
+	),
+(
+,Angler
+,Uses a bioluminescent dangler to attract prey.
+,data-sort-value="900"
+	900g
+	1,125g
+	1,350g
+	1,800g
+,data-sort-value="1125"
+	1,125g
+	1,406g
+	1,687g
+	2,250g
+,data-sort-value="1350"
+	1,350g
+	1,687g
+	2,025g
+	2,700g
+,North of JojaMart on the wooden plank bridge. Requires level 3 fishing.
+,Any
+, Fall
+,Any
+,17–19
+,85 smooth
+,155
+),
+(,900g
+	),
+(,1,125g
+	),
+(,1,350g
+	),
+(,1,800g
+	),
+(,1,125g
+	),
+(,1,406g
+	),
+(,1,687g
+	),
+(,2,250g
+	),
+(,1,350g
+	),
+(,1,687g
+	),
+(,2,025g
+	),
+(,2,700g
+	),
+(
+,Legend
+,The king of all fish! They said he'd never be caught.
+,data-sort-value="5000"
+	5,000g
+	6,250g
+	7,500g
+	10,000g
+,data-sort-value="6250"
+	6,250g
+	7,812g
+	9,375g
+	12,500g
+,data-sort-value="7500"
+	7,500g
+	9,375g
+	11,250g
+	15,000g
+,The Mountain Lake near the log. Requires level 10 fishing.
+,Any
+, Spring
+, Rain
+,49–51
+,110 mixed
+,195
+),
+(,5,000g
+	),
+(,6,250g
+	),
+(,7,500g
+	),
+(,10,000g
+	),
+(,6,250g
+	),
+(,7,812g
+	),
+(,9,375g
+	),
+(,12,500g
+	),
+(,7,500g
+	),
+(,9,375g
+	),
+(,11,250g
+	),
+(,15,000g
+	),
+(
+,Glacierfish
+,Builds a nest on the underside of glaciers.
+,data-sort-value="1000"
+	1,000g
+	1,250g
+	1,500g
+	2,000g
+,data-sort-value="1250"
+	1,250g
+	1,562g
+	1,875g
+	2,500g
+,data-sort-value="1500"
+	1,500g
+	1,875g
+	2,250g
+	3,000g
+,South end of Arrowhead Island in Cindersap Forest. Requires level 6 fishing.
+,Any
+, Winter
+,Any
+,26–28
+,100 mixed
+,180
+),
+(,1,000g
+	),
+(,1,250g
+	),
+(,1,500g
+	),
+(,2,000g
+	),
+(,1,250g
+	),
+(,1,562g
+	),
+(,1,875g
+	),
+(,2,500g
+	),
+(,1,500g
+	),
+(,1,875g
+	),
+(,2,250g
+	),
+(,3,000g
+	),
+(
+,Mutant Carp
+,The strange waters of the sewer turned this carp into a monstrosity.
+,data-sort-value="1000"
+	1,000g
+	1,250g
+	1,500g
+	2,000g
+,data-sort-value="1250"
+	1,250g
+	1,562g
+	1,875g
+	2,500g
+,data-sort-value="1500"
+	1,500g
+	1,875g
+	2,250g
+	3,000g
+,The Sewers
+,Any
+,All Seasons
+,Any
+,35–37
+,80 dart
+,145
+),
+(,1,000g
+	),
+(,1,250g
+	),
+(,1,500g
+	),
+(,2,000g
+	),
+(,1,250g
+	),
+(,1,562g
+	),
+(,1,875g
+	),
+(,2,500g
+	),
+(,1,500g
+	),
+(,1,875g
+	),
+(,2,250g
+	),
+(,3,000g
+	),
+(
+,Son of Crimsonfish
+,He hatched in the warm summer water, and followed in the footsteps of his father.
+,data-sort-value="1500"
+	1,500g
+	1,875g
+	2,250g
+	3,000g
+,data-sort-value="1875"
+	1,875g
+	2,343g
+	2,812g
+	3,750g
+,data-sort-value="2250"
+	2,250g
+	2,812g
+	3,375g
+	4,500g
+,East Pier on The Beach. Requires level 5 fishing.
+,Any
+,All Seasons
+,Any
+,19–21
+,95 mixed
+,170
+),
+(,1,500g
+	),
+(,1,875g
+	),
+(,2,250g
+	),
+(,3,000g
+	),
+(,1,875g
+	),
+(,2,343g
+	),
+(,2,812g
+	),
+(,3,750g
+	),
+(,2,250g
+	),
+(,2,812g
+	),
+(,3,375g
+	),
+(,4,500g
+	),
+(
+,Ms. Angler
+,Uses a bioluminescent dangler to attract prey.
+,data-sort-value="900"
+	900g
+	1,125g
+	1,350g
+	1,800g
+,data-sort-value="1125"
+	1,125g
+	1,406g
+	1,687g
+	2,250g
+,data-sort-value="1350"
+	1,350g
+	1,687g
+	2,025g
+	2,700g
+,North of JojaMart on the wooden plank bridge. Requires level 3 fishing.
+,Any
+,All Seasons
+,Any
+,17–19
+,85 smooth
+,155
+),
+(,900g
+	),
+(,1,125g
+	),
+(,1,350g
+	),
+(,1,800g
+	),
+(,1,125g
+	),
+(,1,406g
+	),
+(,1,687g
+	),
+(,2,250g
+	),
+(,1,350g
+	),
+(,1,687g
+	),
+(,2,025g
+	),
+(,2,700g
+	),
+(
+,Legend II
+,The successor to the original Legend.
+,data-sort-value="5000"
+	5,000g
+	6,250g
+	7,500g
+	10,000g
+,data-sort-value="6250"
+	6,250g
+	7,812g
+	9,375g
+	12,500g
+,data-sort-value="7500"
+	7,500g
+	9,375g
+	11,250g
+	15,000g
+,The Mountain Lake near the log. Requires level 10 fishing.
+,Any
+,All Seasons
+,Any
+,49–51
+,110 mixed
+,170
+),
+(,5,000g
+	),
+(,6,250g
+	),
+(,7,500g
+	),
+(,10,000g
+	),
+(,6,250g
+	),
+(,7,812g
+	),
+(,9,375g
+	),
+(,12,500g
+	),
+(,7,500g
+	),
+(,9,375g
+	),
+(,11,250g
+	),
+(,15,000g
+	),
+(
+,Glacierfish Jr.
+,The original Glacierfish had a son...
+,data-sort-value="1000"
+	1,000g
+	1,250g
+	1,500g
+	2,000g
+,data-sort-value="1250"
+	1,250g
+	1,562g
+	1,875g
+	2,500g
+,data-sort-value="1500"
+	1,500g
+	1,875g
+	2,250g
+	3,000g
+,South end of Arrowhead Island in Cindersap Forest. Requires level 6 fishing.
+,Any
+,All Seasons
+,Any
+,26–28
+,100 mixed
+,180
+),
+(,1,000g
+	),
+(,1,250g
+	),
+(,1,500g
+	),
+(,2,000g
+	),
+(,1,250g
+	),
+(,1,562g
+	),
+(,1,875g
+	),
+(,2,500g
+	),
+(,1,500g
+	),
+(,1,875g
+	),
+(,2,250g
+	),
+(,3,000g
+	),
+(
+,Radioactive Carp
+,A carp that spent one too many years in toxic sludge.
+,data-sort-value="1000"
+	1,000g
+	1,250g
+	1,500g
+	2,000g
+,data-sort-value="1250"
+	1,250g
+	1,562g
+	1,875g
+	2,500g
+,data-sort-value="1500"
+	1,500g
+	1,875g
+	2,250g
+	3,000g
+,The Sewers
+,Any
+,All Seasons
+,Any
+,35–37
+,80 dart
+,145
+),
+(,1,000g
+	),
+(,1,250g
+	),
+(,1,500g
+	),
+(,2,000g
+	),
+(,1,250g
+	),
+(,1,562g
+	),
+(,1,875g
+	),
+(,2,500g
+	),
+(,1,500g
+	),
+(,1,875g
+	),
+(,2,250g
+	),
+(,3,000g
+	),
+(
+,Lobster
+,A large ocean-dwelling crustacean with a strong tail.
+,data-sort-value="120"
+	120g
+,data-sort-value="150"
+	150g
+,data-sort-value="180"
+	180g
+,Ocean
+,4%
+,14%
+,2–20
+, Lobster Bisque "Wanted Lobster" Quest Elliott (loved Gift)
+),
+(,120g
+	),
+(,150g
+	),
+(,180g
+	),
+(
+,Clam
+,There's a chewy little guy in there...
+,data-sort-value="50"
+	50g
+	62g
+	75g
+	100g
+,data-sort-value="50"
+	50g
+	62g
+	75g
+	100g
+,data-sort-value="50"
+	50g
+	62g
+	75g
+	100g
+,Ocean
+,9%
+,14%
+,1–5
+, Chowder Speed-Gro
+),
+(,50g
+	),
+(,62g
+	),
+(,75g
+	),
+(,100g
+	),
+(,50g
+	),
+(,62g
+	),
+(,75g
+	),
+(,100g
+	),
+(,50g
+	),
+(,62g
+	),
+(,75g
+	),
+(,100g
+	),
+(
+,Crayfish
+,A small freshwater relative of the lobster.
+,data-sort-value="75"
+	75g
+,data-sort-value="93"
+	93g
+,data-sort-value="112"
+	112g
+,Freshwater
+,21%
+,33%
+,1–8
+, Fish Stew
+),
+(,75g
+	),
+(,93g
+	),
+(,112g
+	),
+(
+,Crab
+,A marine crustacean with two powerful pincers.
+,data-sort-value="100"
+	100g
+,data-sort-value="125"
+	125g
+,data-sort-value="150"
+	150g
+,Ocean
+,8%
+,14%
+,1–20
+,
+ Crab Cakes
+),
+(,100g
+	),
+(,125g
+	),
+(,150g
+	),
+(
+,Cockle
+,A common saltwater clam.
+,data-sort-value="50"
+	50g
+	62g
+	75g
+	100g
+,data-sort-value="62"
+	62g
+	77g
+	93g
+	125g
+,data-sort-value="75"
+	75g
+	93g
+	112g
+	150g
+,Ocean
+,12%
+,14%
+,1–5
+,
+),
+(,50g
+	),
+(,62g
+	),
+(,75g
+	),
+(,100g
+	),
+(,62g
+	),
+(,77g
+	),
+(,93g
+	),
+(,125g
+	),
+(,75g
+	),
+(,93g
+	),
+(,112g
+	),
+(,150g
+	),
+(
+,Mussel
+,A common bivalve that often lives in clusters.
+,data-sort-value="30"
+	30g
+	37g
+	45g
+	60g
+,data-sort-value="37"
+	37g
+	46g
+	56g
+	75g
+,data-sort-value="45"
+	45g
+	55g
+	67g
+	90g
+,Ocean
+,10%
+,14%
+,1–5
+, Fish Stew
+),
+(,30g
+	),
+(,37g
+	),
+(,45g
+	),
+(,60g
+	),
+(,37g
+	),
+(,46g
+	),
+(,56g
+	),
+(,75g
+	),
+(,45g
+	),
+(,55g
+	),
+(,67g
+	),
+(,90g
+	),
+(
+,Shrimp
+,A scavenger that feeds off the ocean floor. Widely prized for its meat.
+,data-sort-value="60"
+	60g
+,data-sort-value="75"
+	75g
+,data-sort-value="90"
+	90g
+,Ocean
+,10%
+,14%
+,1–5
+, Tom Kha Soup Shrimp Cocktail
+),
+(,60g
+	),
+(,75g
+	),
+(,90g
+	),
+(
+,Snail
+,A wide-ranging mollusc that lives in a spiral shell.
+,data-sort-value="65"
+	65g
+,data-sort-value="81"
+	81g
+,data-sort-value="97"
+	97g
+,Freshwater
+,20%
+,33%
+,1–5
+, Escargot Vincent (loved Gift)
+),
+(,65g
+	),
+(,81g
+	),
+(,97g
+	),
+(
+,Periwinkle
+,A tiny freshwater snail that lives in a blue shell.
+,data-sort-value="20"
+	20g
+,data-sort-value="25"
+	25g
+,data-sort-value="30"
+	30g
+,Freshwater
+,21%
+,33%
+,1–3
+, Strange Bun Fish Stew
+),
+(,20g
+	),
+(,25g
+	),
+(,30g
+	),
+(
+,Oyster
+,Constantly filters water to find food. In the process, it removes dangerous toxins from the environment.
+,data-sort-value="40"
+	40g
+	50g
+	60g
+	80g
+,data-sort-value="50"
+	50g
+	62g
+	75g
+	100g
+,data-sort-value="60"
+	60g
+	75g
+	90g
+	120g
+,Ocean
+,10%
+,14%
+,1–5
+,
+),
+(,40g
+	),
+(,50g
+	),
+(,60g
+	),
+(,80g
+	),
+(,50g
+	),
+(,62g
+	),
+(,75g
+	),
+(,100g
+	),
+(,60g
+	),
+(,75g
+	),
+(,90g
+	),
+(,120g
+	),

@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://bv52jxq0nrdo"]
+[gd_scene load_steps=12 format=3 uid="uid://bv52jxq0nrdo"]
 
 [ext_resource type="Script" path="res://UI/LevelCompleteUI.cs" id="1_qcrj7"]
 [ext_resource type="Texture2D" uid="uid://2oxhque4g8cf" path="res://Assets/UI/Banner4.png" id="1_sh5d0"]
+[ext_resource type="Script" path="res://Delete/GuiOverride.cs" id="2_et2e2"]
 [ext_resource type="FontFile" uid="uid://cipymmhxrwq2p" path="res://Assets/Fonts/Pixel/Stepalange-x3BLm.otf" id="5_kqc1f"]
 [ext_resource type="FontFile" uid="uid://cylak8bji1wf3" path="res://Assets/Fonts/Pixel/PRNumber3.ttf" id="6_q60b7"]
 [ext_resource type="Texture2D" uid="uid://scwdnqvqoxn" path="res://Assets/UI/UI_Wood_B_NoBorder.png" id="7_tpiqx"]
@@ -41,13 +42,27 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -6.0
-offset_top = -4.0
-offset_right = -6.0
-offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_qcrj7")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_et2e2")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.00392157, 0.00392157, 0.00392157, 0.498039)
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 texture_filter = 1

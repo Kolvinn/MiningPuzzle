@@ -1,0 +1,114 @@
+[gd_scene load_steps=16 format=3 uid="uid://ds8nbifrwu71h"]
+
+[ext_resource type="Texture2D" uid="uid://ckxesomrsqs14" path="res://Assets/UI/Kasaya's Frames/Inventory & chests/1/dialogues2.png" id="1_jn3nv"]
+[ext_resource type="Script" path="res://UI/ShopEntry.cs" id="2_4hqap"]
+[ext_resource type="Texture2D" uid="uid://by8d5w3jrplws" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Select_02a2.png" id="2_33083"]
+[ext_resource type="Texture2D" uid="uid://bnyuuxe5pvk4c" path="res://Assets/GameResource/Diamond.png" id="3_1keyc"]
+[ext_resource type="PackedScene" uid="uid://qru3r3tp0osm" path="res://UI/StarRect.tscn" id="4_sowom"]
+[ext_resource type="FontFile" uid="uid://cdjxwrsadqdwg" path="res://Assets/Fonts/Pixel/Dogica/dogicapixel.ttf" id="5_cjhoy"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gde2t"]
+
+[sub_resource type="Theme" id="Theme_au4sy"]
+TooltipPanel/styles/panel = SubResource("StyleBoxFlat_gde2t")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6tpjt"]
+texture = ExtResource("1_jn3nv")
+texture_margin_left = 15.0
+texture_margin_top = 10.0
+texture_margin_right = 15.0
+texture_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uceb7"]
+texture = ExtResource("2_33083")
+texture_margin_left = 5.0
+texture_margin_top = 5.0
+texture_margin_right = 5.0
+texture_margin_bottom = 5.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_3i21c"]
+font = ExtResource("5_cjhoy")
+font_size = 24
+outline_size = 2
+outline_color = Color(0.192157, 0.192157, 0.192157, 1)
+shadow_size = 15
+shadow_color = Color(0.619608, 0.32549, 0.12549, 0.501961)
+
+[sub_resource type="LabelSettings" id="LabelSettings_816kj"]
+font = ExtResource("5_cjhoy")
+font_size = 24
+
+[sub_resource type="Shader" id="Shader_dttp1"]
+code = "shader_type canvas_item;
+uniform bool filled; 
+uniform float alpha;
+void fragment() 
+{
+
+	
+	if(filled && COLOR.r > 0.8)
+	{
+		COLOR.a = alpha;
+	}
+	COLOR.rgb = COLOR.rgb * 1.25;
+	
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rb5uq"]
+resource_local_to_scene = true
+shader = SubResource("Shader_dttp1")
+shader_parameter/filled = true
+shader_parameter/alpha = 0.0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_tyy04"]
+resource_local_to_scene = true
+load_path = "res://.godot/imported/icons8-pixel-star-30.png-3d24435608bef9cf06786dd70d7c38d5.ctex"
+
+[node name="PanelContainer" type="PanelContainer"]
+offset_right = 378.0
+offset_bottom = 75.0
+theme = SubResource("Theme_au4sy")
+theme_override_styles/panel = SubResource("StyleBoxTexture_6tpjt")
+script = ExtResource("2_4hqap")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxTexture_uceb7")
+
+[node name="Icon" type="TextureRect" parent="HBoxContainer/PanelContainer"]
+layout_mode = 2
+texture = ExtResource("3_1keyc")
+
+[node name="NameLabel" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Diamond"
+label_settings = SubResource("LabelSettings_3i21c")
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/separation = 0
+
+[node name="CostLabel" type="Label" parent="HBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "4"
+label_settings = SubResource("LabelSettings_816kj")
+vertical_alignment = 2
+
+[node name="TextureRect2" parent="HBoxContainer/HBoxContainer" instance=ExtResource("4_sowom")]
+material = SubResource("ShaderMaterial_rb5uq")
+layout_mode = 2
+texture = SubResource("CompressedTexture2D_tyy04")
+stretch_mode = 5
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

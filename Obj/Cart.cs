@@ -53,6 +53,46 @@ public partial class Cart : Area2D
         
     }
 
+    public void ClearResources(List<ResourceType> toClear = null)
+    {
+        if(toClear != null)
+        {
+            foreach(var item in toClear)
+            {
+                if(StoredResources.ContainsKey(item))
+                {
+                    GetNode<HBoxContainer>("HBoxContainer").RemoveChild(StoredResources[item]);
+                    StoredResources[item].QueueFree();
+                    StoredResources.Remove(item);
+                }
+            }
+            
+        }
+        else
+        {
+            foreach (var pair in StoredResources)
+            {
+                GetNode<HBoxContainer>("HBoxContainer").RemoveChild(pair.Value);
+                pair.Value.QueueFree();
+
+            }
+            StoredResources.Clear();
+        }
+        
+    }
+
+    public void AddResource(ResourceType res)
+    {
+        var icon = Runner.LoadScene<ResourceIcon>("res://Obj/ResourceIcon.tscn");
+        GetNode<HBoxContainer>("HBoxContainer").AddChild(icon);
+        icon.Update(new GameResource()
+        {
+            ResourceType = res,
+            Amount = 1
+        });
+        StoredResources.Add(res, icon);
+    }
+
 
 
 }

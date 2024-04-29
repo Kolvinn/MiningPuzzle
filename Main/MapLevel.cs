@@ -55,7 +55,7 @@ namespace MagicalMountainMinery.Main
         [StoreCollection(ShouldStore = false)]
         public Track[,] Tracks2 { get; set; }
 
-        [StoreCollection(ShouldStore = false)]
+        [StoreCollection(ShouldStore = true)]
         public List<LevelTarget> LevelTargets { get; set; } = new List<LevelTarget>();
 
         //[StoreCollection(ShouldStore = true)]
@@ -64,8 +64,8 @@ namespace MagicalMountainMinery.Main
         [StoreCollection(ShouldStore = true)]
         public List<CartStartData> StartData { get; set; } = new List<CartStartData>();
         
-        [StoreCollection(ShouldStore = true)]
-        public List<IndexPos> EndPositions { get; set; } = new List<IndexPos>();
+        //[StoreCollection(ShouldStore = true)]
+        //public List<IndexPos> EndPositions { get; set; } = new List<IndexPos>();
 
         public int IndexWidth { get => width; set => width = value; }
         public  int IndexHeight { get => height; set => height = value; }
@@ -84,8 +84,6 @@ namespace MagicalMountainMinery.Main
         [StoreCollection(ShouldStore = true)]
         public List<IndexPos> Blocked { get; set; } = new List<IndexPos>();
 
-        [StoreCollection(ShouldStore = false)]
-        public List<Track> EndTracks { get; set; } = new List<Track>();
         public Random RandGen { get; set; } = new Random();
 
         public int AllowedTracks { get; set; }
@@ -147,7 +145,7 @@ namespace MagicalMountainMinery.Main
                 { ///column 0,1,2,3 etc.
                     var dex = new IndexPos(x,y);
 
-                    if (!Blocked.Contains(dex) && !EndPositions.Contains(dex))
+                    if (!Blocked.Contains(dex))
                     {
                         boxLine = new Line2D()
                         {
@@ -219,7 +217,7 @@ namespace MagicalMountainMinery.Main
             this.Position = new Vector2(0,0);
         }
 
-        public void AddMapObjects(IGameObject[,] objects)
+        public void AddMapObjects(IGameObject[,] objects, List<IndexPos> remove = null)
         {
             if (objects == null)
                 return;
@@ -231,6 +229,13 @@ namespace MagicalMountainMinery.Main
                 for (int j = 0; j < objects.GetLength(1); j++)
                 {
                     var m = objects[i, j];
+
+                    var pos = new IndexPos(i, j);
+                    if (remove != null && remove.Contains(pos))
+                    {
+                        objects[i, j] = null;
+                        continue;
+                    }
                     if (m != null)
                     {
                         var obj = (Node2D)m;
@@ -238,11 +243,11 @@ namespace MagicalMountainMinery.Main
 
                         if (m is LevelTarget t)
                         {
-                            LevelTargets.Add(t);
+                           // LevelTargets.Add(t);
                         }
                         else if(m is Portal p)
                         {
-                            if (portals.TryGetValue(p.SiblingId, out var existingPortal))
+                            if (!string.IsNullOrEmpty(p.SiblingId) && portals.TryGetValue(p.SiblingId, out var existingPortal))
                             {
                                 p.Sibling = existingPortal;
                                 existingPortal.Sibling = p;
@@ -449,11 +454,16 @@ namespace MagicalMountainMinery.Main
             MapObjects[pos.X, pos.Y] = null;
         }
 
-        public void RemoveAt(IndexPos pos)
+        public void RemoveAt(IndexPos pos, bool free = true)
         {
             var t = MapObjects[pos.X, pos.Y];
             if (t != null && t is Node2D mine)
-                mine.QueueFree();
+            {
+                mine.GetParent().RemoveChild(mine); 
+                if (free)
+                    mine.QueueFree();
+            }
+
             MapObjects[pos.X, pos.Y] = null;
         }
         public Vector2 GetGlobalPosition(IndexPos pos, bool includeOffset = true)
@@ -492,45 +502,7 @@ namespace MagicalMountainMinery.Main
             
         }
 
-        public Mineable SpawnNode()
-        {
-            var rand = RandGen.NextDouble();
-            var runningBase = CopperSpawn;
-            MineableType mine = MineableType.Stone;
-            ResourceType res = ResourceType.Stone;
-
-            if (rand <= runningBase)
-            {
-                mine = MineableType.Copper;
-                res = ResourceType.Copper_Ore;
-            }
-            else if(rand <= (runningBase += IronSpawn)) 
-            { 
-                mine = MineableType.Iron;
-                res = ResourceType.Iron_Ore;
-            }
-            else if (rand <= (runningBase += EmeraldSpawn))
-            {
-                mine = MineableType.Emerald;
-                res = ResourceType.Emerald;
-            }
-
-            return  new Mineable()
-            {
-                Texture = ResourceStore.Mineables[mine],
-                Type = mine,
-                ResourceSpawn = new GameResource()
-                {
-                    ResourceType = res,
-                    //Texture = ResourceStore.Resources[res],
-                    Amount = 5
-                }
-
-            };
-
-
-            
-        }
+       
 
         public void SetMineable(IndexPos pos, Mineable mineable)
         {

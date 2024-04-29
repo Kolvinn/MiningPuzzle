@@ -1,8 +1,0 @@
-[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://bvc3l6oujm7wj"]
-
-[ext_resource type="Texture2D" uid="uid://c3pb1qb7fkify" path="res://Assets/Mines/Copper_Node.png" id="1_huipl"]
-
-[resource]
-resource_local_to_scene = true
-atlas = ExtResource("1_huipl")
-region = Rect2(3, 3, 39, 39)

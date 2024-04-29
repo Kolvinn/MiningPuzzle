@@ -1,9 +1,0 @@
-[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://dkdl5tba84gwo"]
-
-[ext_resource type="Texture2D" uid="uid://buv8lx1kfsjha" path="res://Assets/Environment/Ore/lava.png" id="1_qisbi"]
-
-[resource]
-resource_local_to_scene = true
-atlas = ExtResource("1_qisbi")
-region = Rect2(32, 16, 17, 17)
-filter_clip = true

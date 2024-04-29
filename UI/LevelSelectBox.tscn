@@ -27,8 +27,9 @@ texture_margin_bottom = 1.0
 modulate_color = Color(1.5, 1.5, 1.5, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_qdi2a"]
+resource_local_to_scene = true
 font = ExtResource("3_ddfpp")
-font_size = 64
+font_size = 48
 font_color = Color(0.160784, 0.160784, 0.160784, 1)
 
 [node name="LevelBox" type="VBoxContainer"]
@@ -58,6 +59,7 @@ theme_override_constants/separation = 0
 
 [node name="Label" type="Label" parent="."]
 self_modulate = Color(0.505882, 0.505882, 0.505882, 1)
+custom_minimum_size = Vector2(170, 70)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_7rrx6")
 text = "1-1

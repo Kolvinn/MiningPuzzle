@@ -3,15 +3,29 @@ using MagicalMountainMinery.Data;
 using MagicalMountainMinery.Main;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using static MagicalMountainMinery.Main.GameController;
+using System.Text;
 
 public partial class MapController : Node2D
 {
-    public Dictionary<string, Vector2> CamPositions { get; set; } = new Dictionary<string, Vector2>()
+    public Dictionary<string, CamSettings> CamPositions { get; set; } = new Dictionary<string, CamSettings>()
     {
         {
-            "Tutorial Valley",new Vector2(1500,600)
+            "",new CamSettings(0.2f,new Vector2(700, -800))
+        },
+        {
+            "Tutorial Valley",new CamSettings(1,new Vector2(1500,600))
+        },
+        {
+            "Weathertop",new CamSettings(1,new Vector2(2983,-172))
+        },
+        {
+            "Lonely Mountain",new CamSettings(1,new Vector2(1670,-1050))
+        },
+        {
+            "Misty Mountains Cold",new CamSettings(1,new Vector2(230,-2222))
         }
     };
 
@@ -28,40 +42,40 @@ public partial class MapController : Node2D
     public SortedList<int, VBoxContainer> Locked { get; set; } = new SortedList<int, VBoxContainer>();
 
 
-
+    private bool loadOnce = true;
     public override void _Ready()
     {
         int count = 0;
-
-        var u = this.GetNode<Control>("CanvasLayer/LevelSelects");
-        foreach (var pair in ResourceStore.Levels)
+        if (loadOnce)
         {
-            var entry = pair.Value as MapLoad;
-            var node = u.GetNode<VBoxContainer>(entry.Region);
-            if (node == null)
+            var u = this.GetNode<Control>("CanvasLayer/LevelSelects");
+            foreach (var pair in ResourceStore.Levels)
             {
-                node = Runner.LoadScene<VBoxContainer>("res://UI/LocationScreen.tscn");
-                u.AddChild(node);
-                node.Name = entry.Region;
-                node.Visible = false;
-            }
-            else
-            {
+                var entry = pair.Value as MapLoad;
+                var node = u.GetNode<VBoxContainer>(entry.Region);
+                if (node == null)
+                {
+                    node = Runner.LoadScene<VBoxContainer>("res://UI/LocationScreen.tscn");
+                    node.GetNode<Label>("TitleBox/Label").Text = entry.Region;
+                    u.AddChild(node);
+                    node.Name = entry.Region;
+                    node.Visible = false;
+                }
+                else
+                {
+
+                }
+
+                PopulateLocation(node.GetNode<GridContainer>("MarginContainer/GridContainer"), entry);
+                count++;
+
 
             }
-
-            PopulateLocation(node.GetNode<GridContainer>("GridContainer"), entry);
-            count++;
-
-
+            Cam = new Camera();
+            this.AddChild(Cam);
+            Cam.Settings = CamPositions[""];
+            loadOnce = false;
         }
-
-        Cam = new Camera();
-        this.AddChild(Cam);
-        Cam.Position = new Vector2(0, 0);
-        Cam.Zoom = new Vector2(0.2f, 0.2f);
-
-        LoadProfile(CurrentProfile);
 
     }
 
@@ -119,12 +133,20 @@ public partial class MapController : Node2D
 
     public void LoadProfile(SaveProfile profile)
     {
-        foreach (var entry in profile.DataList)
+        //new profile
+        if (profile.DataList.Count == 0)
         {
+            Unlock(0);
+        }
+        else
+        {
+            foreach (var entry in profile.DataList)
+            {
 
-            
-            CompleteLevel(entry.Value as MapSave);
 
+                CompleteLevel(entry.Value as MapSave);
+
+            }
         }
     }
 
@@ -173,19 +195,24 @@ public partial class MapController : Node2D
 
         starBox.GetNode< Label>("Label").Set("theme_override_styles/normal/modulate_color", new Color(3, 3, 3, 1));
 
-        var unlock1 = new MapLoad()
-        {
-            LevelIndex = data.LevelIndex + 1,
-            RegionIndex = data.RegionIndex,
-            Region = data.Region,
-        };
-        Unlock(unlock1);
-        unlock1.LevelIndex++;
-        Unlock(unlock1);
+
+        var dex = ResourceStore.Levels.IndexOfKey(key);
+        Unlock(dex + 1);
+        Unlock(dex + 2);
     }
 
-    public void Unlock(MapLoad load)
+    public void Unlock(int index)
     {
+        if (index >= ResourceStore.Levels.Count())
+            return;
+        var load = ResourceStore.Levels.ElementAt(index).Value;
+
+        //new region
+        if(load.LevelIndex ==0)
+        {
+            this.GetNode<TextureButton>("CanvasLayer2/" + load.Region).Modulate = Colors.White;
+            this.GetNode<TextureButton>("CanvasLayer2/" + load.Region).SelfModulate = new Color(2, 2, 2, 1);
+        }
         var key = load.GetHashCode();
         if (Locked.TryGetValue(key, out var box))
         {
@@ -198,6 +225,7 @@ public partial class MapController : Node2D
         
     }
 
+    
     public void ChangeBoxColor(VBoxContainer box, Color color)
     {
         box.GetNode<GameButton>("Label/Button").Disabled = false;
@@ -210,13 +238,14 @@ public partial class MapController : Node2D
     {
         VBoxContainer levelBox = this.GetNode<Control>("CanvasLayer/LevelSelects").GetNode<VBoxContainer>(region);
 
-        return levelBox.GetNode<GridContainer>("GridContainer").GetChild(level) as VBoxContainer;
+        return levelBox.GetNode<GridContainer>("MarginContainer/GridContainer").GetChild(level) as VBoxContainer;
     }
 
 
     public override void _PhysicsProcess(double delta)
     {
-        if (GetTree().GetProcessedTweens().Count > 0)
+        var tweens = GetTree().GetProcessedTweens();
+        if (tweens.Count > 0)
         {
             return;
         }
@@ -224,63 +253,76 @@ public partial class MapController : Node2D
         var env = EventDispatch.FetchLast();
 
 
-        if (obj != null)
-        {
-            //obj = EventDispatch.FetchInteractable();
-            HandleUI(env, obj);
-        }
-        else
+        if (!HandleUI(env, obj))
         {
             if (env == EventType.Escape && !string.IsNullOrEmpty(currentLocation))
             {
                 currentLocation = "";
                 var u = this.GetNode<Control>("CanvasLayer/LevelSelects");
+
                 foreach (var c in u.GetChildren())
-                    ((Node2D)c).Visible = false;
+                    ((VBoxContainer)c).Visible = false;
 
+                DoCamZoom(CamPositions[""], Callable.From(ZoomOutFinish));
+                EventDispatch.ClearAll();
 
-                Cam.Position = new Vector2(0, 0);
-                Cam.Zoom = new Vector2(0.2f, 0.2f);
-
-                this.GetNode<CanvasLayer>("CanvasLayer2").Visible = true;
             }
-            // ParseInput(env);
-            //ValidateState();
+
         }
 
     }
 
-    public void Finished()
+    public void ZoomInFinish()
     {
         var u = this.GetNode<Control>("CanvasLayer/LevelSelects");
         foreach (var c in u.GetChildren())
             ((Control)c).Visible = false;
+        var location = u.GetNode<VBoxContainer>(currentLocation);
+        if (location != null)
+            location.Visible = true;
+    }
+    public void ZoomOutFinish()
+    {
 
-        u.GetNode<VBoxContainer>(currentLocation).Visible = true;
+        this.GetNode<CanvasLayer>("CanvasLayer2").Visible = true;
+        //var u = this.GetNode<Control>("CanvasLayer/LevelSelects");
+        //foreach (var c in u.GetChildren())
+        //    ((Control)c).Visible = false;
+
+        //u.GetNode<VBoxContainer>(currentLocation).Visible = true;
+    }
+    public void DoCamZoom(CamSettings settings, Callable call)
+    {
+        EventDispatch.GetHover(); //remove the hover since we are not going to exit the button
+
+        var cam = GetViewport().GetCamera2D();
+        Tween tween = GetTree().CreateTween();
+        tween.SetParallel(true);
+        tween.TweenProperty(cam, "position", settings.Position, 0.3f).
+        SetTrans(Tween.TransitionType.Quart).
+                SetEase(Tween.EaseType.InOut);
+        tween.TweenProperty(cam, "zoom", new Vector2(settings.Zoom, settings.Zoom), 0.3f).
+        SetTrans(Tween.TransitionType.Quart).
+                SetEase(Tween.EaseType.InOut);
+        tween.Connect(Tween.SignalName.Finished, call);
     }
 
-
-    public void HandleUI(EventType env, IUIComponent comp)
+    public bool HandleUI(EventType env, IUIComponent comp)
     {
+        if (comp == null)
+            return false;
         if (env == EventType.Left_Action && comp is GameButton btn)
         {
-            var pos = Vector2.Zero;
-            if (CamPositions.TryGetValue(comp.UIID, out pos))
+
+            if (CamPositions.TryGetValue(comp.UIID, out var settings))
             {
+                currentLocation = comp.UIID;
                 this.GetNode<CanvasLayer>("CanvasLayer2").Visible = false;
 
                 EventDispatch.GetHover(); //remove the hover since we are not going to exit the button
 
-                var cam = GetViewport().GetCamera2D();
-                Tween tween = GetTree().CreateTween();
-                tween.SetParallel(true);
-                tween.TweenProperty(cam, "position", pos, 0.3f).
-                SetTrans(Tween.TransitionType.Quart).
-                        SetEase(Tween.EaseType.InOut);
-                tween.TweenProperty(cam, "zoom", new Vector2(1, 1), 0.3f).
-                SetTrans(Tween.TransitionType.Quart).
-                        SetEase(Tween.EaseType.InOut);
-                tween.Connect(Tween.SignalName.Finished, Callable.From(Finished));
+                DoCamZoom(settings, Callable.From(ZoomInFinish));
+                return true;
 
             }
             else //we are doing sub buttons
@@ -290,6 +332,7 @@ public partial class MapController : Node2D
                     int parse = int.Parse(comp.UIID);
                     var level = ResourceStore.GetMapLoad(parse);
                     LevelCall(level);
+                    return true;
                 }
                 catch (Exception e)
                 {
@@ -297,6 +340,7 @@ public partial class MapController : Node2D
                 }
             }
         }
+        return false;
     }
 
 

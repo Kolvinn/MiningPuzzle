@@ -103,7 +103,7 @@ namespace MagicalMountainMinery.Obj
                 str = "West";
 
 
-            player.Play(str, speed * Runner.SIM_SPEED);
+            player.Play(str, speed * Runner.SIM_SPEED_RATIO);
             player.Queue("RESET");
             //MiningTarget = target;
             //canMine = false;

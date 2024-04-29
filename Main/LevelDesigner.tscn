@@ -1,17 +1,22 @@
-[gd_scene load_steps=23 format=3 uid="uid://bt6myu7ymgp1f"]
+[gd_scene load_steps=24 format=3 uid="uid://bt6myu7ymgp1f"]
 
 [ext_resource type="Script" path="res://Main/LevelDesigner.cs" id="1_wtwda"]
 [ext_resource type="Texture2D" uid="uid://b73r8m2mqfjb" path="res://Assets/UI/Shikashi's Fantasy Icons Pack v2/BG 7.png" id="2_geehe"]
 [ext_resource type="Texture2D" uid="uid://dli2vnksgqf4q" path="res://Assets/Tracks/Old/straight_horizontal.tres" id="2_ndy2n"]
-[ext_resource type="Texture2D" uid="uid://ctesxmcbkp81" path="res://Assets/Environment/Minerals/Stone.tres" id="4_3e6gn"]
-[ext_resource type="Texture2D" uid="uid://bvc3l6oujm7wj" path="res://Assets/Environment/Minerals/Copper.tres" id="5_g4sts"]
-[ext_resource type="Texture2D" uid="uid://b1nedoxb58jgv" path="res://Assets/Environment/Minerals/Iron.tres" id="6_p8qvm"]
+[ext_resource type="Script" path="res://Delete/GuiOverride.cs" id="3_41u61"]
+[ext_resource type="Texture2D" uid="uid://jwqmxsxduysn" path="res://Assets/Environment/Minerals/Stone_Node.png" id="4_3e6gn"]
+[ext_resource type="Texture2D" uid="uid://c3pb1qb7fkify" path="res://Assets/Environment/Minerals/Copper_Node.png" id="5_g4sts"]
+[ext_resource type="Texture2D" uid="uid://bmxmjo2dc277" path="res://Assets/Environment/Minerals/Iron_Node.png" id="6_p8qvm"]
 [ext_resource type="Texture2D" uid="uid://ceby4gk5od21j" path="res://Assets/Mines/Craftables.png" id="7_vvfwd"]
 [ext_resource type="Texture2D" uid="uid://vhpi4hfu864b" path="res://Assets/UI/Shikashi's Fantasy Icons Pack v2/#1 - Transparent Icons.png" id="8_kh1fl"]
 [ext_resource type="Script" path="res://UI/GameButton.cs" id="9_eq3wg"]
 [ext_resource type="Texture2D" uid="uid://ddy22daucmahq" path="res://Assets/Portal/portal-full.png" id="10_snqi2"]
 [ext_resource type="Texture2D" uid="uid://df0qawyhs6l4a" path="res://Assets/Tracks/Contents/lpc-mine-cart-carts-angles.png" id="11_lx28d"]
 [ext_resource type="Texture2D" uid="uid://b23gm4ih3f737" path="res://Assets/UI/GUI_Essential_v1.0_[Free]/Spritesheet/gui_paper_animated_selection1.png" id="12_xiyt7"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2algt"]
+atlas = ExtResource("12_xiyt7")
+region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="LabelSettings" id="LabelSettings_6l2fr"]
 font_size = 10
@@ -45,14 +50,44 @@ region = Rect2(35, 18, 59, 43)
 atlas = ExtResource("11_lx28d")
 region = Rect2(34, 18, 60, 43)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_2algt"]
-atlas = ExtResource("12_xiyt7")
-region = Rect2(0, 0, 32, 32)
-
 [node name="LevelDesigner" type="Node2D"]
 script = ExtResource("1_wtwda")
 
+[node name="HoverSquare" type="TextureRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+texture = SubResource("AtlasTexture_2algt")
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1282.0
+offset_bottom = 56.0
+mouse_filter = 1
+script = ExtResource("3_41u61")
+
+[node name="Control2" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 156.0
+offset_bottom = 720.0
+mouse_filter = 1
+script = ExtResource("3_41u61")
+
+[node name="Stone" type="TextureButton" parent="CanvasLayer/Control2"]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 63.0
+offset_right = 35.0
+offset_bottom = 91.0
+scale = Vector2(1.93, 1.93)
+mouse_filter = 1
+texture_normal = ExtResource("4_3e6gn")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
 anchors_preset = 2
@@ -63,7 +98,7 @@ offset_top = -44.0
 offset_right = 40.0
 offset_bottom = -12.0
 grow_vertical = 0
-mouse_filter = 0
+mouse_force_pass_scroll_events = false
 texture = ExtResource("2_ndy2n")
 
 [node name="Label" type="Label" parent="CanvasLayer/TextureRect"]
@@ -72,7 +107,8 @@ offset_left = 5.0
 offset_top = -1.0
 offset_right = 45.0
 offset_bottom = 22.0
-mouse_filter = 0
+mouse_filter = 1
+mouse_force_pass_scroll_events = false
 text = "Level: 1"
 label_settings = SubResource("LabelSettings_6l2fr")
 
@@ -85,7 +121,7 @@ offset_top = -30.0
 offset_right = 27.0
 offset_bottom = -12.0
 grow_vertical = 0
-mouse_filter = 0
+mouse_force_pass_scroll_events = false
 texture = SubResource("AtlasTexture_xxks5")
 expand_mode = 1
 
@@ -96,46 +132,47 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 0
+mouse_filter = 1
+mouse_force_pass_scroll_events = false
 text = "Q"
 label_settings = SubResource("LabelSettings_ngj1s")
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_lock_ = true
 
-[node name="Stone" type="TextureButton" parent="CanvasLayer"]
-offset_left = 5.0
-offset_top = 60.0
-offset_right = 31.0
-offset_bottom = 88.0
-texture_normal = ExtResource("4_3e6gn")
-ignore_texture_size = true
-stretch_mode = 0
-
 [node name="Copper" type="TextureButton" parent="CanvasLayer"]
-offset_left = 5.0
-offset_top = 89.0
-offset_right = 31.0
-offset_bottom = 116.0
+offset_left = 46.0
+offset_top = 119.0
+offset_right = 72.0
+offset_bottom = 146.0
+scale = Vector2(1.93, 1.93)
+mouse_filter = 1
+mouse_force_pass_scroll_events = false
 theme = SubResource("Theme_k4nm8")
 texture_normal = ExtResource("5_g4sts")
 ignore_texture_size = true
 stretch_mode = 0
 
 [node name="Iron" type="TextureButton" parent="CanvasLayer"]
-offset_left = 3.0
-offset_top = 121.0
-offset_right = 31.0
-offset_bottom = 147.0
+offset_left = 78.0
+offset_top = 61.0
+offset_right = 106.0
+offset_bottom = 87.0
+scale = Vector2(1.93, 1.93)
+mouse_filter = 1
+mouse_force_pass_scroll_events = false
 texture_normal = ExtResource("6_p8qvm")
 ignore_texture_size = true
 stretch_mode = 0
 
 [node name="Track" type="TextureButton" parent="CanvasLayer"]
-offset_left = 3.0
-offset_top = 141.0
-offset_right = 35.0
-offset_bottom = 173.0
+offset_left = 10.0
+offset_top = 152.0
+offset_right = 42.0
+offset_bottom = 184.0
+scale = Vector2(1.93, 1.93)
+mouse_filter = 1
+mouse_force_pass_scroll_events = false
 texture_normal = ExtResource("2_ndy2n")
 
 [node name="Button" type="Button" parent="CanvasLayer"]
@@ -143,20 +180,27 @@ offset_left = 7.0
 offset_top = 4.0
 offset_right = 91.0
 offset_bottom = 35.0
+mouse_filter = 1
+mouse_force_pass_scroll_events = false
 text = "Save Level"
 
 [node name="EndCon" type="TextureButton" parent="CanvasLayer"]
-offset_left = 6.0
-offset_top = 179.0
-offset_right = 22.0
-offset_bottom = 208.0
+offset_left = 15.0
+offset_top = 227.0
+offset_right = 31.0
+offset_bottom = 256.0
+scale = Vector2(1.93, 1.93)
+mouse_force_pass_scroll_events = false
 texture_normal = SubResource("AtlasTexture_p3td8")
 
 [node name="Block" type="TextureButton" parent="CanvasLayer"]
-offset_left = 7.0
-offset_top = 221.0
-offset_right = 30.0
-offset_bottom = 245.0
+offset_left = 13.0
+offset_top = 299.0
+offset_right = 36.0
+offset_bottom = 323.0
+scale = Vector2(1.93, 1.93)
+mouse_filter = 1
+mouse_force_pass_scroll_events = false
 texture_normal = SubResource("AtlasTexture_ih1bj")
 ignore_texture_size = true
 stretch_mode = 0
@@ -172,6 +216,8 @@ offset_top = 4.0
 offset_right = -4.0
 offset_bottom = 37.0
 grow_horizontal = 0
+mouse_filter = 1
+mouse_force_pass_scroll_events = false
 placeholder_text = "5,5
 "
 
@@ -184,7 +230,8 @@ offset_top = 8.0
 offset_right = -75.0
 offset_bottom = 34.0
 grow_horizontal = 0
-mouse_filter = 0
+mouse_filter = 1
+mouse_force_pass_scroll_events = false
 text = "MapSize (x,y)"
 
 [node name="OptionButton" type="OptionButton" parent="CanvasLayer"]
@@ -192,18 +239,26 @@ offset_left = 124.0
 offset_top = 5.0
 offset_right = 339.0
 offset_bottom = 36.0
-item_count = 2
+mouse_filter = 1
+mouse_force_pass_scroll_events = false
+item_count = 4
 selected = 0
 popup/item_0/text = "Tutorial Valley"
 popup/item_0/id = 0
-popup/item_1/text = "Dark Hills"
+popup/item_1/text = "Weathertop"
 popup/item_1/id = 1
+popup/item_2/text = "Lonely Mountain"
+popup/item_2/id = 2
+popup/item_3/text = "Misty Mountains Cold"
+popup/item_3/id = 3
 
 [node name="Portal" type="TextureButton" parent="CanvasLayer"]
-offset_left = 4.0
-offset_top = 255.0
-offset_right = 55.0
-offset_bottom = 308.0
+offset_left = 15.0
+offset_top = 355.0
+offset_right = 66.0
+offset_bottom = 408.0
+scale = Vector2(1.93, 1.93)
+mouse_force_pass_scroll_events = false
 texture_normal = SubResource("AtlasTexture_m3kl4")
 ignore_texture_size = true
 stretch_mode = 0
@@ -211,10 +266,11 @@ script = ExtResource("9_eq3wg")
 UIID = "portal"
 
 [node name="NormalCart" type="TextureButton" parent="CanvasLayer"]
-offset_left = 8.0
-offset_top = 322.0
-offset_right = 48.0
-offset_bottom = 362.0
+offset_top = 465.0
+offset_right = 40.0
+offset_bottom = 505.0
+scale = Vector2(1.93, 1.93)
+mouse_force_pass_scroll_events = false
 texture_normal = SubResource("AtlasTexture_6ivha")
 ignore_texture_size = true
 stretch_mode = 0
@@ -223,21 +279,17 @@ UIID = "Single"
 
 [node name="DoubleCart" type="TextureButton" parent="CanvasLayer"]
 self_modulate = Color(0, 0.670588, 0.462745, 1)
-offset_left = 54.0
-offset_top = 319.0
-offset_right = 94.0
-offset_bottom = 359.0
+offset_left = 81.0
+offset_top = 466.0
+offset_right = 121.0
+offset_bottom = 506.0
+scale = Vector2(1.93, 1.93)
+mouse_force_pass_scroll_events = false
 texture_normal = SubResource("AtlasTexture_2ff8y")
 ignore_texture_size = true
 stretch_mode = 0
 script = ExtResource("9_eq3wg")
 UIID = "Double"
-
-[node name="HoverSquare" type="TextureRect" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
-mouse_filter = 2
-texture = SubResource("AtlasTexture_2algt")
 
 [connection signal="pressed" from="CanvasLayer/Button" to="." method="Save"]
 [connection signal="focus_exited" from="CanvasLayer/MapSizeText" to="." method="OnMapSizeFocusExit"]

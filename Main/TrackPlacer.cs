@@ -26,12 +26,8 @@ namespace MagicalMountainMinery.Main
             Default
         }
 
-        public enum ObjectFocus
-        {
-            Resource,
-            Track,
-            EndCon
-        }
+        public bool PauseHandle { get; set; } = false;
+        public ResourceType Special {  get; set; }
         public State CurrentState { get; set; } = State.Default;
         //public Track SelectedTrack { get; set; }
 
@@ -49,7 +45,6 @@ namespace MagicalMountainMinery.Main
         public int CurrentTrackLevel = 1;
 
 
-        public ObjectFocus focus { get; set; } = ObjectFocus.Track;
 
         [JsonProperty(ItemConverterType = typeof(StringEnumConverter))]
         public MineableType mineable { get; set; }
@@ -58,20 +53,22 @@ namespace MagicalMountainMinery.Main
 
         public TutorialUI TutorialUI { get; set; }
 
-        public bool TutorialDisabled { get; set; } = true;
+        public bool TutorialDisabled { get; set; } = false;
         public ResourceType resource { get; set; }
 
         public int CurrentLevelDex { get; set; }
 
         public AudioStreamPlayer AudioStream { get; set; }
 
-
+        public Shop ShopScreen { get; set; }    
         public List<Track> OuterConnections { get; set; } = new List<Track>();
         //public ColorRect[,] MineableLocations { get; set; }
 
         //public Dictionary<IndexPos, ColorRect> MineableLocations { get; set; } = new Dictionary<IndexPos, ColorRect>();
 
         //public Dictionary<IndexPos, ColorRect> MineableLocations { get; set; } = new Dictionary<IndexPos, ColorRect>();
+
+        public Tuple<IndexPos, EventType> LastCompletedAction { get; set; } = null;
         public Track StartTrack { get; set; }
         public override void _Ready()
         {
@@ -84,18 +81,22 @@ namespace MagicalMountainMinery.Main
             };
 
             TutorialUI = this.GetNode<TutorialUI>("CanvasLayer/TutorialLayer");
-
+            SpecialLabel = this.GetNode<Label>("CanvasLayer/Special Note");
             AudioStream = new AudioStreamPlayer();
             this.AddChild(AudioStream);
+            ShopScreen = this.GetNode<Shop>("CanvasLayer/Shop");
+
+            foreach (var res in ResourceStore.ShopResources)
+                ShopScreen.AddGameResource(res);
             //this.AddChild(TutorialUI);
         }
 
 
 
-        public void LoadLevel(MapLevel level, int levelDex)
+        public void LoadLevel(MapLevel level, MapLoad load)
         {
             OuterConnections = new List<Track>();
-            CurrentLevelDex = levelDex;
+            CurrentLevelDex = load.LevelIndex;
             CurrentState = State.Default;
             MasterTrackList = new Dictionary<IConnectable, List<IConnectable>>();
             this.MapLevel = level;
@@ -103,28 +104,29 @@ namespace MagicalMountainMinery.Main
             ShowConnections(false);
             
             var raised = MapLevel.AllowedTracksRaised == 0 ? false : true;
-            var junc = MapLevel.AllowedJunctions == 0 ? false : true;
+            //var junc = MapLevel.AllowedJunctions == 0 ? false : true;
 
     
 
             this.GetNode<VBoxContainer>("CanvasLayer/Raised").Visible = raised;
             this.GetNode<TextureRect>("CanvasLayer/TextureRect3").Visible=raised;
-            this.GetNode<VBoxContainer>("CanvasLayer/Junc").Visible = junc;
+            //this.GetNode<VBoxContainer>("CanvasLayer/Junc").Visible = junc;
 
-            TutorialUI.CurrentTutorial = null;
-            TutorialUI.CurrentIndex = (levelDex + 1);
-            TutorialUI.CurrentSubIndex = 1;
-
+            //TutorialUI.CurrentTutorial = null;
+            ////TutorialUI.CurrentIndex = (regionDex + 1);
+            //TutorialUI.CurrentSubIndex = levelDex;
+            if(!TutorialDisabled)
+                TutorialUI.Load(load);
             //if(MineableLocations != null && MineableLocations.Count > 0)
             //{
             //    foreach (var m in MineableLocations)
             //    {
             //        m.Value.QueueFree();
 
-                    
+
             //    }
             //}
-            
+
             //MineableLocations = = new Dictionary<IndexPos, ColorRect>();
 
         }
@@ -146,15 +148,14 @@ namespace MagicalMountainMinery.Main
 
         }
 
-        
-
-        public override void _PhysicsProcess(double delta)
+        public void Handle(EventType type, IUIComponent comp)
         {
+            if (PauseHandle)
+                return;
+            var obj = comp;
+            var env = type;
 
-            var obj = EventDispatch.PeekHover();
-            var env = EventDispatch.FetchLast();
-
-            if (!TutorialDisabled)
+            if (!TutorialDisabled && TutorialUI.HasTutorial)
             {
                 if (TutorialUI.CurrentTutorial != null)
                 {
@@ -169,18 +170,28 @@ namespace MagicalMountainMinery.Main
                     return;
                 }
             }
-
-            if (obj != null)
+            if (HandleSpecial)
+            { var inter = EventDispatch.FetchInteractable();
+                if(inter != null && env == EventType.Left_Action)
+                {
+                    GD.Print("inter: " ,inter);
+                }
+                
+                HandleSpecialInteraction(env, obj, inter);
+            }
+            else if (obj != null)
             {
                 //obj = EventDispatch.FetchInteractable();
-                HandleUI(env,obj);
+                HandleUI(env, obj);
             }
             else
             {
                 ParseInput(env);
-                ValidateState();
+                ValidateState(env);
             }
         }
+
+ 
 
 
         public void SetButtonFocus(GameButton btn)
@@ -213,7 +224,27 @@ namespace MagicalMountainMinery.Main
                     SetButtonFocus(btn);
                     //Buttons.Where(e => e != btn).ToList().ForEach(t => t.selectMat.SetShaderParameter("Width", 0));
                 }
+                if(btn.UIID  == "Diamond" )
+                {
+                    Special = ResourceType.Diamond;
+                    HandleSpecial = true;
+                }
+                if (btn.UIID == "Ruby")
+                {
+                    Special = ResourceType.Ruby;
+                    HandleSpecial = true;
+                }
+                if (btn.UIID == "Emerald")
+                {
+                    Special = ResourceType.Emerald;
+                    HandleSpecial = true;
+                }
+                if(btn.UIID == "ShopOpen")
+                {
+                    ShopScreen.Visible = true;
+                }
             }
+            
         }
         public void ParseInput(EventType env)
         {
@@ -260,13 +291,24 @@ namespace MagicalMountainMinery.Main
             }
         }
 
-        public void ValidateState()
+        public void ValidateState(EventType env)
         {
+            var index = FetchMouseIndex();
+            if (LastCompletedAction != null && LastCompletedAction.Item1 == index && LastCompletedAction.Item2 == env)
+            {
+
+                return;
+            }
+            else
+            {
+                LastCompletedAction = Tuple.Create(index, env);
+            }
+
             if (CurrentState == State.Constructing)
             {
                 if (MapLevel.CanPlaceTrack(CurrentTrackLevel))
                 {
-                    var index = FetchMouseIndex();
+                    
 
 
                     if (!MapLevel.ValidIndex(index))
@@ -434,10 +476,7 @@ namespace MagicalMountainMinery.Main
             }
 
             var outer = OuterConnections.FirstOrDefault(track => index == track.Index);
-            if (outer != null)
-                return outer;
-            var end = MapLevel.EndTracks.FirstOrDefault(track => index == track.Index);
-            return end;
+            return outer;
         }
 
 
@@ -492,7 +531,7 @@ namespace MagicalMountainMinery.Main
             var index = FetchMouseIndex();
 
             var direction = LastHover - index;
-            if (!MapLevel.ValidIndex(index) || MapLevel.EndPositions.Contains(index))
+            if (!MapLevel.ValidIndex(index))
                 return;
             if (index != CurrentHover)
             {
@@ -677,8 +716,10 @@ namespace MagicalMountainMinery.Main
 
         public bool CheckJunction(IndexPos from, IndexPos to)
         {
-            if (MapLevel.AllowedJunctions == MapLevel.CurrentJunctions)
+            if (MapLevel.AllowedJunctions < 0)
                 return false;
+            //if (MapLevel.AllowedJunctions == MapLevel.CurrentJunctions)
+               // return false;
             if (from == to)
                 return false;
 
@@ -688,14 +729,17 @@ namespace MagicalMountainMinery.Main
             var fromDir = from - to;
             var toDir = to - from;
 
-            
+            //must be a direction
+            var list = new List<IndexPos>() { IndexPos.Left, IndexPos.Right,IndexPos.Up,IndexPos.Down };
+            if (!list.Contains(toDir) || !list.Contains(fromDir))
+                return false;
 
             if (fromTrack == null)
                 return false;
 
             if (fromTrack.CanConnect())
                 return false;
-            if (MapLevel.EndPositions.Contains(from) || OuterConnections.Any(item => item.Index == from))
+            if (OuterConnections.Any(item => item.Index == from))
                 return false;
 
             if (fromTrack.Direction1 == fromTrack.Direction2 || fromTrack.Direction1 == toDir
@@ -737,7 +781,7 @@ namespace MagicalMountainMinery.Main
                     }
                     catch (Exception e)
                     {
-                        //GD.Print("shit is wrong");
+                        return false;
                     }
 
                     var junction = new Junction();
@@ -942,65 +986,6 @@ namespace MagicalMountainMinery.Main
                 outer.Connect(dir);
                 MatchSprite(outer);
             }
-        }
-
-
-        /// <summary>
-        /// From will always be the static object. I.e., portal, target, etc.
-        /// </summary>
-        /// <param name="from"></param>
-        /// <param name="fromC"></param>
-        /// <param name="to"></param>
-        /// <param name="toC"></param>
-        //public void Connect(IndexPos from, IConnectable fromC, IndexPos to, IConnectable toC)
-        //{
-        //    if(fromC is Track t1 &&  toC is Track t2)
-        //        ConnectTo(from, t1, to,t2);
-        //    else 
-        //}
-        //public void ConnectTo(IndexPos from, Track track1, IndexPos to, Track track2)
-        //{
-        //    if (!track1.CanConnect() || !track2.CanConnect()) //has 0 or 1 connection
-        //        return;
-
-        //    var dex1 = from - to;
-        //    var dex2 = to - from;
-
-        //    ConnectTo(track1, track2);
-        //    ConnectTo(track2, track1);
-
-        //    MatchSprite(track1);
-        //    MatchSprite(track2);
-
-
-
-        //    LastHover = CurrentHover;
-
-        //}
-
-        public void Save()
-        {
-            this.MapLevel.QueueFree();
-            var obj = SaveLoader.SaveGame(MapLevel);
-            //serializer.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
-            var thingy = JsonConvert.SerializeObject(obj, SaveLoader.jsonSerializerSettings);
-            try
-            {
-                //var resultBytes = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(obj,
-                //new JsonSerializerOptions { WriteIndented = false, IgnoreNullValues = true });
-                //var data = System.Text.Json.JsonSerializer.Deserialize<SaveInstance>(new ReadOnlySpan<byte>(resultBytes));
-                var thingy3 = JsonConvert.DeserializeObject(thingy, SaveLoader.jsonSerializerSettings);
-                var load = (MapLevel)SaveLoader.LoadGame(thingy3 as SaveInstance, this);
-                this.MapLevel = load;
-                load.AddMapObjects(load.MapObjects);
-
-            }
-            catch (Exception ex)
-            {
-                //GD.PrintErr(ex);
-            }
-
-            //
         }
 
     }

@@ -1,9 +1,9 @@
 {
-  "$type": "MagicalMountainMinery.Data.MapData, MagicalMountainMinery",
+  "$type": "MagicalMountainMinery.Data.MapLoad, MagicalMountainMinery",
   "Difficulty": 1,
-  "Name": null,
   "BonusStars": 0,
-  "Completed": false,
+  "DataString": null,
+  "Region": "",
   "LevelIndex": 0,
-  "DataString": null
+  "RegionIndex": 0
 }

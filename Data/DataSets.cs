@@ -174,6 +174,8 @@ namespace MagicalMountainMinery.Data
         public IndexPos To { get; set; }
         public CartType Type { get; set; }
     }
+
+    
     public class GameResource
     {
         //[JsonProperty(ItemConverterType = typeof(StringEnumConverter))]
@@ -185,7 +187,18 @@ namespace MagicalMountainMinery.Data
         //public Texture2D Texture { get; set; }
         public string Title { get; set; }
         public int Amount { get; set; }
+        public GameResource()
+        {
 
+        }
+        public GameResource(GameResource copy)
+        {
+            this.ResourceType = copy.ResourceType;
+            this.Description = copy.Description;
+            this.Title = copy.Title;
+            this.Amount = copy.Amount;
+
+        }
         public static bool operator ==(GameResource res1, GameResource res2)
         {
             return res1?.ResourceType == res2?.ResourceType;
@@ -194,6 +207,15 @@ namespace MagicalMountainMinery.Data
         public static bool operator !=(GameResource res1, GameResource res2)
         {
             return res1?.ResourceType != res2?.ResourceType;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is GameResource res && res.GetHashCode() == GetHashCode();
+        }
+        public override int GetHashCode()
+        {
+            return this.ResourceType.GetHashCode();
         }
     }
     //
@@ -208,6 +230,9 @@ namespace MagicalMountainMinery.Data
         Jade,
         Topaz,
         Emerald,
+        Diamond, 
+        Ruby,
+        Track
     }
 
     public enum CartType
@@ -235,27 +260,21 @@ namespace MagicalMountainMinery.Data
 
     }
 
-    public enum OreType
-    {
-
-    }
-
-    public enum Mineral
-    {
-
-    }
 
     public enum MineableType
     {
         Stone,
         Amethyst,
         Aquamarine,
-        Jade,
+        Diamond,
         Topaz,
         Emerald,
         Copper,
         Iron,
-        Gold
+        Gold,
+        Ruby,
+        Jade,
+
     }
 
     public enum TurnType
@@ -362,10 +381,12 @@ namespace MagicalMountainMinery.Data
     {
         TrackPlace,
         TrackDelete,
+        TracksExhausted,
         EndConPass,
         EndConFail,
         JunctionPlace,
         JunctionDelete,
+        JunctionsExhausted,
         Nil
 
 

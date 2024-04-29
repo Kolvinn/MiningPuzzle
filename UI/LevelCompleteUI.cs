@@ -1,4 +1,5 @@
 using Godot;
+using MagicalMountainMinery.Main;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,13 @@ public partial class LevelCompleteUI : Control
 
 
 	}
+
+    public void Delete()
+    {
+        this.GetParent().RemoveChild(this);
+        EventDispatch.ExitOverride(this.GetNode<Control>("Control") as GuiOverride);
+        this.QueueFree();
+    }
     private void DoBox(HBoxContainer box, int amount)
     {
 

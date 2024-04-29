@@ -128,12 +128,16 @@ namespace MagicalMountainMinery.Obj
 
         public override void _PhysicsProcess(double delta)
         {
-            if (Texture.ResourcePath.Contains("straight_vertical"))
+            if (Texture != null && Texture.ResourcePath.Contains("straight_vertical"))
             {
                 if (TrackLevel == 2)
                 {
                     this.Offset = new Vector2(0, -6);
                 }
+            }
+            else if(Texture == null)
+            {
+                GD.Print("ppos");
             }
         }
         public virtual void FetchFacingIndex()
@@ -155,9 +159,9 @@ namespace MagicalMountainMinery.Obj
 
         }
 
-        public void Connect(IConnectable con1,  IConnectable con2 = null)
+        public void Connect(IndexPos dir)
         {
-            
+            Connect(dir,1);
         }
         
         public void Connect(IndexPos dir, int fromHeight = 1)

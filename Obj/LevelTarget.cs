@@ -27,10 +27,15 @@ namespace MagicalMountainMinery.Obj
         [StoreCollection(ShouldStore = false)]
         public Dictionary<Condition, bool> Validated { get; set; } = new Dictionary<Condition, bool>();
 
+        [StoreCollection(ShouldStore = false)]
+        public Dictionary<Condition, bool> BonusValidated { get; set; } = new Dictionary<Condition, bool>();
         public bool CompletedAll { get => Validated.Values.All(con => con); }
+        public int BonusConsCompleted { get => BonusValidated.Values.Where(con => con).Count(); }
         public bool IsBatched { get; set; }
 
         public IndexPos Index { get; set; }
+
+        public IndexPos ConnectDirection { get; set; }
 
         public LevelTarget() 
         { 
@@ -76,6 +81,7 @@ namespace MagicalMountainMinery.Obj
                 {
                     try
                     {
+                        //IF this condition type already exists, add it to the ui
                         var existing = ConUI.Keys.First(item => item.ConCheck == con.ConCheck && item.ResourceType == con.ResourceType);
                         var starCon = ConUI[existing].GetNode<HBoxContainer>("HBoxContainer/StarContainer");
                         var lab = ConUI[existing].GetNode<Label>("HBoxContainer/Divider");
@@ -83,9 +89,11 @@ namespace MagicalMountainMinery.Obj
                         starCon.GetNode<Label>("amount").Text = con.Amount.ToString();
                         lab.Visible = true;
                         ConUI.Add(con, ConUI[existing]);
+                        BonusValidated.Add(con, false);
                     }
                     catch(Exception ex)
-                    {
+                    { 
+                        //otherwise make a new one
                         AddCondition(con,bonus:true);
                     }
 
@@ -135,14 +143,17 @@ namespace MagicalMountainMinery.Obj
 
             if(!bonus) 
                 Validated.Add(condition, false);
+            else
+                BonusValidated.Add(condition, false);
         }
 
         private void ValidateBonusConditions(List<GameResource> resources)
         {
             foreach(var con in BonusConditions)
             {
-                if (!con.Validated && ValidateOne(con, resources))
+                if (!BonusValidated[con] && ValidateOne(con, resources))
                 {
+                    BonusValidated[con] = true;
                     ConUI[con].GetNode<AnimationPlayer>("HBoxContainer/StarContainer/TextureRect/AnimationPlayer").Play("StarReveal", 2);
                     return;
                 }
@@ -212,5 +223,30 @@ namespace MagicalMountainMinery.Obj
         {
             return true;
         }
+
+        public void Connect(IndexPos index) 
+        {
+            ConnectDirection = index;
+        }
+
+        public void Reset()
+        {
+            foreach (var con in ConUI)
+            {
+                if (BonusValidated.ContainsKey(con.Key))
+                {
+                    BonusValidated[con.Key] = false;
+                    ConUI[con.Key].GetNode<AnimationPlayer>("HBoxContainer/StarContainer/TextureRect/AnimationPlayer").Play("RESET");
+                }
+
+                Validated[con.Key] = false;
+                con.Value.Modulate = new Color(1, 1, 1, 1);
+                
+                
+            }
+        }
+
+
+
     }
 }

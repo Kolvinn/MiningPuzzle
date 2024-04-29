@@ -50,6 +50,8 @@ namespace MagicalMountainMinery.Data
         
         public int BonusStarsCompleted { get; set; } = 0;
 
+        public List<IndexPos> GemsCollected { get; set; } = new List<IndexPos>();
+
     }
 
     
@@ -57,7 +59,10 @@ namespace MagicalMountainMinery.Data
     {
         public string ProfileName {  get; set; }
         public string Filename { get; set; }
-        public SortedList<int,MapDataBase> DataList { get; set; }  
+
+        public int StarCount { get; set; } = 0;
+        public List<GameResource> StoredGems { get; set; } = new List<GameResource>();
+        public SortedList<int,MapDataBase> DataList { get; set; }  = new SortedList<int,MapDataBase>();
 
         public MapSave Get(MapDataBase data)
         {

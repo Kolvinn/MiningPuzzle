@@ -26,6 +26,7 @@ namespace MagicalMountainMinery.Data
     {
         public IndexPos Index { get; set; }
         public bool CanConnect();
+        public void Connect(IndexPos pos);
     }
 
     public interface IUIComponent

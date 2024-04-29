@@ -92,19 +92,12 @@ namespace MagicalMountainMinery.Data.Load
                     continue;
                 }
                 object ret = null ;
-                //if (parsedClasses.TryGetValue(fieldObject, out var savedRef))
-                //{
-                //    if(savedRef != null)
-                //    {
-                //        ret = new ObjectRef(savedRef);
-                //    }
-                //    else
-                //    {
-                //        storedSelfReferences.Add(fieldObject, o);
-                //    }
-                //    //we have a stored object so just reference it
-                //}
-                if ((StoreCollectionAttribute)p.GetCustomAttribute(typeof(StoreCollectionAttribute)) != null)
+                if (parsedClasses.TryGetValue(fieldObject, out var savedRef))
+                {
+                    ret = new ObjectRef(savedRef);
+                    
+                }
+                else if ((StoreCollectionAttribute)p.GetCustomAttribute(typeof(StoreCollectionAttribute)) != null)
                 {
                     ret = StoreCollection(p.Name, fieldObject, o);
                 }
@@ -259,6 +252,10 @@ namespace MagicalMountainMinery.Data.Load
             if (typeof(Node).IsAssignableFrom(save.objectType))
             {
 
+                if(save.objectType == typeof(Mineable))
+                {
+                    save.ResPath = "res://Obj/Mineable.tscn";
+                }
                 if (loadedObject == null && !String.IsNullOrEmpty(save.ResPath))
                 {
 
@@ -354,7 +351,7 @@ namespace MagicalMountainMinery.Data.Load
             }
             else if (typeof(Enum).IsInstanceOfType(value))
             {
-                o = ResourceStore.GetEnumType(value.ToString());
+                o = ResourceStore.GetEnumType(value.ToString(), fieldObject.GetType());
             }
             //else if (typeof(Vec2).IsInstanceOfType(value))
             //{
@@ -470,7 +467,7 @@ namespace MagicalMountainMinery.Data.Load
                     {
                         if (o is string)
                         {
-                            var obj = ResourceStore.GetEnumType(o as string);
+                            var obj = ResourceStore.GetEnumType(o as string, p.PropertyType);
                             if (obj != null)
                                 o = obj;
                         }
@@ -681,6 +678,16 @@ namespace MagicalMountainMinery.Data.Load
                     }
                     return objList;
                 }
+                else if (fieldName == "LevelTargets")
+                {
+                    objList = new List<object>();
+                    var list = (IList)o;
+                    foreach (var c in list)
+                    {
+                        objList.Add(ParseSaveObject(null, c, null));
+                    }
+                    return objList;
+                }
             }
             if(parent.GetType() == typeof(LevelTarget))
             {
@@ -757,6 +764,19 @@ namespace MagicalMountainMinery.Data.Load
                     foreach (var c in list)
                     {
                         objList.Add((CartStartData)LoadSingleProperty(null, c));
+                    }
+                    return objList;
+                }
+                else if (fieldName == "LevelTargets")
+                {
+                    var jArray = (JArray)o;
+                    //var array = ((object[,])o);
+                    var str = JArray.Parse(jArray.ToString()).ToString();
+                    var list = JsonConvert.DeserializeObject<List<SaveInstance>>(str);
+                    var objList = new List<LevelTarget>();
+                    foreach (var c in list)
+                    {
+                        objList.Add((LevelTarget)LoadSingleProperty(null, c));
                     }
                     return objList;
                 }

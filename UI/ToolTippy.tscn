@@ -1,0 +1,76 @@
+[gd_scene load_steps=8 format=3 uid="uid://dm5tyffr0ne7t"]
+
+[ext_resource type="Texture2D" uid="uid://ddvmanele13ny" path="res://Assets/UI/Frame.png" id="1_6yq11"]
+[ext_resource type="FontFile" uid="uid://cdjxwrsadqdwg" path="res://Assets/Fonts/Pixel/Dogica/dogicapixel.ttf" id="2_3hf2y"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gde2t"]
+
+[sub_resource type="Theme" id="Theme_0blea"]
+TooltipPanel/styles/panel = SubResource("StyleBoxFlat_gde2t")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3glxt"]
+atlas = ExtResource("1_6yq11")
+region = Rect2(0, 11, 1080, 460)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sxaxt"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_nvw11"]
+font = ExtResource("2_3hf2y")
+outline_size = 4
+outline_color = Color(0.160784, 0.160784, 0.160784, 1)
+shadow_size = 14
+shadow_color = Color(0.701961, 0.454902, 0.25098, 0.482353)
+
+[node name="TextureRect3" type="TextureRect"]
+texture_filter = 1
+offset_right = 299.0
+offset_bottom = 156.0
+tooltip_text = "jhbjhbhj"
+theme = SubResource("Theme_0blea")
+texture = SubResource("AtlasTexture_3glxt")
+expand_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+metadata/_edit_lock_ = true
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer"]
+layout_mode = 2
+color = Color(0.831373, 0.705882, 0.580392, 1)
+
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_edit_lock_ = true
+
+[node name="Label" type="Label" parent="MarginContainer2"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_sxaxt")
+text = "Allows shifting of one ore node to an adjacent tile.
+
+\"It's big and shiny you should but it.
+"
+label_settings = SubResource("LabelSettings_nvw11")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+metadata/_edit_lock_ = true

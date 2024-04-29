@@ -1,0 +1,314 @@
+[gd_scene load_steps=14 format=3 uid="uid://c4y74wv2knn86"]
+
+[ext_resource type="Shader" path="res://Assets/Shaders/Shiny.gdshader" id="1_filn7"]
+[ext_resource type="Script" path="res://Obj/Mineable.cs" id="2_dynl1"]
+[ext_resource type="Texture2D" uid="uid://8or1f6p0gi04" path="res://Assets/Environment/Minerals/Gold_Node.png" id="2_f0m1j"]
+[ext_resource type="Texture2D" uid="uid://b578ero8imq36" path="res://Assets/UI/Lucid V1.2/PNG/Flat/16/Chevron-Arrow-Up.png" id="2_k2j8e"]
+[ext_resource type="Script" path="res://UI/GameButton.cs" id="3_yq0ms"]
+[ext_resource type="Texture2D" uid="uid://d4d71oli5pml" path="res://Assets/UI/Lucid V1.2/PNG/Flat/16/Chevron-Arrow-Down.png" id="4_5jrcr"]
+[ext_resource type="Texture2D" uid="uid://brbmrbfixfgki" path="res://Assets/UI/Lucid V1.2/PNG/Flat/16/Chevron-Arrow-Right.png" id="5_h0g2r"]
+[ext_resource type="Texture2D" uid="uid://bpmnp1q0c288v" path="res://Assets/UI/Lucid V1.2/PNG/Flat/16/Chevron-Arrow-Left.png" id="6_tf1nb"]
+[ext_resource type="Texture2D" uid="uid://bnqh17c1hkq3n" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Button_Small_Press_01a1.png" id="7_kk5t6"]
+[ext_resource type="Texture2D" uid="uid://d3ubhlk223lmm" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Button_Small_Press_01a3.png" id="8_nx7qp"]
+[ext_resource type="FontFile" uid="uid://dbmbc4vvpfnvg" path="res://Assets/UI/GUI_Essential_v1.0_[Free]/Font/Toriko.ttf" id="9_pv7ic"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nfc8f"]
+shader = ExtResource("1_filn7")
+shader_parameter/color1 = Color(0.607843, 0.419608, 0.25098, 1)
+shader_parameter/color2 = Color(0.85098, 0.576471, 0.305882, 1)
+shader_parameter/threshold = -1.08
+shader_parameter/intensity = 1.765
+shader_parameter/opacity = 100.0
+shader_parameter/glow_color = Color(0.694118, 0.572549, 0.117647, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_2i51a"]
+font = ExtResource("9_pv7ic")
+font_color = Color(0.176471, 0.176471, 0.176471, 1)
+
+[node name="Mineable" type="Sprite2D"]
+material = SubResource("ShaderMaterial_nfc8f")
+texture = ExtResource("2_f0m1j")
+script = ExtResource("2_dynl1")
+
+[node name="Arrows" type="Control" parent="."]
+visible = false
+z_index = 30
+layout_mode = 3
+anchor_left = 0.513
+anchor_top = 0.513
+anchor_right = 0.513
+anchor_bottom = 0.513
+offset_left = -20.007
+offset_top = -20.007
+offset_right = -20.007
+offset_bottom = -20.007
+
+[node name="Up" type="TextureButton" parent="Arrows"]
+visible = false
+texture_filter = 1
+layout_mode = 0
+offset_left = -17.0
+offset_top = -59.0
+offset_right = 18.0
+offset_bottom = -26.0
+texture_normal = ExtResource("2_k2j8e")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_yq0ms")
+UIID = "Up"
+
+[node name="Down" type="TextureButton" parent="Arrows"]
+visible = false
+texture_filter = 1
+layout_mode = 0
+offset_left = -17.0
+offset_top = 24.0
+offset_right = 18.0
+offset_bottom = 57.0
+texture_normal = ExtResource("4_5jrcr")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_yq0ms")
+UIID = "Down"
+
+[node name="Right" type="TextureButton" parent="Arrows"]
+visible = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 30.0
+offset_top = -16.0
+offset_right = 65.0
+offset_bottom = 17.0
+texture_normal = ExtResource("5_h0g2r")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_yq0ms")
+UIID = "Right"
+
+[node name="Left" type="TextureButton" parent="Arrows"]
+visible = false
+texture_filter = 1
+layout_mode = 0
+offset_left = -63.0
+offset_top = -17.0
+offset_right = -28.0
+offset_bottom = 16.0
+texture_normal = ExtResource("6_tf1nb")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_yq0ms")
+UIID = "Left"
+
+[node name="Numbers" type="Control" parent="."]
+visible = false
+z_index = 30
+layout_mode = 3
+anchor_left = 0.513
+anchor_top = 0.513
+anchor_right = 0.513
+anchor_bottom = 0.513
+offset_left = -20.007
+offset_top = -20.007
+offset_right = -20.007
+offset_bottom = -20.007
+
+[node name="TextureButton" type="TextureButton" parent="Numbers"]
+texture_filter = 1
+layout_mode = 0
+offset_left = -61.0
+offset_top = -21.0
+offset_right = -40.0
+offset_bottom = -1.0
+texture_normal = ExtResource("7_kk5t6")
+texture_pressed = ExtResource("8_nx7qp")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_yq0ms")
+UIID = "1"
+
+[node name="Label" type="Label" parent="Numbers/TextureButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "1"
+label_settings = SubResource("LabelSettings_2i51a")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="TextureButton2" type="TextureButton" parent="Numbers"]
+texture_filter = 1
+layout_mode = 0
+offset_left = -47.0
+offset_top = -42.0
+offset_right = -26.0
+offset_bottom = -22.0
+texture_normal = ExtResource("7_kk5t6")
+texture_pressed = ExtResource("8_nx7qp")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_yq0ms")
+UIID = "2"
+
+[node name="Label" type="Label" parent="Numbers/TextureButton2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "2"
+label_settings = SubResource("LabelSettings_2i51a")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="TextureButton3" type="TextureButton" parent="Numbers"]
+texture_filter = 1
+layout_mode = 0
+offset_left = -34.0
+offset_top = -62.0
+offset_right = -13.0
+offset_bottom = -42.0
+texture_normal = ExtResource("7_kk5t6")
+texture_pressed = ExtResource("8_nx7qp")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_yq0ms")
+UIID = "3"
+
+[node name="Label" type="Label" parent="Numbers/TextureButton3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "3"
+label_settings = SubResource("LabelSettings_2i51a")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="TextureButton4" type="TextureButton" parent="Numbers"]
+texture_filter = 1
+layout_mode = 0
+offset_left = -10.0
+offset_top = -63.0
+offset_right = 11.0
+offset_bottom = -43.0
+texture_normal = ExtResource("7_kk5t6")
+texture_pressed = ExtResource("8_nx7qp")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_yq0ms")
+UIID = "4"
+
+[node name="Label" type="Label" parent="Numbers/TextureButton4"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "4
+"
+label_settings = SubResource("LabelSettings_2i51a")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="TextureButton5" type="TextureButton" parent="Numbers"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 37.0
+offset_top = -21.0
+offset_right = 58.0
+offset_bottom = -1.0
+texture_normal = ExtResource("7_kk5t6")
+texture_pressed = ExtResource("8_nx7qp")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_yq0ms")
+UIID = "7"
+
+[node name="Label" type="Label" parent="Numbers/TextureButton5"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "7
+"
+label_settings = SubResource("LabelSettings_2i51a")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="TextureButton6" type="TextureButton" parent="Numbers"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 29.0
+offset_top = -42.0
+offset_right = 50.0
+offset_bottom = -22.0
+texture_normal = ExtResource("7_kk5t6")
+texture_pressed = ExtResource("8_nx7qp")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_yq0ms")
+UIID = "6"
+
+[node name="Label" type="Label" parent="Numbers/TextureButton6"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "6"
+label_settings = SubResource("LabelSettings_2i51a")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="TextureButton7" type="TextureButton" parent="Numbers"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 14.0
+offset_top = -61.0
+offset_right = 35.0
+offset_bottom = -41.0
+texture_normal = ExtResource("7_kk5t6")
+texture_pressed = ExtResource("8_nx7qp")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_yq0ms")
+UIID = "5"
+
+[node name="Label" type="Label" parent="Numbers/TextureButton7"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "5
+"
+label_settings = SubResource("LabelSettings_2i51a")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D"]
+visible = false
+polygon = PackedVector2Array(-14, -9, -11, -12, -7, -18, 3, -19, 15, -14, 17, 0, 15, 11, 0, 14, -9, 15, -18, 8, -18, 3, -16, -4)
+
+[connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="Area2D" to="." method="_on_area_2d_mouse_exited"]

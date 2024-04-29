@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=3 uid="uid://ge5o1qqnft1x"]
+
+[ext_resource type="Texture2D" uid="uid://bnyuuxe5pvk4c" path="res://Assets/GameResource/Diamond.png" id="1_eeooq"]
+[ext_resource type="Script" path="res://UI/ResIcon.cs" id="2_6ekn0"]
+[ext_resource type="FontFile" uid="uid://cylak8bji1wf3" path="res://Assets/Fonts/Pixel/PRNumber3.ttf" id="3_1d2cp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gde2t"]
+
+[sub_resource type="Theme" id="Theme_0mo14"]
+TooltipPanel/styles/panel = SubResource("StyleBoxFlat_gde2t")
+
+[sub_resource type="LabelSettings" id="LabelSettings_b6xqd"]
+font = ExtResource("3_1d2cp")
+font_size = 24
+outline_size = 1
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 8
+shadow_color = Color(0.768627, 0.431373, 0.243137, 0.278431)
+
+[node name="GemIcon" type="TextureButton"]
+custom_minimum_size = Vector2(24, 0)
+offset_right = 48.0
+offset_bottom = 48.0
+tooltip_text = "Tool tip?
+"
+theme = SubResource("Theme_0mo14")
+texture_normal = ExtResource("1_eeooq")
+script = ExtResource("2_6ekn0")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -7.0
+offset_top = -19.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "1"
+label_settings = SubResource("LabelSettings_b6xqd")
+horizontal_alignment = 2
+vertical_alignment = 2

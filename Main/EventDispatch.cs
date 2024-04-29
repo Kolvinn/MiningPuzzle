@@ -24,21 +24,47 @@ namespace MagicalMountainMinery.Main
 
         private static List<GameEvent> gameEvents = new List<GameEvent>();
 
+        
+
         public override void _Ready()
         {
 
-            this.SetProcessInput(false);
+            //this.SetProcessInput(false);
         }
 
-        public override void _Process(double delta)
+        public static List<GuiOverride> overrides { get; set; }= new List<GuiOverride>();   
+        public static void WithinOverride(GuiOverride control)
         {
+            if (overrides.Contains(control)) { return; }
+            overrides.Add(control);
+        }
+
+        public static void ExitOverride(GuiOverride control)
+        {
+            if (overrides.Contains(control)) { overrides.Remove(control); }
+            
+        }
+
+        public override void _PhysicsProcess(double delta)
+        {
+            if(overrides.Count > 0)
+            {
+                if(hoverList.Count > 0 && Input.IsActionJustPressed("left_click"))
+                {
+                    LastPressedPosition = GetGlobalMousePosition();
+                    eventTypes.Enqueue(EventType.Left_Action);
+                }
+                return;
+            }
+                
             mousePos = GetGlobalMousePosition();
             //Need to fetch context
             if (Input.IsActionJustPressed("left_click"))
             {
+
                 LastPressedPosition = GetGlobalMousePosition();
-                mouseMoveWait = true;
-                SetProcessInput(true);
+                // mouseMoveWait = true;
+                //SetProcessInput(true);
                 eventTypes.Enqueue(EventType.Left_Action);
             }
             else if (Input.IsActionJustReleased("left_click"))
@@ -95,9 +121,8 @@ namespace MagicalMountainMinery.Main
                 eventTypes.Enqueue(EventType.Escape);
             }
 
-
         }
-
+     
         public static void PushGameEvent(GameEvent gameEvent)
         {
             gameEvents.Add(gameEvent);
@@ -112,10 +137,7 @@ namespace MagicalMountainMinery.Main
             }
             return new GameEvent();
         }
-        public void ValidateUIContext()
-        {
-
-        }
+    
         public static EventType FetchLast()
         {
             return eventTypes.Count == 0 ? EventType.Nill : eventTypes.Dequeue();
@@ -210,6 +232,7 @@ namespace MagicalMountainMinery.Main
 
         public static void ClearAll()
         {
+            overrides.Clear();
             eventTypes.Clear();
             hoverList.Clear();
             interactables.Clear();

@@ -13,14 +13,14 @@ config_version=5
 config/name="MagicalMountainMinery"
 run/main_scene="res://Main/GameController.tscn"
 config/features=PackedStringArray("4.1", "C#", "Forward Plus")
+run/max_fps=144
 config/icon="res://icon.svg"
 
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
-window/size/window_width_override=900
-window/size/window_height_override=720
+window/stretch/mode="viewport"
 
 [dotnet]
 

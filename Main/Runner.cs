@@ -3,11 +3,14 @@ using MagicalMountainMinery.Data;
 using MagicalMountainMinery.Data.Load;
 using MagicalMountainMinery.Main;
 using MagicalMountainMinery.Obj;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
+using System.Security.Principal;
 using static MagicalMountainMinery.Main.GameController;
 using FileAccess = Godot.FileAccess;
 using Label = Godot.Label;
@@ -16,21 +19,21 @@ public partial class Runner : Node2D
 {
 	public MapLevel MapLevel { get; set; }
 
-    public static float SIM_SPEED = 1f;
-
+    public static float SIM_SPEED_RATIO = 1f;
+    public static float SIM_SPEED_STACK = 0f;
     //public Cart Cart;
 
     public TrackPlacer Placer;
 
     public ColorRect LoadingScreen {  get; set; }	
 
+    public Label StarCountLabel { get; set; }
 	public List<CartController> CartControllers { get; set; } = new List<CartController>();
 
 	public bool ValidRun = true;
 
 	public static GameEvent LastEvent {  get; set; }
 
-    public TextureButton StartButton { get; set; }
     public AudioStreamPlayer player { get; set; } = new AudioStreamPlayer();
 
     public LevelCompleteUI LevelEndUI { get; set; }
@@ -38,7 +41,7 @@ public partial class Runner : Node2D
     public LoadHomeDelegate HomeCall { get; set; }
     public LevelCompleteDelegate LevelComplete { get; set; }
 
-    //public SaveProfile CurrentProfile { get; set; } 
+    public delegate void GemUsedDelegate(GameResource resource);
 
     public  MapSave CurrentMapSave {  get; set; }
     public MapLoad CurrentMapData { get; set; }
@@ -46,20 +49,18 @@ public partial class Runner : Node2D
 
     public Camera Cam { get; set; }
     public override void _Ready()
-	{
-		
+    {
 
-        
+
+
 
         LoadingScreen = this.GetNode<ColorRect>("CanvasLayer/ColorRect");
-        LevelEndUI = this.GetNode<LevelCompleteUI>("CanvasLayer/LevelCompleteUI");
-        LevelEndUI.Connect(LevelCompleteUI.SignalName.NextLevel, Callable.From(_on_next_pressed));
-        LevelEndUI.Connect(LevelCompleteUI.SignalName.Home, Callable.From(on_home_pressed));
-        LevelEndUI.Connect(LevelCompleteUI.SignalName.Reset, Callable.From(OnReset));
+
 
         Cam = new Camera();
         this.AddChild(Cam);
-
+        Cam.Zoom = new Vector2(0.1f, 0.1f);
+        StarCountLabel = this.GetNode<Label>("CanvasLayer/StarAmountBox/Label");
         // MapLevel = new MapLevel();
         //MapLevel.GenNodes(5);
 
@@ -68,11 +69,11 @@ public partial class Runner : Node2D
         //this.AddChild(Placer);
         //this.MoveChild(Placer, 2);
 
-        StartButton = this.GetNode<TextureButton>("CanvasLayer/StartButton");
 
-
+        GemUsedDelegate used = GemUsed;
+        Placer.GemUsed = used;
         //var select = this.GetNode<OptionButton>("CanvasLayer/LevelSelect");
-		//select.ConnectTo(OptionButton.SignalName.ItemSelected, new Callable(this, nameof(OnResetSingle)));
+        //select.ConnectTo(OptionButton.SignalName.ItemSelected, new Callable(this, nameof(OnResetSingle)));
 
         //LoadSingleLevel(0);
 
@@ -84,45 +85,68 @@ public partial class Runner : Node2D
     }
 
 	
-	public void OnResetSingle(int level)
-	{
-        LevelEndUI.Visible = false;
-        LoadSingleLevel(level);
-    }
+
+
     public void OnReset()
     {
+        Placer.PauseHandle = false;
+        ReloadUsedGems();
         LevelEndUI.Visible = false;
-        LoadSingleLevel(Placer.CurrentLevelDex);
+        LoadMapLevel(CurrentMapData);
     }
+
 	public void OnRetry()
 	{
+        Placer.PauseHandle = false;
+        ReloadUsedGems();
         LevelEndUI.Visible = false;
-        LoadSingleLevel(Placer.CurrentLevelDex, MapLevel);
+        LoadMapLevel(CurrentMapData, MapLevel);
 
     }
+
     public void _on_next_pressed()
     {
+        Placer.PauseHandle = false;
+        ReloadUsedGems();
         LevelEndUI.Visible = false;
-        LoadSingleLevel(Placer.CurrentLevelDex+1);
+        var next = ResourceStore.GetNextLevel(CurrentMapData);
+        if (next != null)
+            LoadMapLevel(next);
     }
 
     public void on_home_pressed()
     {
+        Placer.PauseHandle = false;
+        ReloadUsedGems();
         LevelEndUI.Visible = false;
         HomeCall();
     }
 
     public void StopLevelPressed()
     {
+        
         this.GetNode<Control>("CanvasLayer/Container").Visible = false;
+        EventDispatch.ExitUI(this.GetNode<GameButton>("CanvasLayer/Container/Stop"));
         OnRetry();
+        //BtnEnable(this.GetNode<TextureButton>("CanvasLayer/MiningStart"), true);
+    }
+    public override void _ExitTree()
+    {
+        base._ExitTree();
+        ReloadUsedGems();
+    }
+    public void _on_map_pressed()
+    {
+        Placer.PauseHandle = false;
+        ReloadUsedGems();
+        HomeCall();
     }
 
     public void PauseLevelPressed()
     {
 
-        BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Pause"), false);
-        BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Play"), true);
+       // BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Pause"), false);
+       // BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Play"), true);
         foreach (var item in CartControllers)
         {
             item.State = CartController.CartState.Paused;
@@ -134,205 +158,106 @@ public partial class Runner : Node2D
         b.Modulate = enable ? Colors.White: new Color(1, 1, 1, 0.5f);
         b.Disabled = !enable;
     }
+
     public void PlayLevelPressed()
     {
-        BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Pause"), true);
-        BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Play"), false);
-
+        //BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Play_Pause"), true);
+        //BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Play"), false);
+        
+        var thing = CartControllers[0].State == CartController.CartState.Moving ? CartController.CartState.Paused : CartController.CartState.Moving;
         foreach (var item in CartControllers)
         {
-            item.State = CartController.CartState.Moving;
+            item.State = thing;
         }
+
+        
     }
 
-    public void OnSimSpeedChange(float speed)
+    public void OnSimSpeedChange(float amount)
     {
-        if(speed < 0)
+        if (SIM_SPEED_STACK + amount < -2)
+            return;
+        if (SIM_SPEED_STACK + amount > 4)
+            return;
+        SIM_SPEED_STACK += amount;
+
+        
+        if (SIM_SPEED_STACK < 0)
         {
-            var diff = 1 - speed;
-            SIM_SPEED = 1 / diff;
-            
+            var percent = SIM_SPEED_STACK * -2;
+            SIM_SPEED_RATIO = percent == 0 ? 1 : 1 / percent;
+
         }
         else
         {
-            SIM_SPEED = speed - 1;
+            SIM_SPEED_RATIO = 1 + SIM_SPEED_STACK;
         }
+        this.GetNode<Label>("CanvasLayer/SpeedControl/Label").Text = (SIM_SPEED_RATIO * 100) + "%";
     }
 
     
-    public void PopulateFromSave(MapLoad baseLevel)
-    {
-        var level = CurrentProfile.Get(baseLevel);
-        CurrentMapSave = level;
-        if (level != null)
-            LevelEndUI.LoadStars(baseLevel.Difficulty, baseLevel.BonusStars);
-        else
-            LevelEndUI.LoadStars(baseLevel.Difficulty, baseLevel.BonusStars);
-
-    }
-    public void LoadMapLevel(MapLoad data, MapLevel existing = null)
-    {
-
-
-        PopulateFromSave(data);
-        CurrentMapData = data;
-        var thingy3 = JsonConvert.DeserializeObject(data.DataString, SaveLoader.jsonSerializerSettings);
-        var load = (MapLevel)SaveLoader.LoadGame(thingy3 as SaveInstance, this.Placer);
-
-        foreach (var entry in CartControllers)
-        {
-            entry.DeleteSelf();
-        }
-        CartControllers.Clear();
-        this.LoadingScreen.Visible = false;
-
-        load.PostLoad();
-        load.AddMapObjects(load.MapObjects);
-
-        if (existing != null)
-        {
-            for (int x = 0; x < existing.IndexWidth; x++)
-            {
-                for (int y = 0; y < existing.IndexHeight; y++)
-                {
-                    load.Tracks1[x, y] = existing.Tracks1[x, y];
-                    existing.RemoveChild(load.Tracks1[x, y]);
-                    load.AddChild(load.Tracks1[x, y]);
-
-                    load.Tracks2[x, y] = existing.Tracks2[x, y];
-                    existing.RemoveChild(load.Tracks2[x, y]);
-                    load.AddChild(load.Tracks2[x, y]);
-                }
-            }
-            this.Placer.MapLevel = load;
-        }
-        else
-        {
-            this.Placer.LoadLevel(load, data.LevelIndex);
-        }
-
-
-
-        MapLevel?.QueueFree();
-        MapLevel = load;
-
-        var endTs = new List<Track>();
-        foreach (var end in MapLevel.EndPositions)
-        {
-            if (existing != null)
-            {
-                MapLevel.RemoveTrack(end);
-            }
-            var target = MapLevel.GetObj(end);
-            if (target != null && target is LevelTarget t)
-            {
-                //t.GetParent().RemoveChild(t);
-                MapLevel.MapObjects[end.X, end.Y] = null;
-
-                var list = new List<IndexPos>() { IndexPos.Left, IndexPos.Right, IndexPos.Up, IndexPos.Down };
-                var pos = list.First(pos => !MapLevel.ValidIndex(pos + end));
-                t.Position = MapLevel.GetGlobalPosition(pos + end);
-
-                var endT = new Track(ResourceStore.GetTex(TrackType.Straight), pos);
-                MapLevel.SetTrack(end, endT);
-                endT.Connect(pos);
-                endTs.Add(endT);
-
-            }
-        }
-        MapLevel.EndTracks = endTs;
-
-        PopluateStartTracks();
-
-
-        ValidRun = true;
-        Cam.Position = new Vector2(MapLevel.GridWith / 2, MapLevel.GridHeight / 2);
-        var col = this.StartButton.SelfModulate;
-        col.A = 1f;
-        this.StartButton.Modulate = col;
-        this.StartButton.Disabled = false;
-    }
-	
-	public void LoadSingleLevel(int index, MapLevel existing = null)
-	{
-        
-        GD.Print("loading in level :", index);
-
-        LoadMapLevel(ResourceStore.Levels[index], existing);
-
-
-    }
-
-
-    public void PopluateStartTracks()
-    {
-        foreach (var start in MapLevel.StartData)
-        {
-
-
-            var startT = new Track(ResourceStore.GetTex(TrackType.Straight), start.From);
-            MapLevel.AddChild(startT);
-            startT.Index = start.From;
-            startT.ZIndex = 5;
-            startT.Position = MapLevel.GetGlobalPosition(start.From);
-
-            
-            
-            var directionIndex = IndexPos.Left;
-
-            if (start.From.X < 0)
-                directionIndex = IndexPos.Right;
-            else if (start.From.Y < 0)
-                directionIndex = IndexPos.Down;
-            if (start.From.Y > MapLevel.IndexHeight)
-                directionIndex = IndexPos.Up;
-
-            var last = startT;
-            var nextPos = start.From + directionIndex;
-
-            while(!MapLevel.ValidIndex(nextPos))
-            {
-                var track = new Track(ResourceStore.GetTex(TrackType.Straight), directionIndex);
-                MapLevel.AddChild(track);
-                track.Index = nextPos;
-                track.ZIndex = 5;
-                track.Position = MapLevel.GetGlobalPosition(nextPos);
-
-                Placer.UpdateList(last, false, track);
-                Placer.UpdateList(track, false, last);
-
-                last.Connect(directionIndex);
-                track.Connect(directionIndex.Opposite());
-
-                last = track;
-                nextPos += directionIndex;
-            }
-
-            Placer.OuterConnections.Add(last);
-            var control = new CartController(startT, MapLevel, start);
-            this.AddChild(control);
-            CartControllers.Add(control);
-
-            
-        }
-    }
-
-   
+    
 
     public void ValidLevelComplete()
     {
+
+        //everytime we complete a level, make sure to remove all gems used on that level for good
+        Placer.GemCopy = new List<GameResource>();
+
+
+
+        //gather any bonus stars completed
         var sum = 0;
         foreach (var target in MapLevel.LevelTargets)
         {
-            sum += target.BonusConditions.Where(con => con.Validated).Count();
+            sum += target.BonusConsCompleted;
         }
         bool complete = false;
+        //gather any gems and add to profile
+        var gemstotal = new List<Mineable>();
+        foreach(var control in CartControllers)
+        {
+            var gems = control.GatheredNodes.Where(node => ResourceStore.ShopResources.Any(item => item == node.ResourceSpawn)).ToList();
+            gemstotal.AddRange(gems);
+            foreach (var item in gems)
+            {
+                item.ResourceSpawn.Amount = 1;
+                AddGemToProfile(item.ResourceSpawn);
+            }
+            //var GEMS = control.Cart.StoredResources.Where(res => ResourceStore.ShopResources.Any(item => item.ResourceType == res.Key)).ToList();
 
+            //foreach (var item in GEMS)
+            //{
+            //    AddGemToProfile(item.Value.GameResource);
+            //}
+            control.Cart.ClearResources();
+        }
+
+        var indexes = gemstotal.Select(gem => gem.Index).ToList();
+        int bonusStarDiff = sum;
+        int totalStars = 0;
+
+
+        //here we check if the player has alreaddy completed this level, but also
+        //check if they have completed more bonus stars
         if (CurrentMapSave != null)
         {
-
-            CurrentMapSave.BonusStarsCompleted = Math.Max(CurrentMapSave.BonusStarsCompleted, sum);
+            bonusStarDiff = sum - CurrentMapSave.BonusStarsCompleted;
+            if (bonusStarDiff > 0)
+            {
+                CurrentMapSave.BonusStarsCompleted = bonusStarDiff;
+            }
+            else
+                bonusStarDiff = 0;
+            //CurrentMapSave.BonusStarsCompleted = Math.Max(CurrentMapSave.BonusStarsCompleted, sum);
             complete = true;
+
+
+            //if we have already completed the level, then just add any extra collected
+            if (CurrentMapSave.GemsCollected != null)
+                CurrentMapSave.GemsCollected.AddRange(indexes);
+            else
+                CurrentMapSave.GemsCollected = indexes;
 
         }
         else
@@ -341,36 +266,147 @@ public partial class Runner : Node2D
             {
                 BonusStarsCompleted = sum,
                 Completed = true,
-                LevelIndex = -100
+                LevelIndex = -100,
+                //if new level complete, just add the things here
+                GemsCollected = indexes
 
             };
+            totalStars += CurrentMapData.Difficulty;
         }
 
+        CurrentProfile.StarCount += totalStars + bonusStarDiff;
+        StarCountLabel.Text = CurrentProfile.StarCount.ToString();
         LevelComplete(CurrentMapSave, CurrentMapData);
 
         LevelEndUI.Show(complete, CurrentMapSave.BonusStarsCompleted);
     }
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
+
+    public void HandleShopEntry(ShopEntry entry)
+    {
+        //cant afford poor boi
+        if (CurrentProfile.StarCount < entry.GameResource.Amount)
+            return;
+
+        if (entry.GameResource.ResourceType == ResourceType.Track)
+        {
+            MapLevel.AllowedTracks++;
+            Placer.UpdateUI();
+        }
+        else
+        {
+            AddGemToProfile(entry.GameResource);
+        }
+
+        CurrentProfile.StarCount -= entry.GameResource.Amount;
+        StarCountLabel.Text = CurrentProfile.StarCount.ToString();
+
+
+    }
+
+    public void AddGemToProfile(GameResource resource)
+    {
+        var existing = CurrentProfile.StoredGems.FirstOrDefault(item => item == resource);
+        if (existing != null)
+        {
+            if (existing.Amount > 0)
+            {
+                var noddy = this.GetNode<ResIcon>("CanvasLayer/GemBox/" + existing.ResourceType.ToString());
+                (noddy as ResIcon).UpdateAmount(existing.Amount + 1);
+                return;
+            }
+            else
+            {
+                CurrentProfile.StoredGems.Remove(existing);
+            }
+        }
+        var btn = LoadScene<ResIcon>("res://UI/GemIcon.tscn");
+        var dex = ResourceStore.ShopResources.IndexOf(resource);
+        var copy = new GameResource(ResourceStore.ShopResources[dex]);
+        copy.Amount = 1;
+        CurrentProfile.StoredGems.Add(copy);
+        btn.AddResource(copy);
+        this.GetNode<VBoxContainer>("CanvasLayer/GemBox").AddChild(btn);
+        
+    }
+
+    public void RemoveGemFromProfile(GameResource resource)
+    {
+        var existing = CurrentProfile.StoredGems.FirstOrDefault(item => item == resource);
+        if (existing != null)
+        {
+            var amount = existing.Amount - 1;
+            var noddy = this.GetNode<ResIcon>("CanvasLayer/GemBox/" + existing.ResourceType.ToString());
+            existing.Amount = amount;
+            (noddy as ResIcon).UpdateAmount(amount);
+            if (amount <= 0)
+            {
+                noddy.QueueFree();
+                CurrentProfile.StoredGems.Remove(resource);
+            }
+
+            
+            
+        }
+    }
+
+    public void GemUsed(GameResource resource)
+    {
+        RemoveGemFromProfile(resource);
+    }
+    public bool  HandleGameButtonClick(EventType env, IUIComponent obj)
+    {
+        if (env != EventType.Left_Action || string.IsNullOrEmpty(obj?.UIID))
+            return false;
+
+        bool ret = new string[] { "ReduceTime", "IncreaseTime", "MiningStart", "ResetLevel", "Play_Pause","Stop" }.Contains(obj.UIID);
+
+        if (obj is ShopEntry entry)
+        {
+            HandleShopEntry(entry);
+        }
+        else if (obj.UIID == "ReduceTime")
+            OnSimSpeedChange(-1f);
+        else if (obj.UIID == "IncreaseTime")
+            OnSimSpeedChange(1f);
+        else if (obj.UIID == "MiningStart")
+            _on_start_pressed();
+        else if (obj.UIID == "ResetLevel")
+            OnReset();
+        else if (obj.UIID == "Play_Pause")
+            PlayLevelPressed();
+        else if (obj.UIID == "Stop")
+            StopLevelPressed();
+
+        return ret;
+    }
+
+
     public override void _PhysicsProcess(double delta)
 	{
 		LastEvent = EventDispatch.PopGameEvent();
+        
+
+        if (!ValidRun)
+            return;
+
+
+        var obj = EventDispatch.PeekHover();
+        var env = EventDispatch.FetchLast();
+
+        if(Placer.HandleSpecial || !HandleGameButtonClick(env,obj))
+            Placer?.Handle(env, obj);
 
         var fin = CartControllers.Count > 0 && CartControllers.All(item => item.Finished);
-        var success = MapLevel.LevelTargets.All(item => item.CompletedAll);
-
+        var success = MapLevel.LevelTargets.Count() > 0 && MapLevel.LevelTargets.All(item => item.CompletedAll);
+        
         if (success)
         {
             foreach (var control in CartControllers)
                 control.Finished = true;
 
             ValidLevelComplete();
-
-        }
-        else if (fin && ValidRun)
-        {
             ValidRun = false;
-        }
-        	
+        } 	
 
     }
 
@@ -396,8 +432,12 @@ public partial class Runner : Node2D
 	{
         if (Placer.MasterTrackList.Count == 0)
             return;
+
+        Placer.PauseHandle = true;
+        //if(CartControllers.Any(item=>item.State == ))
         this.GetNode<Control>("CanvasLayer/Container").Visible = true;
-        BtnEnable(StartButton, false);
+        BtnEnable(this.GetNode<TextureButton>("CanvasLayer/MiningStart"), false);
+        EventDispatch.ExitUI(this.GetNode<TextureButton>("CanvasLayer/MiningStart") as IUIComponent);
         //BtnEnable(StartButton, false);
 
         var colors = new List<Color>() { Colors.AliceBlue, Colors.RebeccaPurple, Colors.Yellow, Colors.Green };
@@ -405,41 +445,13 @@ public partial class Runner : Node2D
 
         foreach (var control in CartControllers)
 		{
-            control.Start(colors[i++], Placer.MasterTrackList, control.StartT.Direction1);
+            control.Start(colors[i++], Placer.MasterTrackList, control.StartT.Direction1, control.StartT);
 		}
 
 		
     }
 
-    public void _on_reset_pressed()
-    {
-        OnReset();
-    }
-
-    public static T LoadScene<T>(string scenePath, string name = null)
-    {
-        if (!ResourceLoader.Exists(scenePath))
-            return default(T);
-        var packedScene = ResourceLoader.Load(scenePath) as PackedScene;
-        var instance = packedScene.Instantiate();
-
-        if (!string.IsNullOrEmpty(name))
-            instance.Name = name;
-
-        var jk = (T)Convert.ChangeType(instance, typeof(T));
-
-        return jk;
-    }
-
-    public static Node LoadScene(string scenePath)
-    {
-        if (!ResourceLoader.Exists(scenePath))
-            return default(Node);
-        var packedScene = ResourceLoader.Load(scenePath) as PackedScene;
-        return packedScene.Instantiate();
-        //return instance;
-    }
-
+    
 }
 
 

@@ -1,7 +1,0 @@
-[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://bsu4d4y0ayyxf"]
-
-[ext_resource type="Texture2D" uid="uid://buv8lx1kfsjha" path="res://Assets/Environment/Ore/lava.png" id="1_jcbav"]
-
-[resource]
-atlas = ExtResource("1_jcbav")
-region = Rect2(0, 32, 16, 17)

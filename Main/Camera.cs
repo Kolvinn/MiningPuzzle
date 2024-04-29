@@ -1,4 +1,5 @@
 ﻿using Godot;
+using MagicalMountainMinery.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +8,32 @@ using System.Threading.Tasks;
 
 namespace MagicalMountainMinery.Main
 {
+    public record struct CamSettings
+    {
+        public float Zoom { get; set; }
+        public Vector2 Position { get; set; }
+       // public Vector2 HardLimit { get;set; }
+        public CamSettings(float zoom, Vector2 position)
+        {
+            Zoom = zoom;
+            Position = position;
+        }
+    }
     public partial class Camera : Camera2D
     {
         public static float zoomspeed = 0.1f, upperLimit = 0.001f, lowerLimit = 4f, currentzoom = 1, cameraSpeed = 1.6f;
         public static Vector2 MaxSize;
-
+        
+        public bool CanMod { get; set; } = false;
+        public CamSettings Settings { get => camSettings; 
+            set 
+            {
+                this.Zoom = new Vector2(value.Zoom,value.Zoom);
+                this.Position = value.Position;
+                camSettings = value; 
+            } 
+        }
+        private CamSettings camSettings;
         public override void _Ready()
         {
             MaxSize = new Vector2(LimitRight - LimitLeft, LimitBottom - LimitTop);
@@ -20,6 +42,8 @@ namespace MagicalMountainMinery.Main
             this.Zoom= new Vector2(1, 1);
             //CheckLimit();
         }
+
+
         public bool SetPan(Vector2 pan)
         {
             var pos = this.Position;
@@ -27,7 +51,7 @@ namespace MagicalMountainMinery.Main
             return pos != this.Position;
 
         }
-
+         
         
         public bool SetZoom(float scrollDir)
         {
@@ -52,6 +76,8 @@ namespace MagicalMountainMinery.Main
             }
             return false;
         }
+
+
 
         public bool CheckLimit(float scrollDir)
         {
@@ -79,9 +105,12 @@ namespace MagicalMountainMinery.Main
             return false;
 
         }
+
+
         public override void _PhysicsProcess(double delta)
         {
-            HandleBaseInput();
+           if(CanMod)
+                HandleBaseInput();
         }
 
         public void HandleBaseInput()

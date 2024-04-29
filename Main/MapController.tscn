@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://jyyhdn3wlo8a"]
+[gd_scene load_steps=10 format=3 uid="uid://jyyhdn3wlo8a"]
 
+[ext_resource type="Shader" path="res://Assets/Shaders/Pallet.gdshader" id="1_16psa"]
 [ext_resource type="Script" path="res://Main/MapController.cs" id="1_kmr4o"]
 [ext_resource type="Script" path="res://Main/Camera.cs" id="1_pu6ql"]
 [ext_resource type="Texture2D" uid="uid://ciekkg1cyo36h" path="res://Assets/Environment/Biomes_map (1).png" id="2_wenot"]
@@ -7,21 +8,32 @@
 [ext_resource type="Script" path="res://UI/GameButton.cs" id="5_3eelv"]
 [ext_resource type="FontFile" uid="uid://cipymmhxrwq2p" path="res://Assets/Fonts/Pixel/Stepalange-x3BLm.otf" id="6_2i3ht"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x3dfu"]
+shader = ExtResource("1_16psa")
+shader_parameter/brightness = 1.0
+shader_parameter/contrast = 1.0
+shader_parameter/saturation = 1.0
+shader_parameter/colorpallet = null
+
 [sub_resource type="LabelSettings" id="LabelSettings_61apb"]
 font = ExtResource("6_2i3ht")
 font_size = 180
+outline_size = 23
+outline_color = Color(0, 0, 0, 1)
 
 [node name="MapController" type="Node2D"]
+material = SubResource("ShaderMaterial_x3dfu")
 script = ExtResource("1_kmr4o")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(2983, -172)
 limit_left = -3500
 limit_top = -3500
 limit_right = 3500
 limit_bottom = 3500
 script = ExtResource("1_pu6ql")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="NoPallet" type="Sprite2D" parent="."]
 position = Vector2(910, 325)
 texture = ExtResource("2_wenot")
 
@@ -29,6 +41,7 @@ texture = ExtResource("2_wenot")
 follow_viewport_enabled = true
 
 [node name="Tutorial Valley" type="TextureButton" parent="CanvasLayer2"]
+self_modulate = Color(2, 2, 2, 1)
 offset_left = 935.0
 offset_top = 5.0
 offset_right = 2029.0
@@ -52,7 +65,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_lock_ = true
 
-[node name="Dark" type="TextureButton" parent="CanvasLayer2"]
+[node name="Weathertop" type="TextureButton" parent="CanvasLayer2"]
 modulate = Color(1, 1, 1, 0.615686)
 offset_left = 2611.0
 offset_top = -633.0
@@ -62,16 +75,67 @@ texture_normal = ExtResource("4_a6lgx")
 ignore_texture_size = true
 stretch_mode = 0
 script = ExtResource("5_3eelv")
-UIID = "Dark Hills"
+UIID = "Weathertop"
 
-[node name="Label" type="Label" parent="CanvasLayer2/Dark"]
+[node name="Label" type="Label" parent="CanvasLayer2/Weathertop"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Dark Hills"
+text = "Weathertop"
+label_settings = SubResource("LabelSettings_61apb")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="Lonely Mountain" type="TextureButton" parent="CanvasLayer2"]
+modulate = Color(1, 1, 1, 0.615686)
+offset_left = 1091.0
+offset_top = -1432.0
+offset_right = 2185.0
+offset_bottom = -1194.0
+texture_normal = ExtResource("4_a6lgx")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("5_3eelv")
+UIID = "Lonely Mountain"
+
+[node name="Label" type="Label" parent="CanvasLayer2/Lonely Mountain"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Lonely Mountain
+"
+label_settings = SubResource("LabelSettings_61apb")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="Misty Mountains Cold" type="TextureButton" parent="CanvasLayer2"]
+modulate = Color(1, 1, 1, 0.615686)
+offset_left = -405.0
+offset_top = -2345.0
+offset_right = 1146.0
+offset_bottom = -2021.0
+texture_normal = ExtResource("4_a6lgx")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("5_3eelv")
+UIID = "Misty Mountains Cold"
+
+[node name="Label" type="Label" parent="CanvasLayer2/Misty Mountains Cold"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Misty Mountains Cold"
 label_settings = SubResource("LabelSettings_61apb")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -86,4 +150,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 mouse_filter = 2

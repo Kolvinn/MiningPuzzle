@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://c21h46rwdtmq"]
+
+[ext_resource type="Script" path="res://Delete/Lineeee.cs" id="1_3uy2m"]
+
+[node name="Node2D" type="Node2D"]
+position = Vector2(-3, 9)
+
+[node name="Line2D" type="Line2D" parent="."]
+points = PackedVector2Array(266, 214, 442, 158, 714, 170, 834, 302, 794, 450, 478, 566, 350, 470, 126, 378)
+script = ExtResource("1_3uy2m")

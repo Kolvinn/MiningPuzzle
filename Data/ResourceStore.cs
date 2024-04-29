@@ -13,23 +13,23 @@ namespace MagicalMountainMinery.Data
     public static class ResourceStore
     {
         //public static Dictionary<string, Texture2D> TrackTextures;
-        public static object GetEnumType(string name)
+        public static object GetEnumType(string name, Type type)
         {
             //CardState cardState = CardState.Default;
-            if (Enum.TryParse(name, true, out ResourceType parsedEnumValue))
+            if (type == typeof(ResourceType) && Enum.TryParse(name, true, out ResourceType parsedEnumValue))
                 return parsedEnumValue;
 
             //MouseEventState mouseState = MouseEventState.Exited;
-            if (Enum.TryParse(name, true, out ConCheck mouseState))
+            if (type == typeof(ConCheck) && Enum.TryParse(name, true, out ConCheck mouseState))
                 return mouseState;
 
-            if (Enum.TryParse(name, true, out TurnType cardRarity))
+            if (type == typeof(TurnType) && Enum.TryParse(name, true, out TurnType cardRarity))
                 return cardRarity;
 
-            if (Enum.TryParse(name, true, out MineableType bob))
+            if (type == typeof(MineableType) && Enum.TryParse(name, true, out MineableType bob))
                 return bob;
 
-            if (Enum.TryParse(name, true, out EventType bob2))
+            if (type == typeof(EventType) && Enum.TryParse(name, true, out EventType bob2))
                 return bob2;
             // foreach(object o in Enum.GetValues(typeof(MouseEventState))){
             //     if(o.ToString() == name)
@@ -45,6 +45,36 @@ namespace MagicalMountainMinery.Data
 
             return null;
         }
+
+
+        public static List<GameResource> ShopResources { get; set; } = new List<GameResource>()
+        {
+            new GameResource()
+            {
+                ResourceType = ResourceType.Track,
+                Amount = 1,
+                Description = "Adds an extra track available only for this map."
+            },
+            new GameResource()
+            {
+                ResourceType = ResourceType.Emerald,
+                Amount = 5,
+                Description = "Allows removal of one ore node\n\nIt's green and shiny"
+            },
+            new GameResource()
+            {
+                ResourceType = ResourceType.Diamond,
+                Amount = 7,
+                Description = "You can modify an ore node's output.\n\nIt makes you feel like a real girl. "
+            },
+            new GameResource()
+            {
+                ResourceType = ResourceType.Ruby,
+                Amount = 4,
+                Description = "Allows shifting of an ore node to an adjacent square.\n\nAs red as my ass after a night in prison. "
+            },
+            
+        };
         public static Dictionary<Connection, Texture2D> TrackTextures { get; set; } = new Dictionary<Connection, Texture2D>();
 
         public static List<Connection> Curves = new List<Connection>();
@@ -71,6 +101,7 @@ namespace MagicalMountainMinery.Data
 
         public static List<SaveProfile> SaveProfiles = new List<SaveProfile>();
 
+        public static List<Color> ColorPallet = new List<Color>();
         public static Texture2D GetTex(TrackType type, int level = 1)
         {
             var con = new Connection(IndexPos.Left, IndexPos.Right, null);
@@ -294,27 +325,26 @@ namespace MagicalMountainMinery.Data
             var folder = "res://Assets/Environment/Minerals/";
             var stream = new List<string>
             {
-                "Copper",
-                "Stone",
-                "Ruby",
-                "Amethyst",
-                "Emerald",
-                "Iron",
-                "Gold",
-                "Diamond"
+                "Copper_Node",
+                "Stone_Node",
+                "Ruby_Node",
+                "Amethyst_Node",
+                "Emerald_Node",
+                "Iron_Node",
+                "Gold_Node",
+                "Diamond_Node",
             };
 
             foreach (var file in stream)
             {
                 MineableType min;
-                OreType ore;
-                if (Enum.TryParse(file, out min))
+                if (Enum.TryParse(file.Split("_")[0], out min))
                 {
-                    if(ResourceLoader.Exists(folder + file + ".tres"))
+                    if(ResourceLoader.Exists(folder + file + ".png"))
                     {
                         GD.Print("loading in texture: ", file);
                     }
-                    Mineables.Add(min, ResourceLoader.Load<Texture2D>(folder + file + ".tres"));
+                    Mineables.Add(min, ResourceLoader.Load<Texture2D>(folder + file + ".png"));
                 }
             }
         }
@@ -342,7 +372,23 @@ namespace MagicalMountainMinery.Data
             }
         }
 
+        public static MapLoad GetNextLevel(MapLoad load)
+        {
+            var hash = load.GetHashCode();
+            var next = load.GetHashCode() + 1;
+            if (Levels.ContainsKey(next))
+                return Levels[next];
+            else if(hash > 0)
+            {
 
+                int result = hash % 1000 >= 500 ? hash + 1000 - hash % 1000 : hash - hash % 1000;
+                result = 1000 * (load.RegionIndex + 1);
+                if (Levels.ContainsKey(result))
+                    return Levels[result.GetHashCode()];
+            }
+            return null;
+            
+        }
         public static void LoadLevels()
         {
  
@@ -350,7 +396,9 @@ namespace MagicalMountainMinery.Data
             var regionList = new List<String>()
             {
                 "Tutorial Valley",
-                "Dark Hills"
+                "Weathertop",
+                "Lonely Mountain",
+                "Misty Mountains Cold"
             };
             //var levels = Godot.DirAccess.GetFilesAt(dir);
             for (int regionDex = 0; regionDex < regionList.Count; regionDex++)
@@ -398,6 +446,22 @@ namespace MagicalMountainMinery.Data
             
         }
 
+        public static void LoadPallet()
+        {
+        
+            //using var file = Godot.FileAccess.Open("res://Assets/ColorPallet.txt", Godot.FileAccess.ModeFlags.Read);
+            //{
+            //    var line = file.GetLine();
+            //    while (!string.IsNullOrEmpty(line))
+            //    {
+            //        var col = new Color(line);
+            //        ColorPallet.Add(col);
+            //        line = file.GetLine();
+            //    }
+                
+            //}
+        }
+
         public static MapLoad GetMapLoad(Int32 uuid)
         {
             return Levels.GetValueOrDefault(uuid) as MapLoad;
@@ -413,39 +477,18 @@ namespace MagicalMountainMinery.Data
                 {
                     continue;
                 }
-                //using var poop = Godot.FileAccess.Open("user://saves/" + "test.save", Godot.FileAccess.ModeFlags.WriteRead);
-                //{
-                //    var save = new MapSave()
-                //    {
-                //        BonusStarsCompleted = 1,
-                //        Completed = true,
-                //        LevelIndex = 1,
-                //        Region = "Tutorial Valley",
-                //        RegionIndex = 0
-                //    };
-                //    var save2 = new MapSave()
-                //    {
-                //        BonusStarsCompleted = 0,
-                //        Completed = true,
-                //        LevelIndex = 0,
-                //        Region = "Tutorial Valley",
-                //        RegionIndex = 0
-                //    };
-                //    var profile = new SaveProfile()
-                //    {
-                //        ProfileName = "TEST PROFILE",
-                //        DataList = new SortedList<int, MapDataBase>{ { save.GetHashCode(), save }, { save2.GetHashCode(), save2 } }
 
-                //    };
-                //    poop.StoreString(JsonConvert.SerializeObject(profile, SaveLoader.jsonSerializerSettings));
-                //    poop.Close();
-                //}
-                using var saveGame = Godot.FileAccess.Open("user://saves/" + file, Godot.FileAccess.ModeFlags.ReadWrite);
+                using var saveGame = Godot.FileAccess.Open("user://saves/" + file, Godot.FileAccess.ModeFlags.Read);
                 {
-                    
-                    
-                    var thingy = JsonConvert.DeserializeObject<SaveProfile>(saveGame.GetAsText(), SaveLoader.jsonSerializerSettings);
-                    SaveProfiles.Add(thingy);
+
+                    if (saveGame != null)
+                    {
+                        var thingy = JsonConvert.DeserializeObject<SaveProfile>(saveGame.GetAsText(), SaveLoader.jsonSerializerSettings);
+                        if (thingy != null)
+                        {
+                            SaveProfiles.Add(thingy);
+                        }
+                    }
                 }
             }
             

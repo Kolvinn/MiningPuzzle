@@ -1,0 +1,9 @@
+{
+  "$type": "MagicalMountainMinery.Data.MapLoad, MagicalMountainMinery",
+  "Difficulty": 1,
+  "BonusStars": 0,
+  "DataString": null,
+  "Region": "Misty Mountains Cold",
+  "LevelIndex": 0,
+  "RegionIndex": 0
+}

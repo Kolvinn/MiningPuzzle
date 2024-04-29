@@ -1,5 +1,6 @@
 using Godot;
 using MagicalMountainMinery.Data;
+using MagicalMountainMinery.Main;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
@@ -91,9 +92,18 @@ public partial class Mineable : Sprite2D, IGameObject, ISaveable
 			nameof(Position),
 		};
 	}
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
 
-	}
+    public void UpdateResourceOutput(int amount)
+    {
+        this.ResourceSpawn.Amount = amount;
+        ResourceLabel.Text = amount.ToString(); 
+    }
+	public void _on_area_2d_mouse_exited()
+    {
+        EventDispatch.Exited(this);
+    }
+    public void _on_area_2d_mouse_entered()
+    {
+        EventDispatch.Entered(this);
+    }
 }

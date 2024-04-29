@@ -1,8 +1,0 @@
-[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://b1nedoxb58jgv"]
-
-[ext_resource type="Texture2D" uid="uid://bmxmjo2dc277" path="res://Assets/Mines/Iron_Node.png" id="1_6adcf"]
-
-[resource]
-resource_local_to_scene = true
-atlas = ExtResource("1_6adcf")
-region = Rect2(0, 3, 48, 42)
