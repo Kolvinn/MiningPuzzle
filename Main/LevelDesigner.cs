@@ -3,25 +3,13 @@ using MagicalMountainMinery.Data;
 using MagicalMountainMinery.Data.Load;
 using MagicalMountainMinery.Obj;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using static MagicalMountainMinery.Main.LevelDesigner;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace MagicalMountainMinery.Main
 {
-    
+
     public partial class LevelDesigner : Node2D
     {
         //sets the image thingy
@@ -53,7 +41,7 @@ namespace MagicalMountainMinery.Main
         public Dictionary<CartStartData, TextureRect> CartStarts { get; set; } = new Dictionary<CartStartData, TextureRect>();
 
         public List<LevelTarget> Targets { get; set; } = new List<LevelTarget>();
-        
+
         public int CurrentTrackLevel = 1;
         public enum State
         {
@@ -86,7 +74,7 @@ namespace MagicalMountainMinery.Main
 
         public ResourceType resource { get; set; }
 
-        public IndexPos MouseIndex {  get; set; }
+        public IndexPos MouseIndex { get; set; }
 
         public Tuple<IndexPos, EventType> LastCompletedAction { get; set; } = null;
         public override void _Ready()
@@ -100,8 +88,8 @@ namespace MagicalMountainMinery.Main
             //MapLevel.GenNodes(5);
             this.AddChild(MapLevel);
 
-           
-            
+
+
             this.GetNode<TextureButton>("CanvasLayer/Track").Connect(TextureButton.SignalName.Pressed, Callable.From(OnTrackPressed));
             this.GetNode<TextureButton>("CanvasLayer/Iron").Connect(TextureButton.SignalName.Pressed, Callable.From(OnIronPressed));
 
@@ -131,7 +119,7 @@ namespace MagicalMountainMinery.Main
                 if (edit.Text.Length < 3)
                     return;
                 var split = edit.Text.Split(",");
-               
+
                 var width = int.Parse(split[0]);
                 var height = int.Parse(split[1]);
 
@@ -143,8 +131,8 @@ namespace MagicalMountainMinery.Main
                 var newTracks2 = new Track[width, height];
                 for (int i = 0; i < MapLevel.MapObjects.GetLength(0); i++)
                 {
-                    
-                    for(int j = 0; j < MapLevel.MapObjects.GetLength(1); j++)
+
+                    for (int j = 0; j < MapLevel.MapObjects.GetLength(1); j++)
                     {
                         if (i >= width || j >= height)
                         {
@@ -153,7 +141,7 @@ namespace MagicalMountainMinery.Main
                             Delete(MapLevel.Tracks1[i, j]);
                             Delete(MapLevel.Tracks2[i, j]);
                             node?.QueueFree();
-                            
+
 
                         }
                         else
@@ -162,7 +150,7 @@ namespace MagicalMountainMinery.Main
                             newTracks1[i, j] = MapLevel.Tracks1[i, j];
                             newTracks2[i, j] = MapLevel.Tracks2[i, j];
                         }
-                        
+
 
                     }
                 }
@@ -184,7 +172,7 @@ namespace MagicalMountainMinery.Main
         {
             focus = ObjectFocus.EndCon;
         }
-        public void OnTrackPressed() 
+        public void OnTrackPressed()
         {
             //this.OnButtonPressed(); 
             focus = ObjectFocus.Track;
@@ -202,18 +190,18 @@ namespace MagicalMountainMinery.Main
             mineable = MineableType.Copper;
             resource = ResourceType.Copper_Ore;
         }
-        public void OnIronPressed() 
+        public void OnIronPressed()
         {
             focus = ObjectFocus.Resource;
             mineable = MineableType.Iron;
             resource = ResourceType.Iron_Ore;
         }
-        
+
         public void HandleUI(EventType env, IUIComponent comp)
         {
             if (env != EventType.Left_Action)
                 return;
-            if(comp.UIID == "block")
+            if (comp.UIID == "block")
             {
                 focus = ObjectFocus.Block;
             }
@@ -221,7 +209,7 @@ namespace MagicalMountainMinery.Main
             {
                 focus = ObjectFocus.Portal;
             }
-            else if(comp.UIID == "Single") 
+            else if (comp.UIID == "Single")
             {
                 focus = ObjectFocus.Cart;
                 cartType = CartType.Single;
@@ -314,7 +302,7 @@ namespace MagicalMountainMinery.Main
                 Size = new Vector2(MapLevel.TrackX, MapLevel.TrackY)
             };
 
-            CartStarts.Add(data,tex);
+            CartStarts.Add(data, tex);
             this.AddChild(tex);
             return true;
 
@@ -336,15 +324,15 @@ namespace MagicalMountainMinery.Main
 
             if (CurrentState == State.Constructing)
             {
-                
-                if(focus == ObjectFocus.Cart)
+
+                if (focus == ObjectFocus.Cart)
                 {
                     SetCart(index);
                     CurrentState = State.Default;
                 }
                 else if (focus == ObjectFocus.Track)
                 {
-                    
+
 
 
                     if (!MapLevel.ValidIndex(index))
@@ -366,24 +354,24 @@ namespace MagicalMountainMinery.Main
                         LastHover = CurrentHover;
                     }
                 }
-                else if(focus == ObjectFocus.Resource)
+                else if (focus == ObjectFocus.Resource)
                 {
                     if (!MapLevel.ValidIndex(index) || MapBlocks.ContainsKey(index))
                         return;
                     SetMineable();
                 }
-                else if(focus == ObjectFocus.EndCon)
+                else if (focus == ObjectFocus.EndCon)
                 {
                     if (MapBlocks.ContainsKey(index))
                         return;
                     SetEndCon(index);
                     CurrentState = State.Default;
                 }
-                else if(focus == ObjectFocus.Block)
+                else if (focus == ObjectFocus.Block)
                 {
                     SetBlock(index);
                 }
-                else if(focus == ObjectFocus.Portal)
+                else if (focus == ObjectFocus.Portal)
                 {
                     SetPortal(index);
                 }
@@ -392,7 +380,7 @@ namespace MagicalMountainMinery.Main
 
 
             }
-            
+
             else if (CurrentState == State.Deleting)
             {
 
@@ -402,10 +390,10 @@ namespace MagicalMountainMinery.Main
                     first.Value.QueueFree();
                     CartStarts.Remove(first.Key);
                 }
-                else if(Targets.Any(item => item.Index == index))
+                else if (Targets.Any(item => item.Index == index))
                 {
                     var first = Targets.FirstOrDefault(item => item.Index == index);
-                    if(first != null)
+                    if (first != null)
                     {
                         this.RemoveChild(first);
                         first.QueueFree();
@@ -466,18 +454,18 @@ namespace MagicalMountainMinery.Main
 
             if (dexX < 0)
                 dexX += -1;
-            if(dexY < 0)
+            if (dexY < 0)
                 dexY += -1;
 
             var index = new IndexPos(dexX, dexY); //index auto chops floats to ints
-            if(index != MouseIndex)
+            if (index != MouseIndex)
             {
                 MouseIndex = index;
             }
             this.GetNode<TextureRect>("HoverSquare").Position = MapLevel.GetGlobalPosition(index, false) + new Vector2(-5, -5);
             return index;
         }
-        
+
         public void SetBlock(IndexPos pos)
         {
             if (!MapLevel.ValidIndex(pos))
@@ -490,7 +478,7 @@ namespace MagicalMountainMinery.Main
             var rect = new TextureRect()
             {
                 Texture = this.GetNode<GameButton>("CanvasLayer/Block").TextureNormal,
-                Position = MapLevel.GetGlobalPosition(pos) - new Vector2(16,16),
+                Position = MapLevel.GetGlobalPosition(pos) - new Vector2(16, 16),
             };
             MapBlocks.Add(pos, rect);
             this.AddChild(rect);
@@ -511,7 +499,7 @@ namespace MagicalMountainMinery.Main
                 CurrentHover = index;
             }
             var existing = MapLevel.GetTrack(index);
-            
+
             if (existing is Junction junc)
             {
                 var match = ResourceStore.GetRotateMatch(junc.GetJunc(), junc.TrackLevel);
@@ -534,7 +522,7 @@ namespace MagicalMountainMinery.Main
                 this.Connect(SignalName.FocusEntered, Callable.From(OnFocus));
                 this.CustomMinimumSize = this.Size = new Vector2(32, 32);
                 this.Set("theme_override_font_sizes/font_size", 11);
-                this.Position = new(-16,-16);
+                this.Position = new(-16, -16);
                 this.MouseFilter = MouseFilterEnum.Stop;
             }
             public void OnFocusExit()
@@ -552,7 +540,7 @@ namespace MagicalMountainMinery.Main
                         levelTarget.Batches.Clear();
                         for (int i = 0; i < array.Length; i++)
                         {
-                            DoTarget(array[i].Split(' ').ToList(), levelTarget,i);
+                            DoTarget(array[i].Split(' ').ToList(), levelTarget, i);
                         }
 
 
@@ -571,8 +559,8 @@ namespace MagicalMountainMinery.Main
             {
                 ResourceType parsedEnumValue = ResourceType.Stone;
                 ConCheck check = ConCheck.gt;
-                int t = 0 ;
-                if(Enum.TryParse(entries[0], true, out parsedEnumValue)
+                int t = 0;
+                if (Enum.TryParse(entries[0], true, out parsedEnumValue)
                     && Enum.TryParse(entries[1], true, out check)
                     && int.TryParse(entries[2], out t))
                 {
@@ -580,7 +568,7 @@ namespace MagicalMountainMinery.Main
                     {
                         var con = new Condition(parsedEnumValue, t, check);
                         target.Conditions.Add(con);
-                        
+
                     }
                     else if (entries.Count() == 4)
                     {
@@ -590,7 +578,7 @@ namespace MagicalMountainMinery.Main
                     }
                 }
                 //this is a bonus condition, so treat the same but add to bonus cons
-                else if(entries[0] == "*")
+                else if (entries[0] == "*")
                 {
                     if (Enum.TryParse(entries[1], true, out parsedEnumValue)
                     && Enum.TryParse(entries[2], true, out check)
@@ -604,16 +592,16 @@ namespace MagicalMountainMinery.Main
                         }
                     }
                 }
-                
-                    
-                
-                
+
+
+
+
             }
 
-            
+
             public void OnTextChanged()
             {
-                
+
                 try
                 {
                     var rent = this.GetParent();
@@ -622,18 +610,18 @@ namespace MagicalMountainMinery.Main
                         mine.ResourceSpawn.Amount = int.Parse(this.Text);
 
                     }
-                    else if(rent is Track track)
+                    else if (rent is Track track)
                     {
 
                     }
 
-                    
+
                 }
-                catch (Exception e){ }
-                
+                catch (Exception e) { }
+
             }
 
-            
+
         }
         public void SetEndCon(IndexPos index)
         {
@@ -679,7 +667,7 @@ namespace MagicalMountainMinery.Main
                 CurrentHover = index;
             }
             var existing = MapLevel.GetObj(index);
-            if (existing != null && existing is Mineable || existing is LevelTarget )
+            if (existing != null && existing is Mineable || existing is LevelTarget)
             {
                 return;
             }
@@ -698,7 +686,7 @@ namespace MagicalMountainMinery.Main
                 Amount = 5
             };
 
-            
+
 
             MapLevel.SetMineable(index, miney);
             miney.AddChild(new TextEditMod());
@@ -730,28 +718,28 @@ namespace MagicalMountainMinery.Main
                 return;
             }
             var obj = MapLevel.MapObjects[index.X, index.Y];
-            if(obj == null)
+            if (obj == null)
                 return;
-            else if(obj is Portal)
+            else if (obj is Portal)
             {
                 var portal = PortalStack.Pop();
 
-                if (PortalPair != null) 
+                if (PortalPair != null)
                 {
                     PortalPair = null; //remove ref to the only one of it's pair
- 
+
                 }
                 else if (portalDex > 0)
                 {
                     portalDex--;
                     //there is a pair, so get the obj we are deleting and remove ref;
-                    portal.Sibling.Sibling = null; 
+                    portal.Sibling.Sibling = null;
                 }
 
                 MapLevel.RemoveAt(portal.Index);
 
             }
-            else 
+            else
             {
                 MapLevel.RemoveAt(index);
             }
@@ -766,9 +754,9 @@ namespace MagicalMountainMinery.Main
             foreach (var entry in track.GetConnectionList())
             {
                 Disconnect(MapLevel.GetTrack(index + entry), entry.Opposite(), track);
-             }
+            }
             RemoveTrack(track, index);
-            
+
         }
 
         public void RemoveTrack(Track t, IndexPos pos, bool update = true)
@@ -912,7 +900,7 @@ namespace MagicalMountainMinery.Main
         public Junc OrientateJunction(IndexPos pos1, IndexPos pos2, IndexPos pos3)
         {
             var option = pos3;
-            var p1 = pos1; 
+            var p1 = pos1;
             var p2 = pos2;
 
             //CURVE
@@ -951,7 +939,7 @@ namespace MagicalMountainMinery.Main
             //    p1 = pos3;
             //    option = pos1;
             //}
-            return new Junc(p1,p2,option);
+            return new Junc(p1, p2, option);
         }
 
 
@@ -964,10 +952,10 @@ namespace MagicalMountainMinery.Main
             var fromDir = from - to;
             var toDir = to - from;
 
-            if(fromTrack != null && fromTrack is not Junction && !fromTrack.CanConnect())
+            if (fromTrack != null && fromTrack is not Junction && !fromTrack.CanConnect())
             {
                 //track has 2 connections and iss not junc, so try make new junction
-                if(toTrack == null)
+                if (toTrack == null)
                 {
                     var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), fromDir, CurrentTrackLevel);
                     MapLevel.SetTrack(to, newT);
@@ -990,7 +978,7 @@ namespace MagicalMountainMinery.Main
                     var j = OrientateJunction(fromTrack.Direction1, fromTrack.Direction2, toDir);
                     var newJc = ResourceStore.GetJunc(j, fromTrack.TrackLevel);
                     MapLevel.RemoveChild(fromTrack);
-                    
+
 
 
                     var junction = new Junction();
@@ -1017,13 +1005,13 @@ namespace MagicalMountainMinery.Main
                 }
             }
 
-            else if(fromTrack != null && fromTrack is Junction junc)
+            else if (fromTrack != null && fromTrack is Junction junc)
             {
                 //reorientate
                 return true;
             }
             return false;
-            
+
 
         }
 
@@ -1214,14 +1202,14 @@ namespace MagicalMountainMinery.Main
 
                 MapLevel.StartData = CartStarts.Keys.ToList();
                 MapLevel.LevelTargets = this.Targets;
-                
 
-                foreach(var entry in PortalStack)
+
+                foreach (var entry in PortalStack)
                 {
-                    entry.PortalId = "portal"+entry.GetInstanceId().ToString();
+                    entry.PortalId = "portal" + entry.GetInstanceId().ToString();
                     if (entry.Sibling != null)
                     {
-                        
+
                         entry.SiblingId = "portal" + entry.Sibling.GetInstanceId().ToString();
                         entry.Sibling.SiblingId = "portal" + entry.GetInstanceId().ToString();
 
@@ -1230,10 +1218,10 @@ namespace MagicalMountainMinery.Main
                         entry.Sibling = null; //remove ref to sibling
                     }
                 }
-                
+
                 //this.MapLevel.QueueFree();
                 var obj = SaveLoader.SaveGame(MapLevel);
-            //serializer.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+                //serializer.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
                 var thingy = JsonConvert.SerializeObject(obj, SaveLoader.jsonSerializerSettings);
                 var dir = "res://Levels/";
 
@@ -1246,7 +1234,7 @@ namespace MagicalMountainMinery.Main
 
                 };
 
-                var dataString = JsonConvert.SerializeObject (data, SaveLoader.jsonSerializerSettings);
+                var dataString = JsonConvert.SerializeObject(data, SaveLoader.jsonSerializerSettings);
 
                 dir += region + "/";
                 var levels = (Godot.DirAccess.GetFilesAt(dir).Count() / 2) + 1;
@@ -1273,7 +1261,7 @@ namespace MagicalMountainMinery.Main
             {
                 GD.PrintErr(ex);
             }
-            
+
             //
         }
 

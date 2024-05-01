@@ -1,10 +1,4 @@
 ﻿using Godot;
-using MagicalMountainMinery.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MagicalMountainMinery.Main
 {
@@ -12,7 +6,7 @@ namespace MagicalMountainMinery.Main
     {
         public float Zoom { get; set; }
         public Vector2 Position { get; set; }
-       // public Vector2 HardLimit { get;set; }
+        // public Vector2 HardLimit { get;set; }
         public CamSettings(float zoom, Vector2 position)
         {
             Zoom = zoom;
@@ -21,17 +15,19 @@ namespace MagicalMountainMinery.Main
     }
     public partial class Camera : Camera2D
     {
-        public static float zoomspeed = 0.1f, upperLimit = 0.001f, lowerLimit = 4f, currentzoom = 1, cameraSpeed = 1.6f;
+        public static float zoomspeed = 0.1f, upperLimit = 0.0001f, lowerLimit = 7f, currentzoom = 1, cameraSpeed = 1.6f;
         public static Vector2 MaxSize;
-        
-        public bool CanMod { get; set; } = false;
-        public CamSettings Settings { get => camSettings; 
-            set 
+
+        public bool CanMod { get; set; } = true;
+        public CamSettings Settings
+        {
+            get => camSettings;
+            set
             {
-                this.Zoom = new Vector2(value.Zoom,value.Zoom);
+                this.Zoom = new Vector2(value.Zoom, value.Zoom);
                 this.Position = value.Position;
-                camSettings = value; 
-            } 
+                camSettings = value;
+            }
         }
         private CamSettings camSettings;
         public override void _Ready()
@@ -39,7 +35,7 @@ namespace MagicalMountainMinery.Main
             MaxSize = new Vector2(LimitRight - LimitLeft, LimitBottom - LimitTop);
             this.MakeCurrent();
             this.Position = new Vector2(0, 0);
-            this.Zoom= new Vector2(1, 1);
+            this.Zoom = new Vector2(1, 1);
             //CheckLimit();
         }
 
@@ -51,8 +47,8 @@ namespace MagicalMountainMinery.Main
             return pos != this.Position;
 
         }
-         
-        
+
+
         public bool SetZoom(float scrollDir)
         {
             //get_viewport_rect().size / self.zoom
@@ -88,9 +84,9 @@ namespace MagicalMountainMinery.Main
 
             var relativeSize = size / nextZoomvec;
             var relativePosition = this.Position - relativeSize / 2;
-            
 
-            
+
+
 
             if (relativePosition.X < LimitLeft || relativePosition.Y < LimitTop
                 || relativePosition.X + relativeSize.X > LimitRight
@@ -109,7 +105,7 @@ namespace MagicalMountainMinery.Main
 
         public override void _PhysicsProcess(double delta)
         {
-           if(CanMod)
+            if (CanMod)
                 HandleBaseInput();
         }
 
@@ -118,8 +114,8 @@ namespace MagicalMountainMinery.Main
             var scrollDir = 0.0f;
             var speedCheck = Vector2.Zero;
             //these will return 1s and 0s as it's a keyboard input. Otherwise, controller will do something else
-             speedCheck.X = Input.GetActionStrength("ui_right") - Input.GetActionStrength("ui_left");
-             speedCheck.Y = Input.GetActionStrength("ui_down") - Input.GetActionStrength("ui_up");
+            speedCheck.X = Input.GetActionStrength("ui_right") - Input.GetActionStrength("ui_left");
+            speedCheck.Y = Input.GetActionStrength("ui_down") - Input.GetActionStrength("ui_up");
 
 
             var down = Input.IsActionJustReleased("scroll_down");

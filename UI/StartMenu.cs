@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using static MagicalMountainMinery.Main.GameController;
 
 public partial class StartMenu : Node2D
@@ -12,10 +11,10 @@ public partial class StartMenu : Node2D
     public StartGameDelegate Start { get; set; }
     public QuitGameDelegate Quit { get; set; }
     public override void _Ready()
-	{
+    {
         var frame = 0;
-        var preset = GetNode<Control>("CanvasLayer/Background").AnchorsPreset;
-        var origin = GetNode<Control>("CanvasLayer/Background").GetNode<TextureRect>("TextureRect");
+        var preset = GetNode<Control>("CanvasLayer/Control/Background").AnchorsPreset;
+        var origin = GetNode<Control>("CanvasLayer/Control/Background").GetNode<TextureRect>("TextureRect");
         while (frame < FrameLimit)
         {
             var file = "res://Assets/UI/MenuGif/frame_";
@@ -39,7 +38,7 @@ public partial class StartMenu : Node2D
                 AnchorsPreset = 15
             };
 
-            GetNode<Control>("CanvasLayer/Background").AddChild(tex);
+            GetNode<Control>("CanvasLayer/Control/Background").AddChild(tex);
             frame++;
 
         }
@@ -56,16 +55,16 @@ public partial class StartMenu : Node2D
     }
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(double delta)
-	{
+    {
         timeElipsed += delta;
         if (timeElipsed >= FrameDuration)
         {
             timeElipsed = 0;
-            GetNode<Control>("CanvasLayer/Background").GetChild<TextureRect>(CurrentFrame).Visible = false;
+            GetNode<Control>("CanvasLayer/Control/Background").GetChild<TextureRect>(CurrentFrame).Visible = false;
             CurrentFrame++;
             if (CurrentFrame == FrameLimit)
                 CurrentFrame = 0;
-            GetNode<Control>("CanvasLayer/Background").GetChild<TextureRect>(CurrentFrame).Visible = true;
+            GetNode<Control>("CanvasLayer/Control/Background").GetChild<TextureRect>(CurrentFrame).Visible = true;
         }
     }
 }

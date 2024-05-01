@@ -1,11 +1,8 @@
 ﻿using Godot;
 using MagicalMountainMinery.Data;
 using MagicalMountainMinery.Main;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MagicalMountainMinery.Obj
 {
@@ -50,12 +47,12 @@ namespace MagicalMountainMinery.Obj
                 ZIndex = 5,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
-                
-                
+
+
             };
             HeightLabel.Visible = false;
             AddChild(HeightLabel);
-           // UpdateHeightLabel();
+            // UpdateHeightLabel();
 
 
         }
@@ -86,14 +83,14 @@ namespace MagicalMountainMinery.Obj
             this.AddChild(ConnectionUI);
         }
 
-        
+
         public void UpdateHeightLabel(IndexPos fromDir, int connectedHeight = 1, bool remove = false)
         {
             if (Heights.ContainsKey(fromDir) && remove)
             {
                 Heights.Remove(fromDir);
             }
-            else if(!Heights.ContainsKey(fromDir))
+            else if (!Heights.ContainsKey(fromDir))
             {
                 Heights.Add(fromDir, connectedHeight);
             }
@@ -119,7 +116,7 @@ namespace MagicalMountainMinery.Obj
             }
         }
 
-       
+
 
         public virtual List<IndexPos> GetConnectionList()
         {
@@ -135,7 +132,7 @@ namespace MagicalMountainMinery.Obj
                     this.Offset = new Vector2(0, -6);
                 }
             }
-            else if(Texture == null)
+            else if (Texture == null)
             {
                 GD.Print("ppos");
             }
@@ -161,9 +158,9 @@ namespace MagicalMountainMinery.Obj
 
         public void Connect(IndexPos dir)
         {
-            Connect(dir,1);
+            Connect(dir, 1);
         }
-        
+
         public void Connect(IndexPos dir, int fromHeight = 1)
         {
             if (Direction1 == IndexPos.Zero)
@@ -172,7 +169,7 @@ namespace MagicalMountainMinery.Obj
                 Direction2 = dir;
             ConnectionUI.Connect(dir);
 
-            UpdateHeightLabel( dir, fromHeight);
+            UpdateHeightLabel(dir, fromHeight);
         }
 
         public void Disconnect(IndexPos dir, int fromHeight = 1)
@@ -198,7 +195,7 @@ namespace MagicalMountainMinery.Obj
 
         public Sprite2D Arrow { get; set; }
 
-        public Junction() 
+        public Junction()
         {
             HeightLabel = new Label()
             {
@@ -216,7 +213,7 @@ namespace MagicalMountainMinery.Obj
             };
 
             AddChild(HeightLabel);
-           
+
         }
         public override void _Ready()
         {
@@ -236,7 +233,7 @@ namespace MagicalMountainMinery.Obj
 
 
 
-        public void Connect(IndexPos fromDir, IndexPos toDir, IndexPos optionDir, int fromHeight = 1, int toHeight =1, int optionHeight =1)
+        public void Connect(IndexPos fromDir, IndexPos toDir, IndexPos optionDir, int fromHeight = 1, int toHeight = 1, int optionHeight = 1)
         {
             ConnectionUI.Connect(fromDir);
             ConnectionUI.Connect(toDir);
@@ -246,7 +243,7 @@ namespace MagicalMountainMinery.Obj
             this.Option = optionDir;
 
             DoArrow();
-            UpdateHeightLabel(fromDir,fromHeight);
+            UpdateHeightLabel(fromDir, fromHeight);
             UpdateHeightLabel(toDir, toHeight);
             UpdateHeightLabel(optionDir, optionHeight);
 

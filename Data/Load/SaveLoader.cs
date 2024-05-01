@@ -7,12 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Reflection;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Text.Json.Serialization.Metadata;
-using System.Threading.Tasks;
 
 namespace MagicalMountainMinery.Data.Load
 {
@@ -34,7 +29,7 @@ namespace MagicalMountainMinery.Data.Load
     {
 
         static Dictionary<object, object> parsedClasses { get; set; }
-        
+
         public static JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings()
         {
             TypeNameHandling = TypeNameHandling.Objects,
@@ -65,7 +60,7 @@ namespace MagicalMountainMinery.Data.Load
             }
 
             var storedSelfReferences = new Dictionary<object, object>();
-            
+
 
 
             var fields = objectType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
@@ -85,17 +80,17 @@ namespace MagicalMountainMinery.Data.Load
 
             foreach (PropertyInfo p in properties)
             {
-                
+
                 object fieldObject = p.GetValue(o);
                 if (fieldObject == null)
                 {
                     continue;
                 }
-                object ret = null ;
+                object ret = null;
                 if (parsedClasses.TryGetValue(fieldObject, out var savedRef))
                 {
                     ret = new ObjectRef(savedRef);
-                    
+
                 }
                 else if ((StoreCollectionAttribute)p.GetCustomAttribute(typeof(StoreCollectionAttribute)) != null)
                 {
@@ -118,7 +113,7 @@ namespace MagicalMountainMinery.Data.Load
                 //}
 
             }
-           
+
             return s;
         }
 
@@ -141,7 +136,7 @@ namespace MagicalMountainMinery.Data.Load
             if (typeof(Node).IsInstanceOfType(o) && o.GetType() != typeof(Godot.AnimationPlayer))
             {
                 //returnValue = !typeof(IGameObject).IsInstanceOfType(o) ? CreateSaveInstance(o, endNode: true) : CreateSaveInstance(o);
-                returnValue= CreateSaveInstance(o);
+                returnValue = CreateSaveInstance(o);
             }
 
             else if (!typeof(Node).IsInstanceOfType(o))
@@ -176,7 +171,7 @@ namespace MagicalMountainMinery.Data.Load
                 }
                 //need to put final exceptions here if we need to parse them at some point
                 //currently skip everything under Godot namespace (except for Vector2)
-                else 
+                else
                 {
                     returnValue = TryWriteObjectToJson(o);
                 }
@@ -252,7 +247,7 @@ namespace MagicalMountainMinery.Data.Load
             if (typeof(Node).IsAssignableFrom(save.objectType))
             {
 
-                if(save.objectType == typeof(Mineable))
+                if (save.objectType == typeof(Mineable))
                 {
                     save.ResPath = "res://Obj/Mineable.tscn";
                 }
@@ -396,7 +391,7 @@ namespace MagicalMountainMinery.Data.Load
             {
                 return JsonConvert.DeserializeObject<IndexPos>(str);
             }
-            else if(origin == typeof(Condition))
+            else if (origin == typeof(Condition))
             {
                 return JsonConvert.DeserializeObject<Condition>(str);
             }
@@ -431,7 +426,7 @@ namespace MagicalMountainMinery.Data.Load
                     var type = value?.GetType();
                     var namey = value?.ToString();
                     object o = null;
-                    if(p.GetCustomAttribute(typeof(StoreCollectionAttribute)) != null)
+                    if (p.GetCustomAttribute(typeof(StoreCollectionAttribute)) != null)
                     {
                         var att = (StoreCollectionAttribute)p.GetCustomAttribute(typeof(StoreCollectionAttribute));
                         if (att.ShouldStore)
@@ -480,9 +475,9 @@ namespace MagicalMountainMinery.Data.Load
                             {
                                 p.SetValue(saveInstanceObject, o);
                             }
-                            catch(Exception e) 
-                            { 
-                                GD.PrintErr(e.ToString()); 
+                            catch (Exception e)
+                            {
+                                GD.PrintErr(e.ToString());
                             }
                         }
                     }
@@ -570,7 +565,7 @@ namespace MagicalMountainMinery.Data.Load
             }
         }
 
-        public static object ParsePrimitive(string baseType,object obj)
+        public static object ParsePrimitive(string baseType, object obj)
         {
             var temp = Convert.ToInt64(obj);
             object value;
@@ -668,7 +663,7 @@ namespace MagicalMountainMinery.Data.Load
                     }
                     return objList;
                 }
-                else if(fieldName == "StartData")
+                else if (fieldName == "StartData")
                 {
                     objList = new List<object>();
                     var list = (IList)o;
@@ -689,7 +684,7 @@ namespace MagicalMountainMinery.Data.Load
                     return objList;
                 }
             }
-            if(parent.GetType() == typeof(LevelTarget))
+            if (parent.GetType() == typeof(LevelTarget))
             {
                 if (fieldName == "Conditions" || fieldName == "BonusConditions")
                 {
@@ -741,7 +736,7 @@ namespace MagicalMountainMinery.Data.Load
                     return rocks;
                 }
                 //list of indexpos
-                else if(fieldName == "StartPositions" || fieldName == "EndPositions" || fieldName == "Blocked")
+                else if (fieldName == "StartPositions" || fieldName == "EndPositions" || fieldName == "Blocked")
                 {
                     var jArray = (JArray)o;
                     //var array = ((object[,])o);
@@ -754,7 +749,7 @@ namespace MagicalMountainMinery.Data.Load
                     }
                     return objList;
                 }
-                else if(fieldName == "StartData")
+                else if (fieldName == "StartData")
                 {
                     var jArray = (JArray)o;
                     //var array = ((object[,])o);
@@ -795,7 +790,7 @@ namespace MagicalMountainMinery.Data.Load
                     }
                     return objList;
                 }
-                else if( fieldName == "Batches")
+                else if (fieldName == "Batches")
                 {
                     var list = JsonConvert.DeserializeObject<List<string>>(str);
                     var objList = new List<int>();
@@ -805,9 +800,9 @@ namespace MagicalMountainMinery.Data.Load
                     }
                     return objList;
                 }
-               
+
                 //var list = (List<Condition>)o;
-                
+
                 //return objList;
             }
 

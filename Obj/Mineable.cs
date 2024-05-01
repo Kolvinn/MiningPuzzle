@@ -3,46 +3,44 @@ using MagicalMountainMinery.Data;
 using MagicalMountainMinery.Main;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 public partial class Mineable : Sprite2D, IGameObject, ISaveable
 {
-	public bool locked = false;
-	public int Hardness { get; set; } = 0;
-	public int Size { get; set; } = 1;
+    public bool locked = false;
+    public int Hardness { get; set; } = 0;
+    public int Size { get; set; } = 1;
 
     [JsonConverter(typeof(StringEnumConverter))]
     public MineableType Type { get; set; }
 
     public GameResource ResourceSpawn { get; set; }
 
-	public Sprite2D HardnessIcon { get; set; }	
+    public Sprite2D HardnessIcon { get; set; }
 
-	public Label ResourceLabel { get =>resLabel; set=> resLabel = value; }
+    public Label ResourceLabel { get => resLabel; set => resLabel = value; }
 
-	private Label resLabel = null;
-	public IndexPos Index {  get; set; }
+    private Label resLabel = null;
+    public IndexPos Index { get; set; }
 
     public override void _Ready()
-	{
-        
-		this.Texture = ResourceStore.Mineables[Type];
-		//CanvasLayer canvas = new CanvasLayer();
-		//this.AddChild(canvas);
-		//canvas.Visible = true;
+    {
+
+        this.Texture = ResourceStore.Mineables[Type];
+        //CanvasLayer canvas = new CanvasLayer();
+        //this.AddChild(canvas);
+        //canvas.Visible = true;
         this.TextureFilter = TextureFilterEnum.Nearest;
         //48 pixel node on 32 pixel squares
         this.Scale = new Vector2(0.67f, 0.67f);
 
 
-		
-	}
+
+    }
 
 
-	public void PostLoad()
-	{
+    public void PostLoad()
+    {
         if (this.Type == MineableType.Copper)
             Hardness = 0;
         else if (this.Type == MineableType.Iron)
@@ -85,20 +83,20 @@ public partial class Mineable : Sprite2D, IGameObject, ISaveable
 
         this.AddChild(ResourceLabel);
     }
-	public virtual List<string> GetSaveRefs()
-	{
-		return new List<string>()
-		{
-			nameof(Position),
-		};
-	}
+    public virtual List<string> GetSaveRefs()
+    {
+        return new List<string>()
+        {
+            nameof(Position),
+        };
+    }
 
     public void UpdateResourceOutput(int amount)
     {
         this.ResourceSpawn.Amount = amount;
-        ResourceLabel.Text = amount.ToString(); 
+        ResourceLabel.Text = amount.ToString();
     }
-	public void _on_area_2d_mouse_exited()
+    public void _on_area_2d_mouse_exited()
     {
         EventDispatch.Exited(this);
     }

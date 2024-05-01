@@ -1,10 +1,7 @@
 ﻿using Godot;
 using MagicalMountainMinery.Data;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MagicalMountainMinery.Main
 {
@@ -24,7 +21,7 @@ namespace MagicalMountainMinery.Main
 
         private static List<GameEvent> gameEvents = new List<GameEvent>();
 
-        
+
 
         public override void _Ready()
         {
@@ -32,7 +29,7 @@ namespace MagicalMountainMinery.Main
             //this.SetProcessInput(false);
         }
 
-        public static List<GuiOverride> overrides { get; set; }= new List<GuiOverride>();   
+        public static List<GuiOverride> overrides { get; set; } = new List<GuiOverride>();
         public static void WithinOverride(GuiOverride control)
         {
             if (overrides.Contains(control)) { return; }
@@ -42,21 +39,21 @@ namespace MagicalMountainMinery.Main
         public static void ExitOverride(GuiOverride control)
         {
             if (overrides.Contains(control)) { overrides.Remove(control); }
-            
+
         }
 
         public override void _PhysicsProcess(double delta)
         {
-            if(overrides.Count > 0)
+            if (overrides.Count > 0)
             {
-                if(hoverList.Count > 0 && Input.IsActionJustPressed("left_click"))
+                if (hoverList.Count > 0 && Input.IsActionJustPressed("left_click"))
                 {
                     LastPressedPosition = GetGlobalMousePosition();
                     eventTypes.Enqueue(EventType.Left_Action);
                 }
                 return;
             }
-                
+
             mousePos = GetGlobalMousePosition();
             //Need to fetch context
             if (Input.IsActionJustPressed("left_click"))
@@ -122,7 +119,7 @@ namespace MagicalMountainMinery.Main
             }
 
         }
-     
+
         public static void PushGameEvent(GameEvent gameEvent)
         {
             gameEvents.Add(gameEvent);
@@ -137,7 +134,7 @@ namespace MagicalMountainMinery.Main
             }
             return new GameEvent();
         }
-    
+
         public static EventType FetchLast()
         {
             return eventTypes.Count == 0 ? EventType.Nill : eventTypes.Dequeue();
@@ -162,7 +159,7 @@ namespace MagicalMountainMinery.Main
         public static IUIComponent GetHover()
         {
 
-            
+
             if (hoverList.Count > 0)
             {
                 GD.Print("returning btn");
@@ -189,7 +186,7 @@ namespace MagicalMountainMinery.Main
 
         public static void Exited(IGameObject interactable)
         {
-            if(interactables.Contains(interactable))
+            if (interactables.Contains(interactable))
                 interactables.Remove(interactable);
         }
 
@@ -206,7 +203,7 @@ namespace MagicalMountainMinery.Main
         //    {
         //        eventTypes.Enqueue(EventType.Drag_Start);
         //        this.SetProcessInput(false);
-                
+
 
         //    }
 

@@ -1,17 +1,11 @@
 ﻿using Godot;
 using MagicalMountainMinery.Data;
-using MagicalMountainMinery.Data.Load;
 using MagicalMountainMinery.Obj;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Reflection;
-using static Godot.Control;
-using static MagicalMountainMinery.Main.CartController;
 
 
 namespace MagicalMountainMinery.Main
@@ -27,12 +21,12 @@ namespace MagicalMountainMinery.Main
         }
 
         public bool PauseHandle { get; set; } = false;
-        public ResourceType Special {  get; set; }
+        public ResourceType Special { get; set; }
         public State CurrentState { get; set; } = State.Default;
         //public Track SelectedTrack { get; set; }
 
         public MapLevel MapLevel { get; set; }
-        public List<GameButton> Buttons { get; set; } 
+        public List<GameButton> Buttons { get; set; }
         public IndexPos CurrentHover { get; set; }
         public IndexPos LastHover { get; set; }
         //public Track[,] Tracks1 
@@ -60,7 +54,7 @@ namespace MagicalMountainMinery.Main
 
         public AudioStreamPlayer AudioStream { get; set; }
 
-        public Shop ShopScreen { get; set; }    
+        public Shop ShopScreen { get; set; }
         public List<Track> OuterConnections { get; set; } = new List<Track>();
         //public ColorRect[,] MineableLocations { get; set; }
 
@@ -102,20 +96,20 @@ namespace MagicalMountainMinery.Main
             this.MapLevel = level;
             UpdateUI();
             ShowConnections(false);
-            
+
             var raised = MapLevel.AllowedTracksRaised == 0 ? false : true;
             //var junc = MapLevel.AllowedJunctions == 0 ? false : true;
 
-    
+
 
             this.GetNode<VBoxContainer>("CanvasLayer/Raised").Visible = raised;
-            this.GetNode<TextureRect>("CanvasLayer/TextureRect3").Visible=raised;
+            this.GetNode<TextureRect>("CanvasLayer/TextureRect3").Visible = raised;
             //this.GetNode<VBoxContainer>("CanvasLayer/Junc").Visible = junc;
 
             //TutorialUI.CurrentTutorial = null;
             ////TutorialUI.CurrentIndex = (regionDex + 1);
             //TutorialUI.CurrentSubIndex = levelDex;
-            if(!TutorialDisabled)
+            if (!TutorialDisabled)
                 TutorialUI.Load(load);
             //if(MineableLocations != null && MineableLocations.Count > 0)
             //{
@@ -171,12 +165,13 @@ namespace MagicalMountainMinery.Main
                 }
             }
             if (HandleSpecial)
-            { var inter = EventDispatch.FetchInteractable();
-                if(inter != null && env == EventType.Left_Action)
+            {
+                var inter = EventDispatch.FetchInteractable();
+                if (inter != null && env == EventType.Left_Action)
                 {
-                    GD.Print("inter: " ,inter);
+                    GD.Print("inter: ", inter);
                 }
-                
+
                 HandleSpecialInteraction(env, obj, inter);
             }
             else if (obj != null)
@@ -191,12 +186,12 @@ namespace MagicalMountainMinery.Main
             }
         }
 
- 
+
 
 
         public void SetButtonFocus(GameButton btn)
         {
-           // btn.selectMat.SetShaderParameter("width", 1);
+            // btn.selectMat.SetShaderParameter("width", 1);
             foreach (var item in Buttons)
             {
                 if (item != btn)
@@ -210,11 +205,11 @@ namespace MagicalMountainMinery.Main
         {
             if (env == EventType.Left_Action && comp is GameButton btn)
             {
-                if(btn.UIID == "Normal")
+                if (btn.UIID == "Normal")
                 {
                     CurrentTrackLevel = 1;
                 }
-                else if(btn.UIID == "Raised")
+                else if (btn.UIID == "Raised")
                 {
                     CurrentTrackLevel = 2;
                 }
@@ -224,7 +219,7 @@ namespace MagicalMountainMinery.Main
                     SetButtonFocus(btn);
                     //Buttons.Where(e => e != btn).ToList().ForEach(t => t.selectMat.SetShaderParameter("Width", 0));
                 }
-                if(btn.UIID  == "Diamond" )
+                if (btn.UIID == "Diamond")
                 {
                     Special = ResourceType.Diamond;
                     HandleSpecial = true;
@@ -239,17 +234,17 @@ namespace MagicalMountainMinery.Main
                     Special = ResourceType.Emerald;
                     HandleSpecial = true;
                 }
-                if(btn.UIID == "ShopOpen")
+                if (btn.UIID == "ShopOpen")
                 {
                     ShopScreen.Visible = true;
                 }
             }
-            
+
         }
         public void ParseInput(EventType env)
         {
-            
-            
+
+
             if (env == EventType.Nill)
                 return;
             if (env == EventType.Left_Action)
@@ -271,7 +266,7 @@ namespace MagicalMountainMinery.Main
                 LastHover = CurrentHover = new IndexPos(-1, -1);
                 //GD.Print("release in placer");
                 //GD.Print("Setting last & currrent hover to: ", LastHover);
-                
+
             }
             else if (env == EventType.Right_Release)
             {
@@ -308,7 +303,7 @@ namespace MagicalMountainMinery.Main
             {
                 if (MapLevel.CanPlaceTrack(CurrentTrackLevel))
                 {
-                    
+
 
 
                     if (!MapLevel.ValidIndex(index))
@@ -332,7 +327,7 @@ namespace MagicalMountainMinery.Main
 
 
 
-                    
+
                 }
             }
             else if (CurrentState == State.Deleting)
@@ -366,7 +361,7 @@ namespace MagicalMountainMinery.Main
         public void SetTrack(IndexPos pos, Track track, bool update = true, int tracklevel = 1)
         {
             MapLevel.SetTrack(pos, track, tracklevel);
-           
+
             if (update)
             {
                 if (track.TrackLevel == 2)
@@ -451,7 +446,7 @@ namespace MagicalMountainMinery.Main
                         //here we replace at a given index, since a con can only be connected to a single con 
                         //at one index
                         var existing = MasterTrackList[t].FirstOrDefault(track => track.Index == item.Index);
-                        if(existing != null)
+                        if (existing != null)
                         {
                             MasterTrackList[t].Remove(existing);
                         }
@@ -490,7 +485,7 @@ namespace MagicalMountainMinery.Main
                     //UpdateList(p, false, track);
                     //track.Connect(from - to, CurrentTrackLevel);
                     //UpdateList(track, false, p);
-                    
+
                 }
             }
             else if (con is Junction junc)
@@ -505,7 +500,7 @@ namespace MagicalMountainMinery.Main
                 //MatchSprite(junc);
 
             }
-            else if(con is Track t)
+            else if (con is Track t)
             {
                 var indexes = connections.Select(item => item.Index - con.Index).ToList();
                 var Levels = connections.Select(item => item is Track t ? t.TrackLevel : 1).ToList();
@@ -569,18 +564,18 @@ namespace MagicalMountainMinery.Main
         /// <param name="dir"></param>
         public void Disconnect(IConnectable con, Track fromTrack)
         {
-            
+
             var dir = fromTrack.Index - con.Index;
 
 
-            if (con == null || fromTrack == null) 
+            if (con == null || fromTrack == null)
                 return;
 
             UpdateList(con, true, fromTrack);
 
             if (con is Junction junc)
             {
-                
+
 
                 var list = new List<IndexPos>() { junc.Option, junc.Direction1, junc.Direction2 };
 
@@ -593,31 +588,31 @@ namespace MagicalMountainMinery.Main
                 t.TrackLevel = junc.TrackLevel;
                 ReplaceRef(junc, t);
 
-                ConnectTo(t, GetConnectable(junc.Index+ list[0]), GetConnectable(junc.Index + list[1]));
+                ConnectTo(t, GetConnectable(junc.Index + list[0]), GetConnectable(junc.Index + list[1]));
 
                 MapLevel.CurrentJunctions--;
 
 
                 UpdateUI();
 
-                
+
                 MatchSprite(t);
 
 
 
             }
-            else if(con is Track t)
+            else if (con is Track t)
             {
                 t.Disconnect(dir, fromTrack.TrackLevel);
                 UpdateList(t, true, fromTrack);
                 MatchSprite(t);
             }
-            else if(con is Portal p)
+            else if (con is Portal p)
             {
                 p.Disconnect(dir);
             }
 
-            
+
         }
         public void RemoveTrack(Track t, IndexPos pos, bool update = true)
         {
@@ -649,7 +644,7 @@ namespace MagicalMountainMinery.Main
             {
                 var connectedList = MasterTrackList[existing];
 
-                foreach(var track in MasterTrackList.Keys)
+                foreach (var track in MasterTrackList.Keys)
                 {
                     //if this con is one of the ones connected to existing,
                     //then remove existing from its connections
@@ -719,7 +714,7 @@ namespace MagicalMountainMinery.Main
             if (MapLevel.AllowedJunctions < 0)
                 return false;
             //if (MapLevel.AllowedJunctions == MapLevel.CurrentJunctions)
-               // return false;
+            // return false;
             if (from == to)
                 return false;
 
@@ -730,7 +725,7 @@ namespace MagicalMountainMinery.Main
             var toDir = to - from;
 
             //must be a direction
-            var list = new List<IndexPos>() { IndexPos.Left, IndexPos.Right,IndexPos.Up,IndexPos.Down };
+            var list = new List<IndexPos>() { IndexPos.Left, IndexPos.Right, IndexPos.Up, IndexPos.Down };
             if (!list.Contains(toDir) || !list.Contains(fromDir))
                 return false;
 
@@ -758,7 +753,7 @@ namespace MagicalMountainMinery.Main
 
             if (fromTrack is not Junction && !fromTrack.CanConnect())
             {
-                if(toTrack != null && !toTrack.CanConnect())
+                if (toTrack != null && !toTrack.CanConnect())
                     return false;
                 //con has 2 connections and iss not junc, so try make new junction
                 if (toTrack == null)
@@ -839,9 +834,9 @@ namespace MagicalMountainMinery.Main
             var fromDir = from - to;
             var toDir = to - from;
 
-            if(fromTrack != null && toTrack == null && fromTrack.CanConnect())
+            if (fromTrack != null && toTrack == null && fromTrack.CanConnect())
             {
-                if(fromTrack.TrackLevel != CurrentTrackLevel)
+                if (fromTrack.TrackLevel != CurrentTrackLevel)
                 {
                     var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), to, CurrentTrackLevel);
                     SetTrack(to, newT, tracklevel: CurrentTrackLevel);
@@ -849,7 +844,7 @@ namespace MagicalMountainMinery.Main
                     return true;
                 }
             }
-            else if(fromTrack != null && toTrack != null && fromTrack.CanConnect() && toTrack.CanConnect())
+            else if (fromTrack != null && toTrack != null && fromTrack.CanConnect() && toTrack.CanConnect())
             {
                 if (fromTrack.TrackLevel != CurrentTrackLevel)
                 {
@@ -863,8 +858,8 @@ namespace MagicalMountainMinery.Main
 
         public bool ValidateTrack(IndexPos index, IndexData data)
         {
-            
-            
+
+
             //can't place a level 1 con on an already existing level 1 con
             if (data.track1 != null && CurrentTrackLevel == 1)
             {
@@ -905,7 +900,7 @@ namespace MagicalMountainMinery.Main
             {
                 return true;
             }
-            else if(!ValidateTrack(index, data))
+            else if (!ValidateTrack(index, data))
                 return false;
 
 
@@ -939,13 +934,13 @@ namespace MagicalMountainMinery.Main
                 var connection = conList[0];
                 var thatTrackDex = connection.Index;
 
-                ConnectTo(newT,connection);
+                ConnectTo(newT, connection);
                 ConnectTo(connection, newT);
 
             }
             else
-            { 
-                foreach (var connectable in conList )
+            {
+                foreach (var connectable in conList)
                 {
                     if (connectable.CanConnect() && newT.CanConnect())
                     {
@@ -956,7 +951,7 @@ namespace MagicalMountainMinery.Main
             }
 
             // UpdateMineable();
-           // MatchOuter(newT);
+            // MatchOuter(newT);
 
 
             AudioStream.Stream = ResourceStore.GetAudio("TrackPlace2");

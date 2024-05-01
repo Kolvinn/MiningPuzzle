@@ -1,0 +1,8 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://csw1h1ddlscqe"]
+
+[ext_resource type="Texture2D" uid="uid://dr0kbhmrwk1es" path="res://Assets/TracksV2/Contents/JuncVertAll.png" id="1_cqkgd"]
+
+[resource]
+resource_local_to_scene = true
+atlas = ExtResource("1_cqkgd")
+region = Rect2(64, 0, 64, 64)

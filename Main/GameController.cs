@@ -2,21 +2,15 @@
 using MagicalMountainMinery.Data;
 using MagicalMountainMinery.Data.Load;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MagicalMountainMinery.Main
 {
-    public partial class GameController  : Node2D
+    public partial class GameController : Node2D
     {
 
-        public Node2D CurrentControl {  get; set; }
-        public List<Color> ColorPallet { get; set; }  
+        public Node2D CurrentControl { get; set; }
+        public List<Color> ColorPallet { get; set; }
         public Runner Runner { get; set; }
         public MapController MapController { get; set; }
 
@@ -34,9 +28,9 @@ namespace MagicalMountainMinery.Main
         public InternalState State { get; set; } = InternalState.Start;
 
 
-     
-        public GameController() 
-        { 
+
+        public GameController()
+        {
 
         }
         public delegate void WindowSizeDelegate();
@@ -52,7 +46,7 @@ namespace MagicalMountainMinery.Main
         {
 
             StartMenu = Runner.LoadScene<StartMenu>("res://UI/MenuScreen.tscn");
-            
+
 
 
             //LoadHomeDelegate change = LoadHome;
@@ -77,7 +71,7 @@ namespace MagicalMountainMinery.Main
                 };
 
                 //create if doesnt exist
-                if(!DirAccess.DirExistsAbsolute("user://saves/"))
+                if (!DirAccess.DirExistsAbsolute("user://saves/"))
                 {
                     DirAccess.MakeDirAbsolute("user://saves/");
                 }
@@ -114,20 +108,20 @@ namespace MagicalMountainMinery.Main
             EventDispatch = new EventDispatch();
             this.AddChild(EventDispatch);
 
-            
+
             ChangeScene(InternalState.Start);
 
 
             //var mat = Runner.GetNode<Sprite2D>("Pallet").Material as ShaderMaterial;
 
-           // mat.SetShaderParameter("colorpallet", ResourceStore.ColorPallet.ToArray());
+            // mat.SetShaderParameter("colorpallet", ResourceStore.ColorPallet.ToArray());
             //var arr = mat.GetShaderParameter("colorpallet");
             //
-            Engine.MaxFps=144;
+            Engine.MaxFps = 144;
         }
         public override void _PhysicsProcess(double delta)
         {
-            
+
         }
         public void LoadLevel(MapLoad level)
         {
@@ -135,9 +129,9 @@ namespace MagicalMountainMinery.Main
             EventDispatch.ClearAll();
             ChangeScene(InternalState.Level);
 
-            Runner.LoadMapLevel(level); 
-            
-            
+            Runner.LoadMapLevel(level);
+
+
         }
 
         public void StartGame()
@@ -215,11 +209,11 @@ namespace MagicalMountainMinery.Main
 
         public void ChangeScene(InternalState newstate)
         {
-            if(CurrentControl != null)
+            if (CurrentControl != null)
             {
                 this.RemoveChild(CurrentControl);
             }
-            
+
             if (newstate == InternalState.Start)
             {
                 this.AddChild(StartMenu);
@@ -258,13 +252,13 @@ namespace MagicalMountainMinery.Main
 
         public void OnNodeAdded(Node node)
         {
-            if(node is PopupPanel panel && panel.ThemeTypeVariation == "TooltipPanel")
+            if (node is PopupPanel panel && panel.ThemeTypeVariation == "TooltipPanel")
             {
-                panel.Transparent = panel.TransparentBg =  true;
+                panel.Transparent = panel.TransparentBg = true;
             }
         }
 
 
-       
+
     }
 }

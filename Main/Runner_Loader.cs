@@ -7,10 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
 using static MagicalMountainMinery.Main.GameController;
-using FileAccess = Godot.FileAccess;
 using Label = Godot.Label;
 
 public partial class Runner : Node2D
@@ -209,7 +206,7 @@ public partial class Runner : Node2D
 
         var settings = new CamSettings(1.7f, new Vector2(MapLevel.GridWith / 2, MapLevel.GridHeight / 2));
         settings.Position += new Vector2(0, -40);
-        if(data.LevelIndex == 2 && data.RegionIndex == 2)
+        if (data.LevelIndex == 2 && data.RegionIndex == 2)
         {
             settings.Zoom = 1.2f;
         }
@@ -356,7 +353,7 @@ public partial class Runner : Node2D
         }
 
         this.GetNode<Label>("CanvasLayer/StarAmountBox/Label").Text = CurrentProfile.StarCount.ToString();
-        this.GetNode<AnimationPlayer>("CanvasLayer/StarAmountBox/TextureRect6/AnimationPlayer").Play("StarReveal",2);
+        this.GetNode<AnimationPlayer>("CanvasLayer/StarAmountBox/TextureRect6/AnimationPlayer").Play("StarReveal", 2);
     }
 }
 

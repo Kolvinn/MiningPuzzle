@@ -1,7 +1,6 @@
 ﻿using Godot;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.Drawing;
 
 namespace MagicalMountainMinery.Data
 {
@@ -175,7 +174,7 @@ namespace MagicalMountainMinery.Data
         public CartType Type { get; set; }
     }
 
-    
+
     public class GameResource
     {
         //[JsonProperty(ItemConverterType = typeof(StringEnumConverter))]
@@ -230,7 +229,7 @@ namespace MagicalMountainMinery.Data
         Jade,
         Topaz,
         Emerald,
-        Diamond, 
+        Diamond,
         Ruby,
         Track
     }

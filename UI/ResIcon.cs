@@ -1,6 +1,5 @@
 using Godot;
 using MagicalMountainMinery.Data;
-using System;
 
 public partial class ResIcon : GameButton
 {

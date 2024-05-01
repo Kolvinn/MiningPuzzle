@@ -1,9 +1,5 @@
 ﻿using Godot;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MagicalMountainMinery.Data
 {
@@ -22,7 +18,7 @@ namespace MagicalMountainMinery.Data
     /// <summary>
     /// Inheriting from IConnectable describes an object that can connect to other IConnectable objects
     /// </summary>
-    public interface IConnectable : IGameObject 
+    public interface IConnectable : IGameObject
     {
         public IndexPos Index { get; set; }
         public bool CanConnect();

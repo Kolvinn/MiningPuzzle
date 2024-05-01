@@ -1,23 +1,15 @@
 using Godot;
 using MagicalMountainMinery.Data;
-using MagicalMountainMinery.Data.Load;
 using MagicalMountainMinery.Main;
-using MagicalMountainMinery.Obj;
-using Microsoft.VisualBasic;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Security.Principal;
 using static MagicalMountainMinery.Main.GameController;
-using FileAccess = Godot.FileAccess;
 using Label = Godot.Label;
 
 public partial class Runner : Node2D
 {
-	public MapLevel MapLevel { get; set; }
+    public MapLevel MapLevel { get; set; }
 
     public static float SIM_SPEED_RATIO = 1f;
     public static float SIM_SPEED_STACK = 0f;
@@ -25,14 +17,14 @@ public partial class Runner : Node2D
 
     public TrackPlacer Placer;
 
-    public ColorRect LoadingScreen {  get; set; }	
+    public ColorRect LoadingScreen { get; set; }
 
     public Label StarCountLabel { get; set; }
-	public List<CartController> CartControllers { get; set; } = new List<CartController>();
+    public List<CartController> CartControllers { get; set; } = new List<CartController>();
 
-	public bool ValidRun = true;
+    public bool ValidRun = true;
 
-	public static GameEvent LastEvent {  get; set; }
+    public static GameEvent LastEvent { get; set; }
 
     public AudioStreamPlayer player { get; set; } = new AudioStreamPlayer();
 
@@ -43,7 +35,7 @@ public partial class Runner : Node2D
 
     public delegate void GemUsedDelegate(GameResource resource);
 
-    public  MapSave CurrentMapSave {  get; set; }
+    public MapSave CurrentMapSave { get; set; }
     public MapLoad CurrentMapData { get; set; }
 
 
@@ -84,7 +76,7 @@ public partial class Runner : Node2D
 
     }
 
-	
+
 
 
     public void OnReset()
@@ -95,8 +87,8 @@ public partial class Runner : Node2D
         LoadMapLevel(CurrentMapData);
     }
 
-	public void OnRetry()
-	{
+    public void OnRetry()
+    {
         Placer.PauseHandle = false;
         ReloadUsedGems();
         LevelEndUI.Visible = false;
@@ -124,7 +116,7 @@ public partial class Runner : Node2D
 
     public void StopLevelPressed()
     {
-        
+
         this.GetNode<Control>("CanvasLayer/Container").Visible = false;
         EventDispatch.ExitUI(this.GetNode<GameButton>("CanvasLayer/Container/Stop"));
         OnRetry();
@@ -145,8 +137,8 @@ public partial class Runner : Node2D
     public void PauseLevelPressed()
     {
 
-       // BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Pause"), false);
-       // BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Play"), true);
+        // BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Pause"), false);
+        // BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Play"), true);
         foreach (var item in CartControllers)
         {
             item.State = CartController.CartState.Paused;
@@ -155,7 +147,7 @@ public partial class Runner : Node2D
 
     public void BtnEnable(BaseButton b, bool enable)
     {
-        b.Modulate = enable ? Colors.White: new Color(1, 1, 1, 0.5f);
+        b.Modulate = enable ? Colors.White : new Color(1, 1, 1, 0.5f);
         b.Disabled = !enable;
     }
 
@@ -163,14 +155,14 @@ public partial class Runner : Node2D
     {
         //BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Play_Pause"), true);
         //BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Play"), false);
-        
+
         var thing = CartControllers[0].State == CartController.CartState.Moving ? CartController.CartState.Paused : CartController.CartState.Moving;
         foreach (var item in CartControllers)
         {
             item.State = thing;
         }
 
-        
+
     }
 
     public void OnSimSpeedChange(float amount)
@@ -181,7 +173,7 @@ public partial class Runner : Node2D
             return;
         SIM_SPEED_STACK += amount;
 
-        
+
         if (SIM_SPEED_STACK < 0)
         {
             var percent = SIM_SPEED_STACK * -2;
@@ -195,8 +187,8 @@ public partial class Runner : Node2D
         this.GetNode<Label>("CanvasLayer/SpeedControl/Label").Text = (SIM_SPEED_RATIO * 100) + "%";
     }
 
-    
-    
+
+
 
     public void ValidLevelComplete()
     {
@@ -215,7 +207,7 @@ public partial class Runner : Node2D
         bool complete = false;
         //gather any gems and add to profile
         var gemstotal = new List<Mineable>();
-        foreach(var control in CartControllers)
+        foreach (var control in CartControllers)
         {
             var gems = control.GatheredNodes.Where(node => ResourceStore.ShopResources.Any(item => item == node.ResourceSpawn)).ToList();
             gemstotal.AddRange(gems);
@@ -326,7 +318,7 @@ public partial class Runner : Node2D
         CurrentProfile.StoredGems.Add(copy);
         btn.AddResource(copy);
         this.GetNode<VBoxContainer>("CanvasLayer/GemBox").AddChild(btn);
-        
+
     }
 
     public void RemoveGemFromProfile(GameResource resource)
@@ -344,8 +336,8 @@ public partial class Runner : Node2D
                 CurrentProfile.StoredGems.Remove(resource);
             }
 
-            
-            
+
+
         }
     }
 
@@ -353,12 +345,12 @@ public partial class Runner : Node2D
     {
         RemoveGemFromProfile(resource);
     }
-    public bool  HandleGameButtonClick(EventType env, IUIComponent obj)
+    public bool HandleGameButtonClick(EventType env, IUIComponent obj)
     {
         if (env != EventType.Left_Action || string.IsNullOrEmpty(obj?.UIID))
             return false;
 
-        bool ret = new string[] { "ReduceTime", "IncreaseTime", "MiningStart", "ResetLevel", "Play_Pause","Stop" }.Contains(obj.UIID);
+        bool ret = new string[] { "ReduceTime", "IncreaseTime", "MiningStart", "ResetLevel", "Play_Pause", "Stop" }.Contains(obj.UIID);
 
         if (obj is ShopEntry entry)
         {
@@ -382,9 +374,9 @@ public partial class Runner : Node2D
 
 
     public override void _PhysicsProcess(double delta)
-	{
-		LastEvent = EventDispatch.PopGameEvent();
-        
+    {
+        LastEvent = EventDispatch.PopGameEvent();
+
 
         if (!ValidRun)
             return;
@@ -393,12 +385,12 @@ public partial class Runner : Node2D
         var obj = EventDispatch.PeekHover();
         var env = EventDispatch.FetchLast();
 
-        if(Placer.HandleSpecial || !HandleGameButtonClick(env,obj))
+        if (Placer.HandleSpecial || !HandleGameButtonClick(env, obj))
             Placer?.Handle(env, obj);
 
         var fin = CartControllers.Count > 0 && CartControllers.All(item => item.Finished);
         var success = MapLevel.LevelTargets.Count() > 0 && MapLevel.LevelTargets.All(item => item.CompletedAll);
-        
+
         if (success)
         {
             foreach (var control in CartControllers)
@@ -406,7 +398,7 @@ public partial class Runner : Node2D
 
             ValidLevelComplete();
             ValidRun = false;
-        } 	
+        }
 
     }
 
@@ -415,21 +407,21 @@ public partial class Runner : Node2D
 
 
     public string GetOrientationString(IndexPos pos)
-	{
-		if (pos == IndexPos.Up) return "North";
-		else if (pos == IndexPos.Down) return "South";
-		else if (pos == IndexPos.Left) return "West";
-		else return "East";
-	}
+    {
+        if (pos == IndexPos.Up) return "North";
+        else if (pos == IndexPos.Down) return "South";
+        else if (pos == IndexPos.Left) return "West";
+        else return "East";
+    }
 
-	public void Free(Node node)
-	{
-		if (IsInstanceValid(node))
-			node.QueueFree();
-	}
+    public void Free(Node node)
+    {
+        if (IsInstanceValid(node))
+            node.QueueFree();
+    }
 
-	public void _on_start_pressed()
-	{
+    public void _on_start_pressed()
+    {
         if (Placer.MasterTrackList.Count == 0)
             return;
 
@@ -441,17 +433,17 @@ public partial class Runner : Node2D
         //BtnEnable(StartButton, false);
 
         var colors = new List<Color>() { Colors.AliceBlue, Colors.RebeccaPurple, Colors.Yellow, Colors.Green };
-		int i = 0;
+        int i = 0;
 
         foreach (var control in CartControllers)
-		{
+        {
             control.Start(colors[i++], Placer.MasterTrackList, control.StartT.Direction1, control.StartT);
-		}
+        }
 
-		
+
     }
 
-    
+
 }
 
 

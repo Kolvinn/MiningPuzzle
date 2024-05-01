@@ -21,17 +21,17 @@ public partial class LevelCompleteUI : Control
     int animDex = 0;
     public bool shown { get; set; }
     public override void _Ready()
-	{
+    {
         NormBox = this.GetNode<HBoxContainer>("TextureRect2/MarginContainer/VBoxContainer/NormBox");
         BonusBox = this.GetNode<HBoxContainer>("TextureRect2/MarginContainer/VBoxContainer/BonusBox");
     }
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _Process(double delta)
+    {
 
 
-	}
+    }
 
     public void Delete()
     {
@@ -48,14 +48,14 @@ public partial class LevelCompleteUI : Control
             box.AddChild(star);
             star.SizeFlagsVertical = SizeFlags.ShrinkCenter;
             var anim = star.GetNode<AnimationPlayer>("AnimationPlayer");
-            anim.Connect(AnimationPlayer.SignalName.AnimationFinished, new Callable(this,nameof(StarAnimEnd)));
+            anim.Connect(AnimationPlayer.SignalName.AnimationFinished, new Callable(this, nameof(StarAnimEnd)));
 
-            
+
         }
     }
 
-	public void LoadStars(int difficulty, int bonus)
-	{
+    public void LoadStars(int difficulty, int bonus)
+    {
         animDex = 0;
         for (int i = 0; i < ShinyList.Count; i++)
         {
@@ -74,17 +74,17 @@ public partial class LevelCompleteUI : Control
         DoBox(BonusBox, bonus);
 
 
-        ShinyList.AddRange(NormBox.GetChildren().Where(s => s is TextureRect).Select(i=>(TextureRect)i).ToList());
+        ShinyList.AddRange(NormBox.GetChildren().Where(s => s is TextureRect).Select(i => (TextureRect)i).ToList());
         ShinyList.AddRange(BonusBox.GetChildren().Where(s => s is TextureRect).Select(i => (TextureRect)i).ToList());
 
     }
 
     public void StarAnimEnd(string anim)
     {
-       // ShinyList.Remove(ShinyList[0]);
-        if(ShinyList.Count > 0)
+        // ShinyList.Remove(ShinyList[0]);
+        if (ShinyList.Count > 0)
         {
-            if(ShinyList.Count > ++animDex)
+            if (ShinyList.Count > ++animDex)
                 ShinyList[animDex].GetNode<AnimationPlayer>("AnimationPlayer").Play("StarReveal", 2);
         }
 
@@ -96,11 +96,11 @@ public partial class LevelCompleteUI : Control
 
         if (complete)
         {
-            foreach(var e in ShinyList)
+            foreach (var e in ShinyList)
             {
                 var anim = e.GetNode<AnimationPlayer>("AnimationPlayer");
 
-                if(e.GetParent()?.Name == "Bonus")
+                if (e.GetParent()?.Name == "Bonus")
                 {
                     if (bonusCompleted != 0)
                     {
@@ -115,11 +115,11 @@ public partial class LevelCompleteUI : Control
                     anim.Seek(10, true);
 
                 }
-                
+
             }
         }
 
-        else if(ShinyList.Count > 0 && IsInstanceValid(ShinyList[0]))
+        else if (ShinyList.Count > 0 && IsInstanceValid(ShinyList[0]))
         {
             animDex = 0;
             ShinyList[animDex].GetNode<AnimationPlayer>("AnimationPlayer").Play("StarReveal", 2);
@@ -144,11 +144,11 @@ public partial class LevelCompleteUI : Control
 
     public void ClearAnims()
     {
-        for(int i = 0; i < ShinyList.Count; i++)
+        for (int i = 0; i < ShinyList.Count; i++)
         {
             var star = ShinyList[i];
             var anim = star.GetNode<AnimationPlayer>("AnimationPlayer");
-            
+
             anim.Play("StarReveal");
             anim.Seek(2, true);
         }

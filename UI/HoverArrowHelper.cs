@@ -1,19 +1,18 @@
 using Godot;
-using System;
 
 public partial class HoverArrowHelper : Sprite2D
 {
-	// Called when the node enters the scene tree for the first time.
+    // Called when the node enters the scene tree for the first time.
     Tween Tween { get; set; }
-	public override void _Ready()
-	{
+    public override void _Ready()
+    {
         GD.Print("fin");
 
     }
 
-	public void OnFinish()
+    public void OnFinish()
     {
-       
+
     }
 
     public override void _EnterTree()

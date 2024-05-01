@@ -1,0 +1,9 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://bgx53ipxeefr4"]
+
+[ext_resource type="Texture2D" uid="uid://b3yu2i7r4d7gc" path="res://Assets/TracksV2/Contents/HorizontalAll.png" id="1_bd3oj"]
+
+[resource]
+resource_local_to_scene = true
+atlas = ExtResource("1_bd3oj")
+region = Rect2(0, 0, 64, 64)
+filter_clip = true

@@ -1,10 +1,6 @@
 ﻿using Godot;
 using MagicalMountainMinery.Data;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MagicalMountainMinery.Obj
 {
@@ -31,7 +27,7 @@ namespace MagicalMountainMinery.Obj
 
         public bool canMine { get; set; } = true;
 
-        
+
         public override void _Ready()
         {
             this.CooldownBar = this.GetNode<TextureProgressBar>("CooldownBar");
@@ -41,7 +37,7 @@ namespace MagicalMountainMinery.Obj
 
         public void AnimationFinished(string anim)
         {
-            
+
             if (anim != "RESET")
             {
                 //CooldownBar.Visible = true;
@@ -73,7 +69,7 @@ namespace MagicalMountainMinery.Obj
 
         public void Hit()
         {
-            if(MiningTargets.Count > 0)
+            if (MiningTargets.Count > 0)
             {
 
                 EmitSignal(SignalName.MiningHit, MiningTargets.Dequeue());
@@ -110,10 +106,10 @@ namespace MagicalMountainMinery.Obj
             //cooldown = 100f;
         }
 
-        public bool CanMine () { return canMine; }
+        public bool CanMine() { return canMine; }
 
 
-        
+
 
 
     }

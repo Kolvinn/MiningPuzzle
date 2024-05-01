@@ -1,7 +1,6 @@
 using Godot;
 using MagicalMountainMinery.Data;
 using MagicalMountainMinery.Obj;
-using System;
 using System.Collections.Generic;
 
 public partial class Cart : Area2D
@@ -20,10 +19,10 @@ public partial class Cart : Area2D
     public int CurrentLevel { get; set; }
     public AnimationPlayer CurrentPlayer { get; set; }
 
-    public Miner CurrentMiner { get; set; } 
+    public Miner CurrentMiner { get; set; }
 
 
-    public bool DoubleSided {  get; set; }
+    public bool DoubleSided { get; set; }
 
     public Dictionary<ResourceType, ResourceIcon> StoredResources { get; set; } = new Dictionary<ResourceType, ResourceIcon>();
 
@@ -40,33 +39,33 @@ public partial class Cart : Area2D
         var anim = CurrentPlayer.CurrentAnimation;
         if (anim == "Right")
             return new List<IndexPos>() { IndexPos.Up, IndexPos.Down };
-        if(anim == "Left")
+        if (anim == "Left")
             return new List<IndexPos>() { IndexPos.Down, IndexPos.Up };
-        if(anim == "Up")
+        if (anim == "Up")
             return new List<IndexPos>() { IndexPos.Left, IndexPos.Right };
-        if(anim == "Down")
+        if (anim == "Down")
             return new List<IndexPos>() { IndexPos.Right, IndexPos.Left };
         else
         {
             return new List<IndexPos>();
         }
-        
+
     }
 
     public void ClearResources(List<ResourceType> toClear = null)
     {
-        if(toClear != null)
+        if (toClear != null)
         {
-            foreach(var item in toClear)
+            foreach (var item in toClear)
             {
-                if(StoredResources.ContainsKey(item))
+                if (StoredResources.ContainsKey(item))
                 {
                     GetNode<HBoxContainer>("HBoxContainer").RemoveChild(StoredResources[item]);
                     StoredResources[item].QueueFree();
                     StoredResources.Remove(item);
                 }
             }
-            
+
         }
         else
         {
@@ -78,7 +77,7 @@ public partial class Cart : Area2D
             }
             StoredResources.Clear();
         }
-        
+
     }
 
     public void AddResource(ResourceType res)

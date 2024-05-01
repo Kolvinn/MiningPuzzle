@@ -5,8 +5,6 @@ using MagicalMountainMinery.Obj;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MagicalMountainMinery.Main
 {
@@ -34,18 +32,18 @@ namespace MagicalMountainMinery.Main
 
         public readonly override string ToString()
         {
-            return "(Track1: "+ track1 +"),(" + "(Track2: "+track2 + "),(" + "(obj: "+ obj + ")";
+            return "(Track1: " + track1 + "),(" + "(Track2: " + track2 + "),(" + "(obj: " + obj + ")";
         }
     }
     public partial class MapLevel : Node2D
     {
-        public const float TrackX = 32.0f;
-        public const float TrackY = 32.0f;
+        public const float TrackX = 64.0f;
+        public const float TrackY = 64.0f;
 
         private static int width = 8;
         private static int height = 6;
 
-        [StoreCollection(ShouldStore =true)]
+        [StoreCollection(ShouldStore = true)]
         public IGameObject[,] MapObjects { get; set; }
 
 
@@ -63,23 +61,23 @@ namespace MagicalMountainMinery.Main
 
         [StoreCollection(ShouldStore = true)]
         public List<CartStartData> StartData { get; set; } = new List<CartStartData>();
-        
+
         //[StoreCollection(ShouldStore = true)]
         //public List<IndexPos> EndPositions { get; set; } = new List<IndexPos>();
 
         public int IndexWidth { get => width; set => width = value; }
-        public  int IndexHeight { get => height; set => height = value; }
+        public int IndexHeight { get => height; set => height = value; }
 
         public Vector2 PathOffsetHorizontal { get; set; } = new Vector2(16, 5);
         public Vector2 PathOffsetVertical { get; set; } = new Vector2(0, 16);
 
-        public Vector2 TrackOffset { get; } = new Vector2(TrackX/2, TrackY/2);
+        public Vector2 TrackOffset { get; } = new Vector2(TrackX / 2, TrackY / 2);
 
         [StoreCollection(ShouldStore = false)]
         public List<Line2D> GridLines { get; set; } = new List<Line2D>();
 
         [StoreCollection(ShouldStore = false)]
-        public List<Vector2> GridVertices { get; set; } = new List<Vector2> ();
+        public List<Vector2> GridVertices { get; set; } = new List<Vector2>();
         //public IndexPos StartPos { get; set; } = IndexPos.Zero;
         [StoreCollection(ShouldStore = true)]
         public List<IndexPos> Blocked { get; set; } = new List<IndexPos>();
@@ -113,7 +111,7 @@ namespace MagicalMountainMinery.Main
         {
             get
             {
-                return (height * TrackY) ;
+                return (height * TrackY);
             }
         }
 
@@ -135,7 +133,7 @@ namespace MagicalMountainMinery.Main
                 Modulate = Colors.AliceBlue,
                 Width = 1.4f
             };
-            
+
 
             for (int y = 0; y < IndexHeight; y++)
             {
@@ -143,7 +141,7 @@ namespace MagicalMountainMinery.Main
 
                 for (int x = 0; x < IndexWidth; x++)
                 { ///column 0,1,2,3 etc.
-                    var dex = new IndexPos(x,y);
+                    var dex = new IndexPos(x, y);
 
                     if (!Blocked.Contains(dex))
                     {
@@ -158,9 +156,9 @@ namespace MagicalMountainMinery.Main
                         boxLine.AddPoint(new Vector2(x * TrackX, y * TrackY)); //top left
                         boxLine.AddPoint(new Vector2((x + 1) * TrackX, y * TrackY)); //top right
                         boxLine.AddPoint(new Vector2((x + 1) * TrackX, (y + 1) * TrackY)); //bot right
-                        boxLine.AddPoint(new Vector2(x * TrackX, (y+1) * TrackY)); //bot left
+                        boxLine.AddPoint(new Vector2(x * TrackX, (y + 1) * TrackY)); //bot left
                         boxLine.AddPoint(new Vector2(x * TrackX, y * TrackY)); //top lef
-                        GridVertices.AddRange(boxLine.Points.ToList()); 
+                        GridVertices.AddRange(boxLine.Points.ToList());
 
                     }
                     else
@@ -168,7 +166,7 @@ namespace MagicalMountainMinery.Main
                         GD.Print("cannot create square at ", dex, " due to block");
                     }
 
-                    
+
 
                 }
             }
@@ -214,7 +212,7 @@ namespace MagicalMountainMinery.Main
             Tracks2 = new Track[IndexWidth, IndexHeight];
             RedrawGrid();
             this.YSortEnabled = true;
-            this.Position = new Vector2(0,0);
+            this.Position = new Vector2(0, 0);
         }
 
         public void AddMapObjects(IGameObject[,] objects, List<IndexPos> remove = null)
@@ -222,7 +220,7 @@ namespace MagicalMountainMinery.Main
             if (objects == null)
                 return;
             MapObjects = objects;
-            var portals = new Dictionary<string,Portal>();
+            var portals = new Dictionary<string, Portal>();
 
             for (int i = 0; i < objects.GetLength(0); i++)
             {
@@ -243,9 +241,9 @@ namespace MagicalMountainMinery.Main
 
                         if (m is LevelTarget t)
                         {
-                           // LevelTargets.Add(t);
+                            // LevelTargets.Add(t);
                         }
-                        else if(m is Portal p)
+                        else if (m is Portal p)
                         {
                             if (!string.IsNullOrEmpty(p.SiblingId) && portals.TryGetValue(p.SiblingId, out var existingPortal))
                             {
@@ -274,18 +272,18 @@ namespace MagicalMountainMinery.Main
         public void ReplaceObjects(IGameObject[,] objects)
         {
             LevelTargets.Clear();
-            for (int i = 0;i < objects.GetLength(0); i++)
+            for (int i = 0; i < objects.GetLength(0); i++)
             {
-                for(int j = 0;j < objects.GetLength(1);j++)
+                for (int j = 0; j < objects.GetLength(1); j++)
                 {
                     var existing = MapObjects[i, j];
 
-                    if(existing != null)
+                    if (existing != null)
                     {
-                       ((Node2D) existing).QueueFree();
+                        ((Node2D)existing).QueueFree();
                     }
                     var replacement = objects[i, j];
-                    
+
                     if (replacement != null)
                     {
                         this.AddChild((Node2D)replacement);
@@ -298,13 +296,13 @@ namespace MagicalMountainMinery.Main
                         {
                             p.Index = new IndexPos(i, j);
                         }
-                        else if(replacement is Mineable m )
+                        else if (replacement is Mineable m)
                         {
                             m.Index = new IndexPos(i, j);
                             m.PostLoad();
                         }
                     }
-                    
+
                 }
             }
             MapObjects = objects;
@@ -315,12 +313,12 @@ namespace MagicalMountainMinery.Main
         {
             foreach (var track in tracks1)
             {
-                if(track != null)
+                if (track != null)
                 {
                     track.GetParent()?.RemoveChild(track);
                     AddChild(track);
                 }
-                
+
             }
             foreach (var track in tracks2)
             {
@@ -336,13 +334,13 @@ namespace MagicalMountainMinery.Main
             if (!ValidIndex(pos))
                 return null;
             var p = MapObjects[pos.X, pos.Y];
-            if(p != null && p is Portal pp)
+            if (p != null && p is Portal pp)
                 return pp;
             return null;
         }
         public IndexData GetData(IndexPos pos)
         {
-            if(this.ValidIndex(pos))
+            if (this.ValidIndex(pos))
                 return new IndexData(Tracks1[pos.X, pos.Y], Tracks2[pos.X, pos.Y], MapObjects[pos.X, pos.Y], pos);
             return new IndexData();
         }
@@ -356,7 +354,7 @@ namespace MagicalMountainMinery.Main
 
         public MapLevel()
         {
-            
+
 
         }
 
@@ -367,7 +365,7 @@ namespace MagicalMountainMinery.Main
             t.Conditions = cons.ToList();
             this.AddChild(t);
             t.GlobalPosition = GetGlobalPosition(pos);
-            MapObjects[pos.X,pos.Y] = t;
+            MapObjects[pos.X, pos.Y] = t;
 
         }
         public IGameObject Get(IndexPos pos)
@@ -378,7 +376,7 @@ namespace MagicalMountainMinery.Main
         public IGameObject GetObj(IndexPos pos)
         {
             var obj = MapObjects[pos.X, pos.Y];
-            if(obj == null)
+            if (obj == null)
                 return Tracks1[pos.X, pos.Y];
             return obj;
         }
@@ -400,16 +398,16 @@ namespace MagicalMountainMinery.Main
 
         public Mineable GetMineable(IndexPos pos)
         {
-            var obj = MapObjects[pos.X, pos.Y] ;
+            var obj = MapObjects[pos.X, pos.Y];
             if (obj != null && obj is Mineable mine)
                 return mine;
             return null;
         }
         public bool CanPlaceTrack(int level)
         {
-            if(level == 1 && CurrentTracks < AllowedTracks) 
+            if (level == 1 && CurrentTracks < AllowedTracks)
                 return true;
-            else if(level == 2 && CurrentTracksRaised < AllowedTracksRaised)
+            else if (level == 2 && CurrentTracksRaised < AllowedTracksRaised)
                 return true;
             return false;
         }
@@ -438,13 +436,13 @@ namespace MagicalMountainMinery.Main
                 Tracks2[pos.X, pos.Y] = null;
                 t2.QueueFree();
             }
-            else if(t1 != null)
+            else if (t1 != null)
             {
                 RemoveChild(Tracks1[pos.X, pos.Y]);
                 Tracks1[pos.X, pos.Y] = null;
                 t1.QueueFree();
             }
-                
+
         }
         public void RemoveMinable(IndexPos pos)
         {
@@ -459,7 +457,7 @@ namespace MagicalMountainMinery.Main
             var t = MapObjects[pos.X, pos.Y];
             if (t != null && t is Node2D mine)
             {
-                mine.GetParent().RemoveChild(mine); 
+                mine.GetParent().RemoveChild(mine);
                 if (free)
                     mine.QueueFree();
             }
@@ -468,7 +466,7 @@ namespace MagicalMountainMinery.Main
         }
         public Vector2 GetGlobalPosition(IndexPos pos, bool includeOffset = true)
         {
-            var num = includeOffset ? TrackOffset :Vector2.Zero;
+            var num = includeOffset ? TrackOffset : Vector2.Zero;
             return new Vector2((pos.X * TrackX) + num.X, (pos.Y * TrackY) + num.Y);
         }
 
@@ -484,7 +482,7 @@ namespace MagicalMountainMinery.Main
 
         public void GenNodes(int amount)
         {
-            
+
 
             //for (int y = 0; y < IndexWidth; y++)
             //{
@@ -499,10 +497,10 @@ namespace MagicalMountainMinery.Main
             //        }
             //    }
             //}
-            
+
         }
 
-       
+
 
         public void SetMineable(IndexPos pos, Mineable mineable)
         {
@@ -545,16 +543,16 @@ namespace MagicalMountainMinery.Main
         /// </summary>
         /// <param name="pos"></param>
         /// <returns></returns>
-        public List<Track> GetAdjacentTracks(IndexPos pos) 
+        public List<Track> GetAdjacentTracks(IndexPos pos)
         {
             var list = new List<Track>();
             if (ValidIndex(pos + IndexPos.Left))
                 list.Add(GetTrack(pos + IndexPos.Left));
-            if(ValidIndex(pos + IndexPos.Right))
-                list.Add (GetTrack(pos + IndexPos.Right));
-            if( ValidIndex(pos + IndexPos.Down))
+            if (ValidIndex(pos + IndexPos.Right))
+                list.Add(GetTrack(pos + IndexPos.Right));
+            if (ValidIndex(pos + IndexPos.Down))
                 list.Add(GetTrack(pos + IndexPos.Down));
-            if(ValidIndex (pos + IndexPos.Up))
+            if (ValidIndex(pos + IndexPos.Up))
                 list.Add(GetTrack(pos + IndexPos.Up));
             return list;
         }
@@ -571,13 +569,13 @@ namespace MagicalMountainMinery.Main
             if (ValidIndex(pos))
             {
                 var thing = Tracks1[pos.X, pos.Y] as IConnectable;
-                if (thing != null) 
+                if (thing != null)
                 {
-                    connectable = thing; 
+                    connectable = thing;
                     return true;
                 }
                 var other = MapObjects[pos.X, pos.Y];
-                if(other != null && other is IConnectable)
+                if (other != null && other is IConnectable)
                 {
                     connectable = other as IConnectable;
                     return true;
@@ -636,6 +634,6 @@ namespace MagicalMountainMinery.Main
             return list;
         }
 
-        
+
     }
 }

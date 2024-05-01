@@ -3,10 +3,8 @@ using MagicalMountainMinery.Data;
 using MagicalMountainMinery.Main;
 using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
 using static MagicalMountainMinery.Main.GameController;
-using System.Text;
 
 public partial class MapController : Node2D
 {
@@ -87,7 +85,7 @@ public partial class MapController : Node2D
         Locked.Add(load.GetHashCode(), select);
 
         box.AddChild(select);
-        select.GetNode<Label>("Label").Text = (load.RegionIndex + 1)+ "-" + (load.LevelIndex + 1);
+        select.GetNode<Label>("Label").Text = (load.RegionIndex + 1) + "-" + (load.LevelIndex + 1);
         select.GetNode<GameButton>("Label/Button").UIID = load.GetHashCode().ToString();
 
         //var existing = CurrentProfile.GetData(load);
@@ -179,13 +177,13 @@ public partial class MapController : Node2D
         foreach (var star in stars)
         {
             star.GetNode<AnimationPlayer>("AnimationPlayer").Play("StarReveal");
-            if(!animate)
+            if (!animate)
                 star.GetNode<AnimationPlayer>("AnimationPlayer").Seek(1000, true);
         }
 
         stars = starBox.GetNode<HBoxContainer>("Stars/PanelContainer/BonusStars").GetChildren();
 
-        for(int i =0; i < data.BonusStarsCompleted && stars.Count > 0; i++)
+        for (int i = 0; i < data.BonusStarsCompleted && stars.Count > 0; i++)
         {
             var star = stars[i];
             star.GetNode<AnimationPlayer>("AnimationPlayer").Play("StarReveal");
@@ -193,7 +191,7 @@ public partial class MapController : Node2D
                 star.GetNode<AnimationPlayer>("AnimationPlayer").Seek(1000, true);
         }
 
-        starBox.GetNode< Label>("Label").Set("theme_override_styles/normal/modulate_color", new Color(3, 3, 3, 1));
+        starBox.GetNode<Label>("Label").Set("theme_override_styles/normal/modulate_color", new Color(3, 3, 3, 1));
 
 
         var dex = ResourceStore.Levels.IndexOfKey(key);
@@ -208,7 +206,7 @@ public partial class MapController : Node2D
         var load = ResourceStore.Levels.ElementAt(index).Value;
 
         //new region
-        if(load.LevelIndex ==0)
+        if (load.LevelIndex == 0)
         {
             this.GetNode<TextureButton>("CanvasLayer2/" + load.Region).Modulate = Colors.White;
             this.GetNode<TextureButton>("CanvasLayer2/" + load.Region).SelfModulate = new Color(2, 2, 2, 1);
@@ -222,10 +220,10 @@ public partial class MapController : Node2D
         }
 
         //var box = FetchLevelBox(load.Region, load.LevelIndex);
-        
+
     }
 
-    
+
     public void ChangeBoxColor(VBoxContainer box, Color color)
     {
         box.GetNode<GameButton>("Label/Button").Disabled = false;

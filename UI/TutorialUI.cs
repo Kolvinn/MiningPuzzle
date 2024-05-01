@@ -1,26 +1,25 @@
 using Godot;
 using MagicalMountainMinery.Data;
-using MagicalMountainMinery.Main;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 public partial class TutorialUI : Control
 {
-	public Dictionary<int, TutorialBox> levelTutorials = new Dictionary<int, TutorialBox>();
+    public Dictionary<int, TutorialBox> levelTutorials = new Dictionary<int, TutorialBox>();
 
     private int currentDex = 0;
-	public int CurrentIndex { get => currentDex; 
-        set 
+    public int CurrentIndex
+    {
+        get => currentDex;
+        set
         {
             if (this.GetNode<Control>("" + currentDex) != null)
                 this.GetNode<Control>("" + currentDex).Visible = false;
             currentDex = value;
-            if(this.GetNode<Control>("" + currentDex)!= null)
-                this.GetNode<Control>("" + currentDex).Visible = true; 
-        } 
+            if (this.GetNode<Control>("" + currentDex) != null)
+                this.GetNode<Control>("" + currentDex).Visible = true;
+        }
     }
-	public int CurrentSubIndex { get; set; }
+    public int CurrentSubIndex { get; set; }
 
     public string Region { get; set; }
     public TutorialBox CurrentTutorial { get; set; }
@@ -30,7 +29,7 @@ public partial class TutorialUI : Control
     public Control RegionControl { get; set; }
     public ColorRect Background { get; set; }
     public override void _Ready()
-	{
+    {
         Background = this.GetNode<ColorRect>("ColorRect");
 
     }
@@ -44,7 +43,7 @@ public partial class TutorialUI : Control
             CurrentLevelControl = region.GetNode<Control>((load.LevelIndex + 1).ToString());
 
             //only load tutorial if it exists
-            if(CurrentLevelControl != null && CurrentLevelControl.GetChildCount() > 0)
+            if (CurrentLevelControl != null && CurrentLevelControl.GetChildCount() > 0)
             {
                 Region = load.Region;
                 CurrentSubIndex = 0;
@@ -57,7 +56,7 @@ public partial class TutorialUI : Control
             {
                 Background.Visible = HasTutorial = false;
                 _ExitTree();
-            } 
+            }
         }
     }
 
@@ -73,7 +72,7 @@ public partial class TutorialUI : Control
 
         if (current != null)
         {
-            if(!string.IsNullOrEmpty(current.RequiredId))
+            if (!string.IsNullOrEmpty(current.RequiredId))
             {
                 if (comp != null && comp.UIID == current.RequiredId && env == EventType.Left_Action)
                 {
@@ -82,11 +81,11 @@ public partial class TutorialUI : Control
                     CurrentTutorial = null;
                     return true;
                 }
-                
+
 
                 return false;
             }
-            else if(current.ExitType == TutorialBox.ActionType.Any && env ==EventType.Space)
+            else if (current.ExitType == TutorialBox.ActionType.Any && env == EventType.Space)
             {
                 //CurrentTutorial.LabelSettings.FontSize = 64;
                 CurrentSubIndex++;
@@ -102,11 +101,11 @@ public partial class TutorialUI : Control
     public bool GetNext(EventType env, IUIComponent comp)
     {
 
-        
+
 
         if (CurrentTutorial == null)
         {
-            if(CurrentLevelControl.GetChildCount() <= CurrentSubIndex)
+            if (CurrentLevelControl.GetChildCount() <= CurrentSubIndex)
             {
                 Background.Visible = HasTutorial = false;
                 _ExitTree();
@@ -131,7 +130,7 @@ public partial class TutorialUI : Control
 
     public override void _ExitTree()
     {
-        if(CurrentLevelControl != null)
+        if (CurrentLevelControl != null)
             CurrentLevelControl.Visible = false;
         if (CurrentTutorial != null)
             CurrentTutorial.Visible = false;

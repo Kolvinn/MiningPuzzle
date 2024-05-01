@@ -4,10 +4,6 @@ using MagicalMountainMinery.Obj;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using static MagicalMountainMinery.Main.GameController;
 
 namespace MagicalMountainMinery.Main
 {
@@ -75,7 +71,7 @@ namespace MagicalMountainMinery.Main
             Cart.GetNode<Node2D>("ArrowRot").Visible = true;
             Cart.CurrentMiner.Connect(Miner.SignalName.MiningHit, new Callable(this, nameof(MineableHit)));
             Cart.ZIndex = 6;
-            if(StartData.Type == CartType.Double)
+            if (StartData.Type == CartType.Double)
             {
                 Cart.GetNode<Sprite2D>("Sprite2D").Modulate = Colors.Red;
             }
@@ -89,7 +85,7 @@ namespace MagicalMountainMinery.Main
             Cart.GetParent()?.RemoveChild(Cart);
             level.AddChild(Cart);
 
-            Cart.Position = MapLevel.GetGlobalPosition(StartT.Index); 
+            Cart.Position = MapLevel.GetGlobalPosition(StartT.Index);
             Cart.CurrentPlayer.Play(StartT.Direction1.ToString().Split("_")[1]);
             Cart.GetNode<Node2D>("ArrowRot").Visible = true;
             Cart.ZIndex = 6;
@@ -98,7 +94,7 @@ namespace MagicalMountainMinery.Main
                 Cart.GetNode<Sprite2D>("Sprite2D").Modulate = Colors.Red;
             }
 
-            foreach(var entry in spriteSpawns)
+            foreach (var entry in spriteSpawns)
             {
                 entry.Key.GetParent()?.RemoveChild(entry.Key);
                 entry.Key.QueueFree();
@@ -124,7 +120,7 @@ namespace MagicalMountainMinery.Main
                     if (StartData.Type == CartType.Double)
                     {
                         //StartT = CurrentConnection as Track; 
-                        Start(Colors.Beige, Connections, LastDirection.Opposite(),CurrentConnection as Track);
+                        Start(Colors.Beige, Connections, LastDirection.Opposite(), CurrentConnection as Track);
 
                     }
                     else
@@ -133,7 +129,7 @@ namespace MagicalMountainMinery.Main
                         Cart.Completed = true;
                     }
                 }
-            } 
+            }
             else if (State == CartState.Moving)
             {
                 FetchCartIndex();
@@ -159,7 +155,7 @@ namespace MagicalMountainMinery.Main
                     //var remove = Cart.StoredResources.Keys.Where(res => !ResourceStore.ShopResources.Any(item=>item.ResourceType == res)).ToList();
                     Cart.ClearResources();
                 }
-                    
+
             }
 
         }
@@ -285,14 +281,14 @@ namespace MagicalMountainMinery.Main
                 LastDirection = NextDirection;
                 if (CartVectors.Count == 0)
                 {
-                    
+
                     return;
                 }
                 else
                 {
 
                     NextConnection = ConnectionQueue.Dequeue();
-                    if(NextConnection is LevelTarget)
+                    if (NextConnection is LevelTarget)
                     {
                         State = CartState.Stopped;
                         //CheckEnd(Cart.CurrentIndex);
@@ -370,10 +366,10 @@ namespace MagicalMountainMinery.Main
             ConnectionQueue.Clear();
             IConnectable next = null;
 
-            if(conList.TryGetValue(startTrack, out var subList))
+            if (conList.TryGetValue(startTrack, out var subList))
             {
                 next = subList.FirstOrDefault(item => startTrack.Index + StartDirection == item.Index);
-                
+
             }
             if (next == null)
             {
@@ -551,11 +547,11 @@ namespace MagicalMountainMinery.Main
 
             var index = new IndexPos(dexX, dexY); //index auto chops floats to ints
 
-            if(CurrentConnection?.Index != index)
+            if (CurrentConnection?.Index != index)
             {
                 //we have moved onto new square, so update !
                 var dir = index - CurrentConnection.Index;
-                if(Connections.TryGetValue(CurrentConnection, out var conList))
+                if (Connections.TryGetValue(CurrentConnection, out var conList))
                 {
                     var first = conList.FirstOrDefault(item => item.Index == CurrentConnection.Index + dir);
                     if (first == null)
@@ -711,6 +707,6 @@ namespace MagicalMountainMinery.Main
             }
         }
 
-        
+
     }
 }

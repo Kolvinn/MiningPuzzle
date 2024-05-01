@@ -1,0 +1,236 @@
+[gd_scene load_steps=13 format=3 uid="uid://nm76gowhygdh"]
+
+[ext_resource type="Script" path="res://Main/Camera.cs" id="1_br0v2"]
+[ext_resource type="FontFile" uid="uid://cdjxwrsadqdwg" path="res://Assets/Fonts/Pixel/Dogica/dogicapixel.ttf" id="2_peove"]
+[ext_resource type="FontFile" uid="uid://cylak8bji1wf3" path="res://Assets/Fonts/Pixel/PRNumber3.ttf" id="4_yit5v"]
+[ext_resource type="FontFile" uid="uid://b2d6ktwjsy7x5" path="res://Assets/Fonts/Pixel/BitPotionExt.ttf" id="9_pbgln"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_8dlvh"]
+font = ExtResource("2_peove")
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_421u0"]
+font = ExtResource("2_peove")
+
+[sub_resource type="LabelSettings" id="LabelSettings_kcf3c"]
+font = ExtResource("2_peove")
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_x5dn1"]
+font = ExtResource("9_pbgln")
+
+[sub_resource type="LabelSettings" id="LabelSettings_lei3i"]
+font = ExtResource("9_pbgln")
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_83mgt"]
+font = ExtResource("4_yit5v")
+
+[sub_resource type="LabelSettings" id="LabelSettings_rub42"]
+font = ExtResource("4_yit5v")
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_gwqon"]
+font = ExtResource("2_peove")
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("1_br0v2")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -653.0
+offset_top = -163.0
+offset_right = -117.0
+offset_bottom = -135.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "32 dog font on canvas"
+label_settings = SubResource("LabelSettings_8dlvh")
+
+[node name="Label9" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -487.0
+offset_top = -234.0
+offset_right = -265.0
+offset_bottom = -206.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "16 dog font "
+label_settings = SubResource("LabelSettings_421u0")
+
+[node name="Label6" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -453.0
+offset_top = -85.0
+offset_right = -157.0
+offset_bottom = -57.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "24 dog font "
+label_settings = SubResource("LabelSettings_kcf3c")
+
+[node name="Label2" type="Label" parent="CanvasLayer/Control"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -249.0
+offset_top = -136.0
+offset_right = -46.0
+offset_bottom = -113.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Let me ask you something is this readable?
+"
+label_settings = SubResource("LabelSettings_x5dn1")
+
+[node name="Label3" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -252.0
+offset_top = -103.0
+offset_right = -132.0
+offset_bottom = -75.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "32 bit potion"
+label_settings = SubResource("LabelSettings_lei3i")
+
+[node name="Label4" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = 80.0
+offset_right = -166.0
+offset_bottom = 103.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "16 pr number"
+label_settings = SubResource("LabelSettings_83mgt")
+
+[node name="Label5" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -257.0
+offset_top = 117.0
+offset_right = -89.0
+offset_bottom = 149.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "32 pr number"
+label_settings = SubResource("LabelSettings_rub42")
+
+[node name="Label7" type="Label" parent="CanvasLayer/Control"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -337.0
+offset_top = -232.0
+offset_right = -134.0
+offset_bottom = -209.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+text = "16 & 32 scale 1.2
+"
+label_settings = SubResource("LabelSettings_x5dn1")
+
+[node name="Label8" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 1
+offset_left = 36.0
+offset_top = 45.0
+offset_right = 194.0
+offset_bottom = 73.0
+scale = Vector2(2, 2)
+text = "16 & 32 scale 1.2
+"
+label_settings = SubResource("LabelSettings_lei3i")
+
+[node name="Label10" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -548.0
+offset_top = 42.0
+offset_right = -12.0
+offset_bottom = 70.0
+grow_horizontal = 0
+text = "32 dog font on canvas"
+label_settings = SubResource("LabelSettings_8dlvh")
+
+[node name="Label11" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -529.0
+offset_top = -283.0
+offset_right = -273.0
+offset_bottom = -255.0
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(2, 2)
+text = "16 dog font 1.5 scale"
+label_settings = SubResource("LabelSettings_gwqon")
+
+[node name="Label12" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -392.0
+offset_top = 99.0
+offset_right = -96.0
+offset_bottom = 127.0
+grow_horizontal = 0
+text = "24 dog font "
+label_settings = SubResource("LabelSettings_kcf3c")

@@ -37,14 +37,14 @@ namespace MagicalMountainMinery.Obj
 
         public IndexPos ConnectDirection { get; set; }
 
-        public LevelTarget() 
-        { 
+        public LevelTarget()
+        {
 
         }
 
         public override void _Ready()
         {
-            ConUI = new Dictionary<Condition, PanelContainer>();   
+            ConUI = new Dictionary<Condition, PanelContainer>();
             if (Batches.Count > 0)
             {
                 IsBatched = true;
@@ -52,10 +52,10 @@ namespace MagicalMountainMinery.Obj
                 var batchNum = Batches.First();
                 var str = "";
                 var BatchCount = 0;
-                for(int i = 0; i < Conditions.Count; i++)
+                for (int i = 0; i < Conditions.Count; i++)
                 {
                     var index = Batches.IndexOf(i);
-                    if(index != -1)
+                    if (index != -1)
                     {
                         BatchCount++;
                         str = "B" + BatchCount;
@@ -69,15 +69,15 @@ namespace MagicalMountainMinery.Obj
             }
             else
             {
-                foreach(var con in Conditions)
+                foreach (var con in Conditions)
                 {
                     AddCondition(con);
                 }
             }
 
-            if(BonusConditions.Count > 0)
+            if (BonusConditions.Count > 0)
             {
-                foreach(var con in BonusConditions)
+                foreach (var con in BonusConditions)
                 {
                     try
                     {
@@ -91,16 +91,16 @@ namespace MagicalMountainMinery.Obj
                         ConUI.Add(con, ConUI[existing]);
                         BonusValidated.Add(con, false);
                     }
-                    catch(Exception ex)
-                    { 
+                    catch (Exception ex)
+                    {
                         //otherwise make a new one
-                        AddCondition(con,bonus:true);
+                        AddCondition(con, bonus: true);
                     }
 
                 }
             }
-            
-            
+
+
         }
 
         public void AddCondition(Condition condition, string batch = "", bool bonus = false)
@@ -108,7 +108,7 @@ namespace MagicalMountainMinery.Obj
             var thing = Runner.LoadScene<PanelContainer>("res://Obj/ConditionUI.tscn");
             var tex = ResourceStore.Resources[condition.ResourceType];
             this.GetNode<VBoxContainer>("VBoxContainer").AddChild(thing);
-            
+
             if (bonus)
             {
                 var starCon = thing.GetNode<HBoxContainer>("HBoxContainer/StarContainer");
@@ -123,14 +123,14 @@ namespace MagicalMountainMinery.Obj
 
             thing.GetNode<TextureRect>("HBoxContainer/TextureRect").Texture = tex;
             thing.GetNode<Label>("HBoxContainer/con").Text = condition.AsString();
-            
+
 
 
             thing.ZIndex = 100;
             if (!string.IsNullOrEmpty(batch))
             {
-                thing.GetNode<HBoxContainer>("HBoxContainer").AddChild(new Label 
-                { 
+                thing.GetNode<HBoxContainer>("HBoxContainer").AddChild(new Label
+                {
                     Text = batch,
                     LabelSettings = new LabelSettings()
                     {
@@ -141,7 +141,7 @@ namespace MagicalMountainMinery.Obj
             }
             ConUI.Add(condition, thing);
 
-            if(!bonus) 
+            if (!bonus)
                 Validated.Add(condition, false);
             else
                 BonusValidated.Add(condition, false);
@@ -149,7 +149,7 @@ namespace MagicalMountainMinery.Obj
 
         private void ValidateBonusConditions(List<GameResource> resources)
         {
-            foreach(var con in BonusConditions)
+            foreach (var con in BonusConditions)
             {
                 if (!BonusValidated[con] && ValidateOne(con, resources))
                 {
@@ -166,16 +166,16 @@ namespace MagicalMountainMinery.Obj
 
             var complete = true;
             if (IsBatched)
-            { 
-                if(Batches.Count > 0)
+            {
+                if (Batches.Count > 0)
                 {
-                    var min = Batches[0] ;
+                    var min = Batches[0];
                     var max = Batches.Count == 1 ? Conditions.Count - min : Batches[1];
 
                     var batch = Conditions.GetRange(min, max);
                     complete = batch.All(con => ValidateOne(con, resources));
 
-                    if(complete)
+                    if (complete)
                     {
                         Batches.Remove(0);
                     }
@@ -224,7 +224,7 @@ namespace MagicalMountainMinery.Obj
             return true;
         }
 
-        public void Connect(IndexPos index) 
+        public void Connect(IndexPos index)
         {
             ConnectDirection = index;
         }
@@ -241,8 +241,8 @@ namespace MagicalMountainMinery.Obj
 
                 Validated[con.Key] = false;
                 con.Value.Modulate = new Color(1, 1, 1, 1);
-                
-                
+
+
             }
         }
 

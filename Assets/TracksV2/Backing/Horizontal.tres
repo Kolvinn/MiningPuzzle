@@ -1,0 +1,7 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://duj2mihyds0f5"]
+
+[ext_resource type="Texture2D" uid="uid://14mvgywfphyn" path="res://Assets/TracksV2/Contents/WoodSlatsALl.png" id="1_b2l60"]
+
+[resource]
+atlas = ExtResource("1_b2l60")
+region = Rect2(64, 0, 64, 64)

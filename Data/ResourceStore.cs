@@ -3,10 +3,7 @@ using MagicalMountainMinery.Data.Load;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MagicalMountainMinery.Data
 {
@@ -73,7 +70,7 @@ namespace MagicalMountainMinery.Data
                 Amount = 4,
                 Description = "Allows shifting of an ore node to an adjacent square.\n\nAs red as my ass after a night in prison. "
             },
-            
+
         };
         public static Dictionary<Connection, Texture2D> TrackTextures { get; set; } = new Dictionary<Connection, Texture2D>();
 
@@ -95,7 +92,7 @@ namespace MagicalMountainMinery.Data
 
         public static Dictionary<string, AudioStream> AudioRef = new Dictionary<string, AudioStream>();
 
-       // public static Dictionary<string, List<MapLoad>> Levels = new Dictionary<string, List<MapLoad>>();
+        // public static Dictionary<string, List<MapLoad>> Levels = new Dictionary<string, List<MapLoad>>();
 
         public static SortedList<int, MapLoad> Levels = new SortedList<int, MapLoad>();
 
@@ -148,23 +145,23 @@ namespace MagicalMountainMinery.Data
             return (c1.From == c2.From && c1.To == c2.To && c1.Option == c2.Option);
         }
 
-        public static Junc GetJunc(Junc junc, int level =1 )
+        public static Junc GetJunc(Junc junc, int level = 1)
         {
             var item = level == 1 ? Junctions.First(item => Compare(item, junc)) : Junctions_Raised.First(item => Compare(item, junc));
             return item;
         }
 
-        public static Junc GetRotateMatch(Junc junc, int level = 1 ) 
+        public static Junc GetRotateMatch(Junc junc, int level = 1)
         {
             var list = level == 1 ? Junctions : Junctions_Raised;
 
-            foreach ( var item in list )
+            foreach (var item in list)
             {
-                if(item.Option == junc.Option
+                if (item.Option == junc.Option
                     && item.To == junc.From
                     && item.From == junc.To)
-                { 
-                    return item; 
+                {
+                    return item;
                 }
             }
             return new Junc();
@@ -180,18 +177,18 @@ namespace MagicalMountainMinery.Data
                 "TrackPlace2",
                 "Junction"
             };
-            foreach ( var item in list )
+            foreach (var item in list)
             {
-                if(ResourceLoader.Exists(folder + item + ".mp3"))
+                if (ResourceLoader.Exists(folder + item + ".mp3"))
                 {
                     AudioRef.Add(item, ResourceLoader.Load<AudioStream>(folder + item + ".mp3"));
                 }
             }
-            
+
         }
         public static AudioStream GetAudio(string name)
         {
-            if(AudioRef.ContainsKey(name))
+            if (AudioRef.ContainsKey(name))
                 return AudioRef[name];
             return null;
         }
@@ -299,7 +296,7 @@ namespace MagicalMountainMinery.Data
                 var to = IndexPos.MatchDirection(split[1]);
                 var option = IndexPos.MatchDirection(split[2]);
 
-                var curve = new Junc(from,to,option, texture);
+                var curve = new Junc(from, to, option, texture);
                 Junctions.Add(curve);
             }
 
@@ -340,7 +337,7 @@ namespace MagicalMountainMinery.Data
                 MineableType min;
                 if (Enum.TryParse(file.Split("_")[0], out min))
                 {
-                    if(ResourceLoader.Exists(folder + file + ".png"))
+                    if (ResourceLoader.Exists(folder + file + ".png"))
                     {
                         GD.Print("loading in texture: ", file);
                     }
@@ -352,7 +349,7 @@ namespace MagicalMountainMinery.Data
         public static void LoadResources()
         {
             var folder = "res://Assets/GameResource/";
-            
+
             var list = Enum.GetValues(typeof(ResourceType));
 
             foreach (var file in list)
@@ -366,7 +363,7 @@ namespace MagicalMountainMinery.Data
                 else
                 {
                     GD.Print("file does not exist at: ", directory);
-                     
+
                 }
 
             }
@@ -378,7 +375,7 @@ namespace MagicalMountainMinery.Data
             var next = load.GetHashCode() + 1;
             if (Levels.ContainsKey(next))
                 return Levels[next];
-            else if(hash > 0)
+            else if (hash > 0)
             {
 
                 int result = hash % 1000 >= 500 ? hash + 1000 - hash % 1000 : hash - hash % 1000;
@@ -387,11 +384,11 @@ namespace MagicalMountainMinery.Data
                     return Levels[result.GetHashCode()];
             }
             return null;
-            
+
         }
         public static void LoadLevels()
         {
- 
+
             var dir = "res://Levels/";
             var regionList = new List<String>()
             {
@@ -409,8 +406,8 @@ namespace MagicalMountainMinery.Data
                 int count = 0;
                 while (true)
                 {
-                    var lvlDir = dir + name + "/Level_" + (count + + 1)+".lvl";
-                    var dataDir = dir + name + "/Level_" + (count + 1)+".data";
+                    var lvlDir = dir + name + "/Level_" + (count + +1) + ".lvl";
+                    var dataDir = dir + name + "/Level_" + (count + 1) + ".data";
                     if (!Godot.FileAccess.FileExists(lvlDir))
                     {
                         GD.Print("File not found at: ", lvlDir);
@@ -426,7 +423,7 @@ namespace MagicalMountainMinery.Data
                     using (var access = Godot.FileAccess.Open(dataDir, Godot.FileAccess.ModeFlags.Read))
                     {
                         JsonConvert.PopulateObject(access.GetAsText(), data);
-                        access.Close(); 
+                        access.Close();
                     }
                     using (var access = Godot.FileAccess.Open(lvlDir, Godot.FileAccess.ModeFlags.Read))
                     {
@@ -436,19 +433,19 @@ namespace MagicalMountainMinery.Data
                         data.RegionIndex = regionDex;
 
                         //Levels[name].Add(data);
-                        Levels.Add(data.GetHashCode(),data);
+                        Levels.Add(data.GetHashCode(), data);
                         access.Close();
                     }
 
                     count++;
                 }
             }
-            
+
         }
 
         public static void LoadPallet()
         {
-        
+
             //using var file = Godot.FileAccess.Open("res://Assets/ColorPallet.txt", Godot.FileAccess.ModeFlags.Read);
             //{
             //    var line = file.GetLine();
@@ -458,7 +455,7 @@ namespace MagicalMountainMinery.Data
             //        ColorPallet.Add(col);
             //        line = file.GetLine();
             //    }
-                
+
             //}
         }
 
@@ -471,7 +468,7 @@ namespace MagicalMountainMinery.Data
         public static void LoadSaveProfiles()
         {
             var saveFiles = Godot.DirAccess.GetFilesAt("user://saves/");
-            foreach(var file in saveFiles)
+            foreach (var file in saveFiles)
             {
                 if (file.GetExtension() != "save")
                 {
@@ -491,7 +488,7 @@ namespace MagicalMountainMinery.Data
                     }
                 }
             }
-            
+
         }
     }
 }
