@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://cd1cwvdo5fous"]
+
+[ext_resource type="Texture2D" uid="uid://dybmjnehe484j" path="res://Assets/Environment/RPGW_AncientForest_v1.0/_PNG/Decorative.png" id="1_a3d47"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v670b"]
+atlas = ExtResource("1_a3d47")
+region = Rect2(799, 286, 35, 35)
+
+[node name="Sprite2D" type="Sprite2D"]
+texture = SubResource("AtlasTexture_v670b")
+offset = Vector2(1.375, -10.055)

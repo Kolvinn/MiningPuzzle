@@ -248,7 +248,7 @@ public partial class MapController : Node2D
             return;
         }
         var obj = EventDispatch.PeekHover();
-        var env = EventDispatch.FetchLast();
+        var env = EventDispatch.FetchLastInput();
 
 
         if (!HandleUI(env, obj))
@@ -291,7 +291,7 @@ public partial class MapController : Node2D
     }
     public void DoCamZoom(CamSettings settings, Callable call)
     {
-        EventDispatch.GetHover(); //remove the hover since we are not going to exit the button
+        EventDispatch.ClearUIQueue(); //remove the hover since we are not going to exit the button
 
         var cam = GetViewport().GetCamera2D();
         Tween tween = GetTree().CreateTween();
@@ -317,7 +317,7 @@ public partial class MapController : Node2D
                 currentLocation = comp.UIID;
                 this.GetNode<CanvasLayer>("CanvasLayer2").Visible = false;
 
-                EventDispatch.GetHover(); //remove the hover since we are not going to exit the button
+                EventDispatch.ClearUIQueue(); //remove the hover since we are not going to exit the button
 
                 DoCamZoom(settings, Callable.From(ZoomInFinish));
                 return true;

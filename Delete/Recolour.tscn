@@ -1,0 +1,105 @@
+[gd_scene load_steps=5 format=3 uid="uid://d3d5ymsgg3wny"]
+
+[ext_resource type="Texture2D" uid="uid://c3pb1qb7fkify" path="res://Assets/Environment/Minerals/Copper_Node.png" id="1_eb8dx"]
+[ext_resource type="Script" path="res://Delete/Recolour.cs" id="2_mqpfx"]
+[ext_resource type="Texture2D" uid="uid://caha7dbgokeiq" path="res://Assets/Environment/Ore Pack by CaptainSkeleto/Ore/Ore28.png" id="3_25pyy"]
+[ext_resource type="Texture2D" uid="uid://bfcdyt1s6c8o2" path="res://Assets/Environment/Ore Pack by CaptainSkeleto/Ore/Ore4.png" id="4_wjuiw"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("2_mqpfx")
+
+[node name="ColorReplacer" type="Sprite2D" parent="."]
+position = Vector2(346, 107)
+scale = Vector2(3, 3)
+texture = ExtResource("1_eb8dx")
+
+[node name="ColorReplacerGrid" type="GridContainer" parent="."]
+offset_left = 282.0
+offset_top = 163.0
+offset_right = 341.0
+offset_bottom = 181.0
+columns = 2
+
+[node name="Target" type="Sprite2D" parent="."]
+position = Vector2(618, 88)
+scale = Vector2(4.40938, 3.925)
+texture = ExtResource("3_25pyy")
+
+[node name="TargetGrid" type="GridContainer" parent="."]
+offset_left = 594.0
+offset_top = 161.0
+offset_right = 653.0
+offset_bottom = 179.0
+columns = 2
+
+[node name="Original" type="Sprite2D" parent="."]
+position = Vector2(852, 93)
+scale = Vector2(4.29844, 3.99375)
+texture = ExtResource("4_wjuiw")
+
+[node name="OriginalGrid" type="GridContainer" parent="."]
+offset_left = 823.0
+offset_top = 157.0
+offset_right = 882.0
+offset_bottom = 175.0
+columns = 2
+
+[node name="Slider" type="Sprite2D" parent="."]
+position = Vector2(1107, 251)
+scale = Vector2(4.29844, 3.99375)
+texture = ExtResource("3_25pyy")
+
+[node name="HSlider" type="HSlider" parent="."]
+offset_left = 1027.0
+offset_top = 31.0
+offset_right = 1244.0
+offset_bottom = 58.0
+min_value = -1.0
+max_value = 1.0
+step = 0.01
+
+[node name="Label" type="Label" parent="."]
+offset_left = 1056.0
+offset_top = 6.0
+offset_right = 1216.0
+offset_bottom = 35.0
+text = "Color Weight: 0
+"
+
+[node name="HSlider2" type="HSlider" parent="."]
+offset_left = 1023.0
+offset_top = 83.0
+offset_right = 1240.0
+offset_bottom = 110.0
+min_value = -1.0
+max_value = 1.0
+step = 0.01
+
+[node name="Label2" type="Label" parent="."]
+offset_left = 1052.0
+offset_top = 58.0
+offset_right = 1212.0
+offset_bottom = 87.0
+text = "Color Breadth: 0
+"
+
+[node name="HSlider3" type="HSlider" parent="."]
+offset_left = 1018.0
+offset_top = 147.0
+offset_right = 1235.0
+offset_bottom = 174.0
+min_value = -1.0
+max_value = 1.0
+step = 0.01
+
+[node name="Label3" type="Label" parent="."]
+offset_left = 1047.0
+offset_top = 122.0
+offset_right = 1207.0
+offset_bottom = 151.0
+text = "MidTone: 0
+"
+
+[connection signal="value_changed" from="HSlider" to="." method="OnWeightChange"]
+[connection signal="value_changed" from="HSlider2" to="." method="OnBreadthChange"]
+[connection signal="value_changed" from="HSlider3" to="." method="OnMidToneChange"]

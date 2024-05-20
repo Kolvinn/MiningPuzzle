@@ -8,27 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using static MagicalMountainMinery.Main.GameController;
+using static MagicalMountainMinery.Data.DataFunc;
 using Label = Godot.Label;
+using System.Reflection;
 
 public partial class Runner : Node2D
 {
-    public void PopulateFromSave(MapLoad baseLevel)
-    {
-        if (LevelEndUI != null)
-        {
-            LevelEndUI.Delete();
-        }
-        LevelEndUI = LoadScene<LevelCompleteUI>("res://UI/LevelCompleteUI.tscn");
-        this.GetNode<CanvasLayer>("CanvasLayer").AddChild(LevelEndUI);
-        LevelEndUI.Connect(LevelCompleteUI.SignalName.NextLevel, Callable.From(_on_next_pressed));
-        LevelEndUI.Connect(LevelCompleteUI.SignalName.Home, Callable.From(on_home_pressed));
-        LevelEndUI.Connect(LevelCompleteUI.SignalName.Reset, Callable.From(OnReset));
-        LevelEndUI.Visible = false;
-        var level = CurrentProfile.Get(baseLevel);
-        LevelEndUI.LoadStars(baseLevel.Difficulty, baseLevel.BonusStars);
-        CurrentMapSave = level;
-
-    }
+   
 
     public void ReloadUsedGems(bool clear = true)
     {
@@ -52,8 +38,19 @@ public partial class Runner : Node2D
         return normStar;
     }
 
-    public void LoadLevelBox(MapLoad load)
+    public void LoadLevelCompleteBox(MapLoad load)
     {
+        if (LevelEndUI != null)
+        {
+            LevelEndUI.Delete();
+        }
+        LevelEndUI = LoadScene<LevelCompleteUI>("res://UI/LevelCompleteUI.tscn");
+        this.GetNode<CanvasLayer>("CanvasLayer").AddChild(LevelEndUI);
+        LevelEndUI.Connect(LevelCompleteUI.SignalName.NextLevel, Callable.From(_on_next_pressed));
+        LevelEndUI.Connect(LevelCompleteUI.SignalName.Home, Callable.From(on_home_pressed));
+        LevelEndUI.Connect(LevelCompleteUI.SignalName.Reset, Callable.From(OnReset));
+        LevelEndUI.Visible = false;
+        LevelEndUI.LoadStars(load.Difficulty, load.BonusStars);
         GD.Print("Loading level box");
         var select = this.GetNode<VBoxContainer>("CanvasLayer/CurrentLevelBox");
         var norm = select.GetNode<HBoxContainer>("Stars/NormStars");
@@ -102,34 +99,26 @@ public partial class Runner : Node2D
         }
     }
 
-    public void LoadMapLevel(MapLoad data, MapLevel existing = null)
+    public static Dictionary<float, MineableType> OreSpawnChances { get; set; } = new Dictionary<float, MineableType>()
     {
+        {0.3f, MineableType.Stone },
+        {0.3f, MineableType.Copper },
+      //  {0.1f, MineableType.Iron },
+        //{0.1f, MineableType.Gold },
+        {0.1f, MineableType.Ruby },
+        {0.1f, MineableType.Amethyst },
+       // {0.1f, MineableType.Aquamarine },
+        {0.1f, MineableType.Diamond },
+       // {0.1f, MineableType.Topaz },
+        //{0.1f, MineableType.Jade },
+        {0.1f, MineableType.Emerald },
 
-        GD.Print("loading map ", data.RegionIndex + "-", data.LevelIndex);
 
-        GD.Print("Attempting to load with existing data: ", existing);
+    };
 
-        this.GetNode<Control>("CanvasLayer/Container").Visible = false;
-        PopulateFromSave(data);
-        CurrentMapData = data;
-        var thingy3 = JsonConvert.DeserializeObject(data.DataString, SaveLoader.jsonSerializerSettings);
-        var load = (MapLevel)SaveLoader.LoadGame(thingy3 as SaveInstance, this.Placer);
-
-
-        LoadLevelBox(data);
-
-        GD.Print("Level data base loaded map");
-        GD.Print("Attempting to load mapdata");
-
-        BtnEnable(this.GetNode<TextureButton>("CanvasLayer/MiningStart"), true);
-
-        this.LoadingScreen.Visible = false;
-        load.PostLoad();
-        load.AddMapObjects(load.MapObjects, CurrentMapSave?.GemsCollected);
-
-        if (existing != null)
-        {
-            var visitedList = new SortedList<int, IConnectable>();
+    public void GenerateExistingData(MapLevel newMapLevel, MapLevel existingMapLevel)
+    {
+        var visitedList = new SortedList<int, IConnectable>();
             foreach (var entry in Placer.MasterTrackList)
             {
                 var con = entry.Key;
@@ -142,27 +131,27 @@ public partial class Runner : Node2D
                         visitedList.Add(con2.GetHashCode(), con2);
                         var node = con2 as Node2D;
                         node.GetParent()?.RemoveChild(node);
-                        load.AddChild(node);
+                        newMapLevel.AddChild(node);
 
                     }
                 }
 
             }
 
-            this.Placer.MapLevel = load;
-            load.Tracks1 = existing.Tracks1;
-            load.Tracks2 = existing.Tracks2;
-            load.LevelTargets = existing.LevelTargets;
-            load.StartData = existing.StartData;
-            load.CurrentTracks = existing.CurrentTracks;
-            load.AllowedTracks = existing.AllowedTracks;
+            this.Placer.MapLevel = newMapLevel;
+            newMapLevel.Tracks1 = existingMapLevel.Tracks1;
+            newMapLevel.Tracks2 = existingMapLevel.Tracks2;
+            newMapLevel.LevelTargets = existingMapLevel.LevelTargets;
+            newMapLevel.StartData = existingMapLevel.StartData;
+            newMapLevel.CurrentTracks = existingMapLevel.CurrentTracks;
+            newMapLevel.AllowedTracks = existingMapLevel.AllowedTracks;
 
-            foreach (var t in load.LevelTargets)
+            foreach (var t in newMapLevel.LevelTargets)
                 t.Reset();
             var temp = new List<CartController>();
             foreach (var entry in CartControllers)
             {
-                var control = new CartController(entry.StartT, load, entry.StartData);
+                var control = new CartController(entry.StartT, newMapLevel, entry.StartData);
                 this.AddChild(control);
                 temp.Add(control);
                 entry.DeleteSelf();
@@ -170,52 +159,213 @@ public partial class Runner : Node2D
             CartControllers.Clear();
             CartControllers.AddRange(temp);
 
+            
+        
+    }
 
-            //for (int x = 0; x < existing.IndexWidth; x++)
-            //{
-            //    for (int y = 0; y < existing.IndexHeight; y++)
-            //    {
-            //        load.Tracks1[x, y] = existing.Tracks1[x, y];
-            //        existing.RemoveChild(load.Tracks1[x, y]);
-            //        load.AddChild(load.Tracks1[x, y]);
-
-            //        load.Tracks2[x, y] = existing.Tracks2[x, y];
-            //        existing.RemoveChild(load.Tracks2[x, y]);
-            //        load.AddChild(load.Tracks2[x, y]);
-            //    }
-            //}
-        }
-        else
+    public void GenerateNewData(MapLevel level, MapLoad load)
+    {
+        foreach (var entry in CartControllers)
         {
-
-            foreach (var entry in CartControllers)
-            {
-                entry.DeleteSelf();
-            }
-            CartControllers.Clear();
-
-            this.Placer.LoadLevel(load, data);
-            PopulateEndTracks(load);
-            PopluateStartTracks(load);
+            entry.DeleteSelf();
         }
+        CartControllers.Clear();
+
+        this.Placer.LoadLevel(level, load);
+        PopulateEndTracks(level);
+        PopluateStartTracks(level);
+    }
+    public void LoadMapLevel(MapLoad load, MapLevel existing = null)
+    {
+
+        GD.Print("loading map ", load.RegionIndex + "-", load.LevelIndex);
+        CurrentMapSave = CurrentProfile.Get(load);
+        CurrentMapData = load;
+        GD.Print("Attempting to newMapLevel with existingMapLevel load: ", existing);
+
+        this.GetNode<Control>("CanvasLayer/Container").Visible = false;
+        LoadLevelCompleteBox(load);
+
+
+        var thingy3 = JsonConvert.DeserializeObject(load.DataString, SaveLoader.jsonSerializerSettings);
+        var newMapLevel = (MapLevel)SaveLoader.LoadGame(thingy3 as SaveInstance, this.GetNode<CanvasLayer>("MapLayer"));
+        this.GetNode<NoiseTest>("MapLayer/NoiseMap").LoadMapLevel(newMapLevel, load);
+        
+
+        GD.Print("Level load base loaded map");
+        GD.Print("Attempting to newMapLevel mapdata");
+
+        BtnEnable(NavBar.MiningIcon, true);
+
+        this.LoadingScreen.Visible = false;
+        newMapLevel.PostLoad();
+        newMapLevel.AddMapObjects(newMapLevel.MapObjects, CurrentMapSave?.GemsCollected);
+
+        if (existing != null)
+            GenerateExistingData(newMapLevel, existing);
+        else
+            GenerateNewData(newMapLevel, CurrentMapData);
+
 
         MapLevel?.QueueFree();
+        MapLevel = newMapLevel;
+        ApplyRandomGen(load);
 
-        MapLevel = load;
         ValidRun = true;
 
         var settings = new CamSettings(1.7f, new Vector2(MapLevel.GridWith / 2, MapLevel.GridHeight / 2));
         settings.Position += new Vector2(0, -40);
-        if (data.LevelIndex == 2 && data.RegionIndex == 2)
+        if (load.LevelIndex == 2 && load.RegionIndex == 2)
         {
             settings.Zoom = 1.2f;
         }
 
-        GD.Print("Map data loaded - setting camera to: ", settings.Zoom, " ", settings.Position);
+        GD.Print("Map load loaded - setting camera to: ", settings.Zoom, " ", settings.Position);
         Cam.Settings = settings;
     }
 
+    public enum MapChange
+    {
+        OreValueChange,
+        OreTypeChange,
+        OreDelete,
+        OreAdd,
+        OreMove
+    }
+    public void ApplyRandomGen(MapLevel level, MapLoad load)
+    {
+        //only apply the random generation once per game uptime
+        if (CurrentProfile.LoadedRandom.ContainsKey(load.GetHashCode()))
+            return;
 
+        CurrentProfile.LoadedRandom.Add(load.GetHashCode(), load);
+        var rand = new Random(load.MapSeed);
+        var max = 4;
+
+        var changes = new List<KeyValuePair<int, MapChange>>()
+        {
+            KeyValuePair.Create (1, MapChange.OreValueChange),
+            KeyValuePair.Create (2, MapChange.OreTypeChange),
+            KeyValuePair.Create (2, MapChange.OreDelete),
+            KeyValuePair.Create (2, MapChange.OreAdd),
+            KeyValuePair.Create (1, MapChange.OreMove),
+        };
+        var currentRandChange = rand.Next(max);
+        var list = changes.Where(entry => entry.Key <= currentRandChange).ToList();
+
+        
+
+        while (list.Count > 0)
+        {
+            var entry = list[rand.Next(list.Count)];
+            switch (entry.Value)
+            {
+                case MapChange.OreValueChange:
+                    break;
+                case MapChange.OreTypeChange: 
+                    break;
+                case MapChange.OreDelete:
+                    break;
+                case MapChange.OreAdd: 
+                    break;
+                default:
+                  break;
+            }
+        }
+        /*
+             * Each difficulty has a min and max random value
+             * The specific level random is generated between those values
+             * Each change to the map is worth a certain amount of randomness
+             * 
+             * Ore value change - 1pt
+             * Ore move - 1pt
+             * Ore delete 2 pt
+             * Ore add 2 pt
+             * 
+             * Track remove 1pt/track
+             */
+    }
+    public void OreValueChange(MapLevel level, Random rand)
+    {
+        var ores = MapLevel.GetAllMineables();
+        var ore = ores[rand.Next(ores.Count)];
+        var amount = rand.Next(1,8);
+        ore.ResourceSpawn.Amount = amount;
+        ore.PostLoad();
+    }
+
+    public void OreTypeChange(MapLevel level, Random rand)
+    {
+        //TODO need to add bit about actual ore vs gem types here
+        var ores = MapLevel.GetAllMineables();
+        var ore = ores[rand.Next(ores.Count)];
+        var types = new List<MineableType>() { MineableType.Copper, MineableType.Stone, MineableType.Iron };
+        if (types.Contains(ore.Type))
+        {
+            types.Remove(ore.Type);
+            var type = types[rand.Next(types.Count)];
+            ore.Type = type;
+            ore.ResourceSpawn.ResourceType = GetResourceFromOre(type);
+        }
+
+    }
+
+    
+
+    public void OreDelete(MapLevel level, Random rand)
+    {
+        //TODO need to add bit about actual ore vs gem types here
+        var ores = MapLevel.GetAllMineables();
+        var ore = ores[rand.Next(ores.Count)];
+        MapLevel.RemoveAt(ore.Index);
+
+    }
+
+    public void OreAdd(MapLevel level, Random rand)
+    {
+        //TODO need to add bit about actual ore vs gem types here
+        var next = rand.NextDouble();
+        var count = 0.0f;
+
+        foreach (var entry in OreSpawnChances)
+        {
+            var nextCount = count + entry.Key;
+
+            //if the next entry +  running count is still less than our chance, continue
+            if (nextCount < next)
+                count = nextCount;
+            else
+                break;
+        }
+        var emptyPositions = MapLevel.GetAllEmpty();
+        var pos = emptyPositions[rand.Next(emptyPositions.Count)];
+        var spawn = OreSpawnChances[count];
+        var ore = GetResourceFromOre(spawn);
+
+        var asset = Runner.LoadScene<Mineable>("res://Obj/Mineable.tscn");
+        asset.Type = spawn;
+        asset.ResourceSpawn = new GameResource()
+        {
+            ResourceType = GetResourceFromOre(spawn),
+            Amount = rand.Next(1, 8)
+        };
+        
+
+        MapLevel.SetMineable(pos, asset);
+        asset.PostLoad();
+        
+
+
+
+    }
+
+    public void OreMove(MapLevel level, Random rand)
+    {
+        var ores = MapLevel.GetAllMineables();
+        var ore = ores[rand.Next(ores.Count)];
+
+        
+    }
     public void PopulateEndTracks(MapLevel level)
     {
 
@@ -319,6 +469,7 @@ public partial class Runner : Node2D
 
     public static T LoadScene<T>(string scenePath, string name = null)
     {
+
         if (!ResourceLoader.Exists(scenePath))
             return default(T);
         var packedScene = ResourceLoader.Load(scenePath) as PackedScene;
@@ -350,10 +501,9 @@ public partial class Runner : Node2D
             var copy = new GameResource(gem);
             btn.AddResource(copy);
             this.GetNode<VBoxContainer>("CanvasLayer/GemBox").AddChild(btn);
+            NavBar.StarLabel.Text = CurrentProfile.StarCount.ToString();
         }
 
-        this.GetNode<Label>("CanvasLayer/StarAmountBox/Label").Text = CurrentProfile.StarCount.ToString();
-        this.GetNode<AnimationPlayer>("CanvasLayer/StarAmountBox/TextureRect6/AnimationPlayer").Play("StarReveal", 2);
     }
 }
 

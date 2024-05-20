@@ -1,4 +1,5 @@
 ﻿using Godot;
+using MagicalMountainMinery.Obj;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -93,7 +94,33 @@ namespace MagicalMountainMinery.Data
             return Zero;
         }
     }
+    public struct IndexData
+    {
+        public Track track1 { get; set; }
+        public Track track2 { get; set; }
+        public IGameObject obj { get; set; }
+        public IndexPos pos { get; set; }
 
+        public IndexData(Track track1, Track track2, IGameObject obj, IndexPos pos)
+        {
+            this.track1 = track1;
+            this.track2 = track2;
+            this.obj = obj;
+            this.pos = pos;
+        }
+        public IndexData()
+        {
+            this.track1 = null;
+            this.track2 = null;
+            this.obj = null;
+            pos = IndexPos.Zero;
+        }
+
+        public readonly override string ToString()
+        {
+            return "(Track1: " + track1 + "),(" + "(Track2: " + track2 + "),(" + "(obj: " + obj + ")";
+        }
+    }
     public struct Connection
     {
         public IndexPos Incoming { get; set; }
@@ -275,7 +302,7 @@ namespace MagicalMountainMinery.Data
         Jade,
 
     }
-
+    
     public enum TurnType
     {
         Cart,
@@ -404,6 +431,20 @@ namespace MagicalMountainMinery.Data
             this.Type = type;
             this.objects = objects;
             this.Caller = caller;
+        }
+    }
+
+    public static class DataFunc
+    {
+        public static ResourceType GetResourceFromOre(MineableType type)
+        {
+            if (type == MineableType.Copper)
+                return ResourceType.Copper_Ore;
+            if (type == MineableType.Stone)
+                return ResourceType.Stone;
+            if (type == MineableType.Iron)
+                return ResourceType.Iron_Ore;
+            return ResourceType.Gold_Ore;
         }
     }
 

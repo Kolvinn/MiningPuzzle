@@ -1,0 +1,214 @@
+[gd_scene load_steps=20 format=3 uid="uid://d3p2wexiupfak"]
+
+[ext_resource type="Texture2D" uid="uid://rtar24xusxgt" path="res://Assets/UI/SlaySpireTopBar.png" id="1_uqxyn"]
+[ext_resource type="Script" path="res://Delete/TopBar.cs" id="1_y3g0a"]
+[ext_resource type="Texture2D" uid="uid://vhpi4hfu864b" path="res://Assets/UI/Shikashi's Fantasy Icons Pack v2/#1 - Transparent Icons.png" id="2_v7dcx"]
+[ext_resource type="Script" path="res://UI/GameButton.cs" id="3_v2hdl"]
+[ext_resource type="PackedScene" uid="uid://cyokubilmact3" path="res://UI/SpeedControl.tscn" id="4_3tdg5"]
+[ext_resource type="Texture2D" uid="uid://o56wk3h5cill" path="res://Assets/UI/Lucid V1.2/Spritesheet/Shadow/16/IconsShadow-16.png" id="5_rqwdd"]
+[ext_resource type="FontFile" uid="uid://cylak8bji1wf3" path="res://Assets/Fonts/Pixel/PRNumber3.ttf" id="6_hmfdx"]
+[ext_resource type="PackedScene" uid="uid://qru3r3tp0osm" path="res://UI/StarRect.tscn" id="7_mxs4m"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bhsjj"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+texture = ExtResource("1_uqxyn")
+region_rect = Rect2(0, 0, 3840, 127)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_png6i"]
+atlas = ExtResource("2_v7dcx")
+region = Rect2(66, 322, 28, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p3053"]
+atlas = ExtResource("5_rqwdd")
+region = Rect2(64, 144, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rcxd3"]
+atlas = ExtResource("5_rqwdd")
+region = Rect2(80, 128, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nmtdh"]
+atlas = ExtResource("2_v7dcx")
+region = Rect2(194, 66, 28, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pcyrb"]
+atlas = ExtResource("5_rqwdd")
+region = Rect2(146, 129, 12, 14)
+
+[sub_resource type="LabelSettings" id="LabelSettings_n8jll"]
+font = ExtResource("6_hmfdx")
+font_size = 32
+
+[sub_resource type="Shader" id="Shader_dttp1"]
+code = "shader_type canvas_item;
+uniform bool filled; 
+uniform float alpha;
+void fragment() 
+{
+
+	
+	if(filled && COLOR.r > 0.8)
+	{
+		COLOR.a = alpha;
+	}
+	COLOR.rgb = COLOR.rgb * 1.25;
+	
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_avcla"]
+resource_local_to_scene = true
+shader = SubResource("Shader_dttp1")
+shader_parameter/filled = true
+shader_parameter/alpha = 0.0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2p1ys"]
+resource_local_to_scene = true
+load_path = "res://.godot/imported/icons8-pixel-star-30.png-3d24435608bef9cf06786dd70d7c38d5.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iaxva"]
+atlas = ExtResource("2_v7dcx")
+region = Rect2(417, 386, 30, 28)
+
+[node name="Control" type="Control" node_paths=PackedStringArray("ShopIcon", "StarIcon", "StarLabel", "SpeedControl", "MiningIcon", "MapIcon", "SettingsIcon")]
+top_level = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_y3g0a")
+ShopIcon = NodePath("PanelContainer/Middle/Right/Shop")
+StarIcon = NodePath("PanelContainer/Middle/Right/Star")
+StarLabel = NodePath("PanelContainer/Middle/Right/Label")
+SpeedControl = NodePath("PanelContainer/Left/SpeedControl")
+MiningIcon = NodePath("PanelContainer/Left/MiningStart")
+MapIcon = NodePath("PanelContainer/Right/Map")
+SettingsIcon = NodePath("PanelContainer/Right/Settings")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_right = -2.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_bhsjj")
+
+[node name="Left" type="HBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="MiningStart" type="TextureButton" parent="PanelContainer/Left"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_png6i")
+ignore_texture_size = true
+stretch_mode = 5
+script = ExtResource("3_v2hdl")
+UIID = "MiningStart"
+
+[node name="SpeedControl" parent="PanelContainer/Left" instance=ExtResource("4_3tdg5")]
+layout_mode = 2
+
+[node name="Right" type="HBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Map" type="TextureButton" parent="PanelContainer/Right"]
+texture_filter = 1
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 8
+tooltip_text = "Home Map"
+texture_normal = SubResource("AtlasTexture_p3053")
+ignore_texture_size = true
+stretch_mode = 5
+script = ExtResource("3_v2hdl")
+UIID = "Map"
+
+[node name="Settings" type="TextureButton" parent="PanelContainer/Right"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 8
+texture_normal = SubResource("AtlasTexture_rcxd3")
+ignore_texture_size = true
+stretch_mode = 5
+script = ExtResource("3_v2hdl")
+UIID = "Settings"
+
+[node name="Middle" type="HBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 135
+
+[node name="Left" type="HBoxContainer" parent="PanelContainer/Middle"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="ResetLevel" type="TextureButton" parent="PanelContainer/Middle/Left"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_vertical = 4
+texture_normal = SubResource("AtlasTexture_nmtdh")
+ignore_texture_size = true
+stretch_mode = 5
+script = ExtResource("3_v2hdl")
+UIID = "ResetLevel"
+metadata/_edit_use_anchors_ = true
+
+[node name="Undo" type="TextureButton" parent="PanelContainer/Middle/Left"]
+self_modulate = Color(1, 1, 1, 0.364706)
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = SubResource("AtlasTexture_pcyrb")
+ignore_texture_size = true
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
+
+[node name="Redo" type="TextureButton" parent="PanelContainer/Middle/Left"]
+self_modulate = Color(1, 1, 1, 0.364706)
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = SubResource("AtlasTexture_pcyrb")
+ignore_texture_size = true
+stretch_mode = 5
+flip_h = true
+metadata/_edit_use_anchors_ = true
+
+[node name="Right" type="HBoxContainer" parent="PanelContainer/Middle"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Label" type="Label" parent="PanelContainer/Middle/Right"]
+layout_mode = 2
+text = "0"
+label_settings = SubResource("LabelSettings_n8jll")
+
+[node name="Star" parent="PanelContainer/Middle/Right" instance=ExtResource("7_mxs4m")]
+material = SubResource("ShaderMaterial_avcla")
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = SubResource("CompressedTexture2D_2p1ys")
+expand_mode = 1
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
+
+[node name="Shop" type="TextureButton" parent="PanelContainer/Middle/Right"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_iaxva")
+ignore_texture_size = true
+stretch_mode = 5
+script = ExtResource("3_v2hdl")
+UIID = "ShopOpen"

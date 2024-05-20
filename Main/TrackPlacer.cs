@@ -667,11 +667,13 @@ namespace MagicalMountainMinery.Main
             if (ResourceStore.ContainsCurve(con))
             {
                 track.Texture = ResourceStore.GetCurve(con, track.TrackLevel).Texture;
+                track.SetBacking();
             }
             // DoCurve(from, track1, ResourceStore.GetCurve(con));
             else
             {
                 track.Texture = ResourceStore.GetTex(con, track.TrackLevel);
+                track.SetBacking();
             }
         }
 

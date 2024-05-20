@@ -32,7 +32,6 @@ public partial class Mineable : Sprite2D, IGameObject, ISaveable
         //canvas.Visible = true;
         this.TextureFilter = TextureFilterEnum.Nearest;
         //48 pixel node on 32 pixel squares
-        this.Scale = new Vector2(0.67f, 0.67f);
 
 
 

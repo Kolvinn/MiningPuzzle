@@ -1,0 +1,10 @@
+[gd_resource type="StyleBoxTexture" load_steps=2 format=3 uid="uid://cwcx4mof2psxs"]
+
+[ext_resource type="Texture2D" uid="uid://ruo6ese0ew7a" path="res://Assets/UI/Kasaya's Frames/Inventory & chests/2/chat/window.png" id="1_oevfv"]
+
+[resource]
+texture = ExtResource("1_oevfv")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0

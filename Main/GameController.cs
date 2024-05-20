@@ -1,6 +1,7 @@
 ﻿using Godot;
 using MagicalMountainMinery.Data;
 using MagicalMountainMinery.Data.Load;
+using static MagicalMountainMinery.Data.Load.Settings;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
@@ -47,44 +48,12 @@ namespace MagicalMountainMinery.Main
 
             StartMenu = Runner.LoadScene<StartMenu>("res://UI/MenuScreen.tscn");
 
-
-
-            //LoadHomeDelegate change = LoadHome;
             GetTree().Root.SizeChanged += OnWindowSizeChange;
 
-            //GetTree().Root.Connect()
             Runner = Runner.LoadScene<Runner>("res://Main/Main.tscn");
-            //this.AddChild(Runner);
-            //
+            Runner.NavBar = this.GetNode<NavBar>("CanvasLayer/NavBar");
 
-            if (ResourceStore.SaveProfiles != null && ResourceStore.SaveProfiles.Count > 0)
-                CurrentProfile = ResourceStore.SaveProfiles[0];
-            else
-            {
-                CurrentProfile = new SaveProfile()
-                {
-                    DataList = new SortedList<int, MapDataBase>(),
-                    Filename = "save1",
-                    ProfileName = "save1",
-                    StarCount = 0,
-                    StoredGems = new List<GameResource>()
-                };
-
-                //create if doesnt exist
-                if (!DirAccess.DirExistsAbsolute("user://saves/"))
-                {
-                    DirAccess.MakeDirAbsolute("user://saves/");
-                }
-                using var file = Godot.FileAccess.Open("user://saves/" + CurrentProfile.Filename + ".save", Godot.FileAccess.ModeFlags.Write);
-                {
-
-                    var thingy = JsonConvert.SerializeObject(CurrentProfile, SaveLoader.jsonSerializerSettings);
-                    file.StoreString(thingy);
-
-
-                    file.Close();
-                }
-            }
+            LoadInitialProfile();
 
             MapController = Runner.LoadScene<MapController>("res://Main/MapController.tscn");
             //this.AddChild(MapController);
@@ -119,10 +88,61 @@ namespace MagicalMountainMinery.Main
             //
             Engine.MaxFps = 144;
         }
+
+        public void LoadInitialProfile()
+        {
+            if (ResourceStore.SaveProfiles != null && ResourceStore.SaveProfiles.Count > 0)
+                CurrentProfile = ResourceStore.SaveProfiles[0];
+            else
+            {
+                CurrentProfile = new SaveProfile()
+                {
+                    DataList = new SortedList<int, MapDataBase>(),
+                    Filename = "save1",
+                    ProfileName = "save1",
+                    StarCount = 0,
+                    StoredGems = new List<GameResource>()
+                };
+
+                //create if doesnt exist
+                if (!DirAccess.DirExistsAbsolute("user://saves/"))
+                {
+                    DirAccess.MakeDirAbsolute("user://saves/");
+                }
+                using var file = Godot.FileAccess.Open("user://saves/" + CurrentProfile.Filename + ".save", Godot.FileAccess.ModeFlags.Write);
+                {
+
+                    var thingy = JsonConvert.SerializeObject(CurrentProfile, SaveLoader.jsonSerializerSettings);
+                    file.StoreString(thingy);
+
+
+                    file.Close();
+                }
+            }
+        }
+
         public override void _PhysicsProcess(double delta)
         {
+            var LastEvent = EventDispatch.PopGameEvent();
+            EventDispatch.SetLastInput();
 
+
+
+            var obj = EventDispatch.PeekHover();
+            var env = EventDispatch.FetchLastInput();
+
+            if(obj!=null && obj.UIID == "Settings" && env == EventType.Left_Action )
+            {
+                EventDispatch.ClearUIQueue();
+                this.GetNode<Control>("CanvasLayer/SettingsOverlay").Visible = true;
+            }
+            else if(env == EventType.Escape)
+            {
+
+            }
         }
+
+
         public void LoadLevel(MapLoad level)
         {
             //clear since changing scene
@@ -147,6 +167,16 @@ namespace MagicalMountainMinery.Main
         }
         public void OnWindowSizeChange()
         {
+            //var con = this.StartMenu.GetNode<Control>("CanvasLayer/Control/Control2");
+            //con.Scale = new Vector2(2, 2);
+            //var layer = Runner?.GetNode<CanvasLayer>("MapLayer");
+            //if (layer != null)
+            //{
+            //    layer.GetFinalTransform().ScaledLocal((new Vector2(1, 1) / GetViewportTransform().Scale));
+            //}
+            ////GetTree().
+            //var scale = GetViewportRect().Size / new Vector2(1280, 720);
+           // GetWindow().Scale = scale.X;
             //var size = GetTree().Root.Size;
             //var cam = GetViewport().GetCamera2D() as Camera;
 
@@ -154,13 +184,11 @@ namespace MagicalMountainMinery.Main
         }
         public void LoadHome()
         {
-            EventDispatch.ClearAll();
+            
             ChangeScene(InternalState.Map);
-
 
             MapController.GetNode<CanvasLayer>("CanvasLayer2").Visible = false;
 
-            EventDispatch.GetHover(); //remove the hover since we are not going to exit the button
             if (MapController.currentLocation != Runner.CurrentMapData.Region)
             {
                 var u = MapController.GetNode<Control>("CanvasLayer/LevelSelects");
@@ -209,6 +237,7 @@ namespace MagicalMountainMinery.Main
 
         public void ChangeScene(InternalState newstate)
         {
+            EventDispatch.ClearAll();
             if (CurrentControl != null)
             {
                 this.RemoveChild(CurrentControl);
@@ -225,12 +254,14 @@ namespace MagicalMountainMinery.Main
                 this.AddChild(Runner);
                 CurrentControl = Runner;
                 Runner.Cam.MakeCurrent();
+                this.GetNode<NavBar>("CanvasLayer/NavBar").Visible = true;
             }
             else
             {
                 this.AddChild(MapController);
                 CurrentControl = MapController;
                 MapController.Cam.MakeCurrent();
+                this.GetNode<NavBar>("CanvasLayer/NavBar").Visible = true;
             }
 
             State = newstate;
@@ -239,14 +270,36 @@ namespace MagicalMountainMinery.Main
         public override void _EnterTree()
         {
             ResourceStore.LoadPallet();
-            ResourceStore.LoadTracks();
+            ResourceStore.LoadTracksV2();
             ResourceStore.LoadRocks();
             ResourceStore.LoadResources();
-            ResourceStore.LoadJunctions();
+            ResourceStore.LoadJunctionsV2();
             ResourceStore.LoadAudio();
             ResourceStore.LoadLevels();
             ResourceStore.LoadSaveProfiles();
             GetTree().NodeAdded += OnNodeAdded;
+           // LoadSettings();
+
+        }
+        
+        public void LoadSettings()
+        {
+            
+            if (Godot.FileAccess.FileExists("res://Settings.Global"))
+            {
+                using var file = Godot.FileAccess.Open("res://Settings.Global", Godot.FileAccess.ModeFlags.Read);
+                {
+                    JsonConvert.PopulateObject(file.GetAsText(), new Settings());
+                }
+            }
+            else
+            {
+                using var file = Godot.FileAccess.Open("res://Settings.Global", Godot.FileAccess.ModeFlags.WriteRead);
+                {
+                    var settings = JsonConvert.SerializeObject(new Settings(), Formatting.Indented);
+                    file.StoreString(settings);
+                }
+            }
 
         }
 

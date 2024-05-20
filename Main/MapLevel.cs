@@ -5,36 +5,11 @@ using MagicalMountainMinery.Obj;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 
 namespace MagicalMountainMinery.Main
 {
-    public struct IndexData
-    {
-        public Track track1 { get; set; }
-        public Track track2 { get; set; }
-        public IGameObject obj { get; set; }
-        public IndexPos pos { get; set; }
 
-        public IndexData(Track track1, Track track2, IGameObject obj, IndexPos pos)
-        {
-            this.track1 = track1;
-            this.track2 = track2;
-            this.obj = obj;
-            this.pos = pos;
-        }
-        public IndexData()
-        {
-            this.track1 = null;
-            this.track2 = null;
-            this.obj = null;
-            pos = IndexPos.Zero;
-        }
-
-        public readonly override string ToString()
-        {
-            return "(Track1: " + track1 + "),(" + "(Track2: " + track2 + "),(" + "(obj: " + obj + ")";
-        }
-    }
     public partial class MapLevel : Node2D
     {
         public const float TrackX = 64.0f;
@@ -82,23 +57,12 @@ namespace MagicalMountainMinery.Main
         [StoreCollection(ShouldStore = true)]
         public List<IndexPos> Blocked { get; set; } = new List<IndexPos>();
 
-        public Random RandGen { get; set; } = new Random();
-
         public int AllowedTracks { get; set; }
         public int AllowedTracksRaised { get; set; }
         public int AllowedJunctions { get; set; }
         public int CurrentTracks { get; set; }
         public int CurrentTracksRaised { get; set; }
         public int CurrentJunctions { get; set; }
-
-
-
-        public float MineableSpawnBase = 0.3f;
-
-        public float CopperSpawn = 0.2f;
-        public float IronSpawn = 0.1f;
-        public float EmeraldSpawn = 0.05f;
-        public float DiamondSpawn = 0.05f;
 
         public float GridWith
         {
@@ -262,51 +226,15 @@ namespace MagicalMountainMinery.Main
                         {
                             var rock = (Mineable)obj;
                             rock.Index = new IndexPos(i, j);
+
                             rock.PostLoad();
+                            rock.Position = GetGlobalPosition(rock.Index);
                         }
                     }
                 }
             }
         }
 
-        public void ReplaceObjects(IGameObject[,] objects)
-        {
-            LevelTargets.Clear();
-            for (int i = 0; i < objects.GetLength(0); i++)
-            {
-                for (int j = 0; j < objects.GetLength(1); j++)
-                {
-                    var existing = MapObjects[i, j];
-
-                    if (existing != null)
-                    {
-                        ((Node2D)existing).QueueFree();
-                    }
-                    var replacement = objects[i, j];
-
-                    if (replacement != null)
-                    {
-                        this.AddChild((Node2D)replacement);
-
-                        if (replacement is LevelTarget t)
-                        {
-                            LevelTargets.Add(t);
-                        }
-                        else if (replacement is Portal p)
-                        {
-                            p.Index = new IndexPos(i, j);
-                        }
-                        else if (replacement is Mineable m)
-                        {
-                            m.Index = new IndexPos(i, j);
-                            m.PostLoad();
-                        }
-                    }
-
-                }
-            }
-            MapObjects = objects;
-        }
 
 
         public void AddTracks(Track[,] tracks1, Track[,] tracks2)
@@ -358,6 +286,11 @@ namespace MagicalMountainMinery.Main
 
         }
 
+        public void GenerateRandom()
+        {
+
+        }
+
 
         public void SetCondition(IndexPos pos, params Condition[] cons)
         {
@@ -381,6 +314,33 @@ namespace MagicalMountainMinery.Main
             return obj;
         }
 
+
+        public List<Mineable> GetAllMineables()
+        {
+            var list = new List<Mineable>();
+            foreach (var entry in MapObjects)
+            {
+                if (entry != null && entry is Mineable mine)
+                    list.Add(mine);
+            }
+            return list;
+        }
+
+        public List<IndexPos> GetAllEmpty()
+        {
+            var list = new List<IndexPos>();
+            for (int x = 0; x < IndexWidth; x++)
+            {
+                for (int y = 0; y < IndexHeight; y++)
+                {
+                    var pos = new IndexPos(x, y);
+                    var entry = MapObjects[pos.X, pos.Y];
+                    if (entry == null && !Blocked.Contains(pos))
+                        list.Add(pos);
+                }
+            }
+            return list;
+        }
         public bool TryGetMineable(IndexPos pos, out Mineable mineable)
         {
             mineable = null;
@@ -480,25 +440,6 @@ namespace MagicalMountainMinery.Main
             return Tracks2[pos.X, pos.Y] != null ? Tracks2[pos.X, pos.Y] : Tracks1[pos.X, pos.Y];
         }
 
-        public void GenNodes(int amount)
-        {
-
-
-            //for (int y = 0; y < IndexWidth; y++)
-            //{
-            //    for (int y = 0; y < IndexHeight; y++)
-            //    {
-            //        var dex = new IndexPos(y, y);
-            //        var rand = RandGen.NextDouble();
-
-            //        if (rand <= MineableSpawnBase && dex != StartPos && dex != EndPos)
-            //        {
-            //            SetMineable(dex, SpawnNode());
-            //        }
-            //    }
-            //}
-
-        }
 
 
 

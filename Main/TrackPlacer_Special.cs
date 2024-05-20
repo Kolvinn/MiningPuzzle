@@ -99,7 +99,7 @@ namespace MagicalMountainMinery.Main
                     var dir = IndexPos.MatchDirection(comp.UIID);
                     if (dir != IndexPos.Zero)
                     {
-                        EventDispatch.GetHover(); //remove it
+                        EventDispatch.ClearUIQueue(); //remove it
 
 
                         var global = MapLevel.GetGlobalPosition(focus.Index + dir);
@@ -133,7 +133,7 @@ namespace MagicalMountainMinery.Main
             if (internalStateCount == 1)
             {
                 MineMoveFinished();
-                EventDispatch.GetHover();
+                EventDispatch.ClearUIQueue();
             }
             else if (internalStateCount == 2)
             {
@@ -141,7 +141,7 @@ namespace MagicalMountainMinery.Main
                 focus.GetNode<Control>("Arrows").Visible = false;
                 focus = null;
                 internalStateCount--;
-                EventDispatch.GetHover();
+                EventDispatch.ClearUIQueue();
             }
 
 
@@ -174,7 +174,7 @@ namespace MagicalMountainMinery.Main
                     focus.UpdateResourceOutput(amount);
                     focus.GetNode<Control>("Numbers").Visible = false;
 
-                    EventDispatch.GetHover(); //remove it
+                    EventDispatch.ClearUIQueue(); //remove it
 
                     UseGem();
                     MineMoveFinished();
@@ -189,7 +189,7 @@ namespace MagicalMountainMinery.Main
             if (internalStateCount == 1)
             {
                 MineMoveFinished();
-                EventDispatch.GetHover();
+                EventDispatch.ClearUIQueue();
             }
             else if (internalStateCount == 2)
             {
@@ -197,7 +197,7 @@ namespace MagicalMountainMinery.Main
                 focus.GetNode<Control>("Numbers").Visible = false;
                 focus = null;
                 internalStateCount--;
-                EventDispatch.GetHover();
+                EventDispatch.ClearUIQueue();
             }
         }
         public void HandleDelete(EventType env, IUIComponent comp, IGameObject interactable)

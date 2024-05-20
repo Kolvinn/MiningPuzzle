@@ -1,6 +1,9 @@
 ﻿using Godot;
 using MagicalMountainMinery.Data;
+using static MagicalMountainMinery.Data.Load.Settings;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MagicalMountainMinery.Obj
 {
@@ -27,23 +30,36 @@ namespace MagicalMountainMinery.Obj
 
         public bool canMine { get; set; } = true;
 
+        public double time;
 
+        public float QueueSpeed = 1;
         public override void _Ready()
         {
             this.CooldownBar = this.GetNode<TextureProgressBar>("CooldownBar");
             this.player = this.GetNode<AnimationPlayer>("Axe/AnimationPlayer");
-            this.player.Connect(AnimationPlayer.SignalName.AnimationFinished, new Callable(this, nameof(AnimationFinished)));
+            this.player.Connect(AnimationMixer.SignalName.AnimationFinished, new Callable(this, nameof(AnimationFinished)));
+
         }
 
         public void AnimationFinished(string anim)
         {
-
+            var newtime = time - DateTime.Now.Millisecond;
             if (anim != "RESET")
             {
                 //CooldownBar.Visible = true;
                 //cooldown = 100;
                 //EmitSignal(SignalName.MiningFinished, MiningTarget, this);
-                //player.Play("RESET");
+                player.Play("RESET");
+            }
+            else
+            {
+                var q = player.GetQueue();
+                if (q.Count() > 0)
+                {
+                    player.Play(q[0]);
+                    player.ClearCaches();
+                    player.ClearQueue();
+                }
             }
 
         }
@@ -80,16 +96,12 @@ namespace MagicalMountainMinery.Obj
             }
         }
 
-        public void Mine(IndexPos dir, Mineable target, float speed = 3f)
+        public void Mine(IndexPos dir, Mineable target, float speed = 1f)
         {
             target.locked = true;
             MiningTargets.Enqueue(target);
-            if (!string.IsNullOrEmpty(player.CurrentAnimation))
-            {
-                player.Advance(5);
-                player.ClearQueue();
-                player.Play("RESET");
-            }
+
+           
             var str = "East";
             if (dir == IndexPos.Up)
                 str = "North";
@@ -97,10 +109,31 @@ namespace MagicalMountainMinery.Obj
                 str = "South";
             else if (dir == IndexPos.Left)
                 str = "West";
+            time = DateTime.Now.Millisecond;
+
+            if (!string.IsNullOrEmpty(player.CurrentAnimation))
+            {
+                if(player.CurrentAnimation != "RESET")
+                {
+                    player.Advance(1.5f);
+                   // player.Play("RESET")
+                }
+                player.Queue(str + "Axe");//, ;
+                QueueSpeed = speed * SIM_SPEED_RATIO;
+                //if (player.CurrentAnimation == "RESET")
+                //{
+                    
+                //}
+                
+                
+
+            }
+            else
+                player.Play(str + "Axe",customSpeed: speed * SIM_SPEED_RATIO);//, speed * Runner.SIM_SPEED_RATIO);
 
 
-            player.Play(str, speed * Runner.SIM_SPEED_RATIO);
-            player.Queue("RESET");
+            var speedy = player.GetPlayingSpeed();
+            //player.Queue("RESET");
             //MiningTarget = target;
             //canMine = false;
             //cooldown = 100f;

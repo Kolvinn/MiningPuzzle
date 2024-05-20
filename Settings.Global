@@ -1,0 +1,11 @@
+{
+  "SIM_SPEED_RATIO": 1.0,
+  "SIM_SPEED_STACK": 0.0,
+  "UI_SCALE": 1.0,
+  "WINDOW_MODE": 1,
+  "RESOLUTION": 0,
+  "AUDIO_MUSIC": 1.0,
+  "AUDIO_MASTER": 1.0,
+  "AUDIO_SFX": 1.0,
+  "VSYNC": false
+}

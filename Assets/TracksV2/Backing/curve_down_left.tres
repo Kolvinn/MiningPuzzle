@@ -1,0 +1,7 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://ci6cqew180tqw"]
+
+[ext_resource type="Texture2D" uid="uid://non5l3jgnc66" path="res://Assets/TracksV2/Contents/CurveModDown.png" id="1_oj7kq"]
+
+[resource]
+atlas = ExtResource("1_oj7kq")
+region = Rect2(0, 64, 64, 64)

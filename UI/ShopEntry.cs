@@ -23,21 +23,16 @@ public partial class ShopEntry : PanelContainer, IUIComponent
     {
         this.GameResource = resource;
         this.GetNode<Label>("HBoxContainer/HBoxContainer/CostLabel").Text = resource.Amount.ToString();
-        this.GetNode<Label>("HBoxContainer/NameLabel").Text = resource.ResourceType.ToString();
+        this.GetNode<Label>("HBoxContainer/VBoxContainer/NameLabel").Text = resource.ResourceType.ToString();
+        this.GetNode<Label>("HBoxContainer/VBoxContainer/Description").Text = resource.Description.ToString();
         this.GetNode<TextureRect>("HBoxContainer/PanelContainer/Icon").Texture = ResourceStore.Resources[resource.ResourceType];
         UIID = "shop_" + resource.ResourceType.ToString();
-        this.TooltipText = GameResource.Description;
+        ///this.TooltipText = GameResource.Description;
 
 
     }
 
-    public override GodotObject _MakeCustomTooltip(string forText)
-    {
-        var t = Runner.LoadScene<TextureRect>("res://UI/ToolTippy.tscn");
-        t.GetNode<Label>("MarginContainer2/Label").Text = GameResource.Description;
-        t.CustomMinimumSize = t.Size;
-        return t;
-    }
+    
 
     public void _on_mouse_entered()
     {

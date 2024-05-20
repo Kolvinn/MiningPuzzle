@@ -28,6 +28,8 @@ namespace MagicalMountainMinery.Obj
 
         public Label HeightLabel { get; set; }
 
+        public Sprite2D BackingTrack {  get; set; }
+
         public Dictionary<IndexPos, int> Heights { get; set; } = new Dictionary<IndexPos, int>();
 
         public Track(Texture2D texture, IndexPos index, int level = 1)
@@ -35,6 +37,8 @@ namespace MagicalMountainMinery.Obj
             this.Texture = texture;
             this.Index = index;
             this.TrackLevel = level;
+            
+            
             HeightLabel = new Label()
             {
                 Size = new Vector2(32, 32),
@@ -78,12 +82,19 @@ namespace MagicalMountainMinery.Obj
         }
         public override void _Ready()
         {
+            BackingTrack = new Sprite2D();
             ConnectionUI = Runner.LoadScene<TrackConnectionUI>("res://Obj/TrackConnectionUI.tscn");
             ConnectionUI.Visible = TrackPlacer._ShowConnections;
             this.AddChild(ConnectionUI);
+            this.AddChild(BackingTrack);
+            BackingTrack.ShowBehindParent = true;
+            SetBacking();
         }
 
-
+        public virtual void SetBacking()
+        {
+            BackingTrack.Texture = ResourceStore.GetBackingTex(this.GetConnection());
+        }
         public void UpdateHeightLabel(IndexPos fromDir, int connectedHeight = 1, bool remove = false)
         {
             if (Heights.ContainsKey(fromDir) && remove)
@@ -123,20 +134,7 @@ namespace MagicalMountainMinery.Obj
             return new List<IndexPos>() { Direction1, Direction2 };
         }
 
-        public override void _PhysicsProcess(double delta)
-        {
-            if (Texture != null && Texture.ResourcePath.Contains("straight_vertical"))
-            {
-                if (TrackLevel == 2)
-                {
-                    this.Offset = new Vector2(0, -6);
-                }
-            }
-            else if (Texture == null)
-            {
-                GD.Print("ppos");
-            }
-        }
+      
         public virtual void FetchFacingIndex()
         {
             /* 
@@ -170,6 +168,8 @@ namespace MagicalMountainMinery.Obj
             ConnectionUI.Connect(dir);
 
             UpdateHeightLabel(dir, fromHeight);
+
+            SetBacking();
         }
 
         public void Disconnect(IndexPos dir, int fromHeight = 1)
@@ -181,6 +181,8 @@ namespace MagicalMountainMinery.Obj
 
             ConnectionUI.Disconnect(dir);
             UpdateHeightLabel(dir, fromHeight, true);
+
+            SetBacking();
         }
 
 
@@ -231,8 +233,6 @@ namespace MagicalMountainMinery.Obj
             return false;
         }
 
-
-
         public void Connect(IndexPos fromDir, IndexPos toDir, IndexPos optionDir, int fromHeight = 1, int toHeight = 1, int optionHeight = 1)
         {
             ConnectionUI.Connect(fromDir);
@@ -247,6 +247,7 @@ namespace MagicalMountainMinery.Obj
             UpdateHeightLabel(toDir, toHeight);
             UpdateHeightLabel(optionDir, optionHeight);
 
+            SetBacking();
         }
 
         public void DoArrow()

@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://cpbobqpaqjal6"]
+[gd_scene load_steps=5 format=3 uid="uid://cpbobqpaqjal6"]
 
 [ext_resource type="Script" path="res://Main/GameController.cs" id="1_ebtxg"]
 [ext_resource type="AudioStream" uid="uid://dqinpi3b864p5" path="res://Assets/Sounds/Music/SoundTrack.mp3" id="2_vukhi"]
+[ext_resource type="PackedScene" uid="uid://d0qkarki7m00d" path="res://UI/NavBar.tscn" id="3_nmwh2"]
+[ext_resource type="PackedScene" uid="uid://cg8gtxwhe5fkm" path="res://UI/Settings/SettingsMenu.tscn" id="4_3mgjf"]
 
 [node name="GameController" type="Node2D"]
 script = ExtResource("1_ebtxg")
@@ -9,3 +11,12 @@ script = ExtResource("1_ebtxg")
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_vukhi")
 volume_db = -9.638
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="NavBar" parent="CanvasLayer" instance=ExtResource("3_nmwh2")]
+visible = false
+
+[node name="SettingsOverlay" parent="CanvasLayer" instance=ExtResource("4_3mgjf")]
+visible = false

@@ -225,7 +225,7 @@ namespace MagicalMountainMinery.Main
         public override void _PhysicsProcess(double delta)
         {
             var obj = EventDispatch.PeekHover();
-            var env = EventDispatch.FetchLast();
+            var env = EventDispatch.FetchLastInput();
             MouseIndex = FetchMouseIndex();
             if (obj != null)
             {

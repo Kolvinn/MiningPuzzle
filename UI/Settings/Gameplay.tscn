@@ -1,0 +1,160 @@
+[gd_scene load_steps=9 format=3 uid="uid://bg2stbseh0n52"]
+
+[ext_resource type="Texture2D" uid="uid://bnwpai7x8v8ky" path="res://Assets/UI/Lucid V1.2/PNG/Flat/32/Plus.png" id="1_21p1o"]
+[ext_resource type="FontFile" uid="uid://cdjxwrsadqdwg" path="res://Assets/Fonts/Pixel/Dogica/dogicapixel.ttf" id="1_tukca"]
+[ext_resource type="Texture2D" uid="uid://bnqh17c1hkq3n" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Button_Small_Press_01a1.png" id="2_gf5hv"]
+[ext_resource type="Texture2D" uid="uid://begtjjxbjqcmy" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Button_Small_Press_01a2.png" id="3_edqd3"]
+[ext_resource type="Script" path="res://UI/GameButton.cs" id="4_807aj"]
+[ext_resource type="Texture2D" uid="uid://dpi3u8p8vrlon" path="res://Assets/UI/Lucid V1.2/PNG/Flat/16/Plus.png" id="4_xh3g4"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_jf3fs"]
+font = ExtResource("1_tukca")
+font_size = 32
+font_color = Color(0.984314, 0.929412, 0.87451, 1)
+outline_size = 15
+outline_color = Color(0.282353, 0.282353, 0.282353, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_55uf5"]
+atlas = ExtResource("1_21p1o")
+region = Rect2(0, 10, 28, 8)
+
+[node name="HBoxContainer" type="HBoxContainer"]
+offset_right = 373.0
+offset_bottom = 254.0
+theme_override_constants/separation = 20
+
+[node name="Labels" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Label" type="Label" parent="Labels"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "UI Scaling: 100%"
+label_settings = SubResource("LabelSettings_jf3fs")
+horizontal_alignment = 2
+vertical_alignment = 1
+metadata/origin = Vector2(2, 2)
+
+[node name="Label2" type="Label" parent="Labels"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Camera Zoom: 100%"
+label_settings = SubResource("LabelSettings_jf3fs")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+
+[node name="Minus" type="TextureButton" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture_normal = ExtResource("2_gf5hv")
+texture_pressed = ExtResource("3_edqd3")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_807aj")
+UIID = "UI_SCALE_minus"
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/Minus"]
+self_modulate = Color(0.611765, 0.423529, 0.337255, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 2.0
+offset_right = -3.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("AtlasTexture_55uf5")
+expand_mode = 1
+stretch_mode = 5
+metadata/_edit_lock_ = true
+
+[node name="Plus" type="TextureButton" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+size_flags_horizontal = 3
+texture_normal = ExtResource("2_gf5hv")
+texture_pressed = ExtResource("3_edqd3")
+stretch_mode = 0
+script = ExtResource("4_807aj")
+UIID = "UI_SCALE_plus"
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/Plus"]
+self_modulate = Color(0.611765, 0.423529, 0.337255, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 4.0
+offset_bottom = -11.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_xh3g4")
+expand_mode = 3
+stretch_mode = 5
+metadata/_edit_lock_ = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+
+[node name="Minus" type="TextureButton" parent="VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture_normal = ExtResource("2_gf5hv")
+texture_pressed = ExtResource("3_edqd3")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_807aj")
+UIID = "UI_SCALE_minus"
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer2/Minus"]
+self_modulate = Color(0.611765, 0.423529, 0.337255, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 2.0
+offset_right = -3.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("AtlasTexture_55uf5")
+expand_mode = 1
+stretch_mode = 5
+metadata/_edit_lock_ = true
+
+[node name="Plus" type="TextureButton" parent="VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+size_flags_horizontal = 3
+texture_normal = ExtResource("2_gf5hv")
+texture_pressed = ExtResource("3_edqd3")
+stretch_mode = 0
+script = ExtResource("4_807aj")
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer2/Plus"]
+self_modulate = Color(0.611765, 0.423529, 0.337255, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 4.0
+offset_bottom = -11.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_xh3g4")
+expand_mode = 3
+stretch_mode = 5
+metadata/_edit_lock_ = true

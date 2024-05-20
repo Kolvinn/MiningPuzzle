@@ -1,29 +1,36 @@
-[gd_scene load_steps=8 format=3 uid="uid://ddig3ir3vm5aj"]
+[gd_scene load_steps=11 format=3 uid="uid://ddig3ir3vm5aj"]
 
 [ext_resource type="Texture2D" uid="uid://ddvmanele13ny" path="res://Assets/UI/Frame.png" id="1_a5lis"]
 [ext_resource type="Texture2D" uid="uid://bnwpai7x8v8ky" path="res://Assets/UI/Lucid V1.2/PNG/Flat/32/Plus.png" id="2_kfayx"]
-[ext_resource type="Texture2D" uid="uid://3sutkg73jwbw" path="res://Assets/UI/Kasaya's Frames/Inventory & chests/2/shop/buy and sell  button.png" id="3_gd160"]
-[ext_resource type="Shader" path="res://Assets/Shaders/dashed_line.gdshader" id="4_4kbug"]
+[ext_resource type="FontFile" uid="uid://cdjxwrsadqdwg" path="res://Assets/Fonts/Pixel/Dogica/dogicapixel.ttf" id="2_q04mq"]
+[ext_resource type="FontFile" uid="uid://c1eh4tyo7ui2w" path="res://Assets/Fonts/Pixel/Dogica/dogicapixelbold.ttf" id="3_xxcdd"]
+[ext_resource type="PackedScene" uid="uid://bg2stbseh0n52" path="res://UI/Settings/Gameplay.tscn" id="4_yu0d3"]
+[ext_resource type="PackedScene" uid="uid://pt6sqhisaak1" path="res://UI/Settings/Video.tscn" id="5_eyrnm"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_i614d"]
 atlas = ExtResource("1_a5lis")
 region = Rect2(0, 11, 1080, 460)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bex4e"]
-content_margin_left = 2.0
-content_margin_top = 2.0
-content_margin_right = 2.0
-content_margin_bottom = 2.0
+content_margin_left = 20.0
+content_margin_top = 30.0
+content_margin_right = 20.0
+content_margin_bottom = 25.0
 texture = SubResource("AtlasTexture_i614d")
+texture_margin_top = 5.0
 axis_stretch_horizontal = 2
 axis_stretch_vertical = 2
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rcnk7"]
-shader = ExtResource("4_4kbug")
-shader_parameter/is_dashed = true
-shader_parameter/dashed_count = 8.985
+[sub_resource type="LabelSettings" id="LabelSettings_4eeuk"]
+font = ExtResource("3_xxcdd")
+font_size = 40
+outline_color = Color(0.388235, 0.270588, 0.121569, 1)
 
-[node name="Control" type="Control"]
+[sub_resource type="LabelSettings" id="LabelSettings_ixcif"]
+font = ExtResource("3_xxcdd")
+font_size = 48
+
+[node name="SettingsOverlay" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -31,71 +38,125 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.133333, 0.133333, 0.133333, 0.466667)
+
 [node name="PanelContainer" type="PanelContainer" parent="."]
 texture_filter = 1
-layout_mode = 0
-offset_left = 263.0
-offset_top = 129.0
-offset_right = 990.0
-offset_bottom = 586.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -470.5
+offset_top = -250.5
+offset_right = 470.5
+offset_bottom = 250.5
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_bex4e")
 
 [node name="ColorRect" type="ColorRect" parent="PanelContainer"]
 show_behind_parent = true
 layout_mode = 2
-color = Color(0.329412, 0.223529, 0.176471, 1)
+color = Color(0.556863, 0.494118, 0.384314, 1)
 metadata/_edit_lock_ = true
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 7
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 7
-theme_override_constants/margin_bottom = 10
-metadata/_edit_lock_ = true
 
-[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer"]
 layout_mode = 2
-metadata/_edit_lock_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/ScrollContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+theme_override_colors/default_color = Color(0.388235, 0.270588, 0.121569, 1)
+theme_override_fonts/normal_font = ExtResource("2_q04mq")
+theme_override_font_sizes/normal_font_size = 40
+bbcode_enabled = true
+text = "[center][u]Gameplay[/u][/center]"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Label3" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "Video"
+label_settings = SubResource("LabelSettings_4eeuk")
+
+[node name="Label5" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "Audio"
+label_settings = SubResource("LabelSettings_4eeuk")
+
+[node name="Label2" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "Controls"
+label_settings = SubResource("LabelSettings_4eeuk")
+
+[node name="Label4" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "Language"
+label_settings = SubResource("LabelSettings_4eeuk")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 0
+vertical_scroll_mode = 0
 metadata/_edit_lock_ = true
 
+[node name="VBoxContainer" parent="PanelContainer/HBoxContainer/ScrollContainer" instance=ExtResource("4_yu0d3")]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 2
+
+[node name="Control" parent="PanelContainer/HBoxContainer/ScrollContainer" instance=ExtResource("5_eyrnm")]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -184.0
+offset_top = 48.0
+offset_right = 188.0
+offset_bottom = 90.0
+grow_horizontal = 2
+text = "SETTINGS
+"
+label_settings = SubResource("LabelSettings_ixcif")
+
 [node name="Exit" type="TextureButton" parent="."]
-layout_mode = 0
-offset_left = 980.0
-offset_top = 96.0
-offset_right = 1030.0
-offset_bottom = 146.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 454.0
+offset_top = -297.0
+offset_right = 549.0
+offset_bottom = -211.0
+grow_horizontal = 2
+grow_vertical = 2
 rotation = 0.785398
 texture_normal = ExtResource("2_kfayx")
 ignore_texture_size = true
 stretch_mode = 5
-
-[node name="BuyAndSellButton" type="Sprite2D" parent="."]
-position = Vector2(418, 248)
-scale = Vector2(1.00231, 0.991379)
-texture = ExtResource("3_gd160")
-
-[node name="BuyAndSellButton2" type="Sprite2D" parent="."]
-position = Vector2(424, 464)
-scale = Vector2(1.00231, 0.991379)
-texture = ExtResource("3_gd160")
-
-[node name="BuyAndSellButton3" type="Sprite2D" parent="."]
-position = Vector2(417.25, 398.5)
-scale = Vector2(1.00231, 0.991379)
-texture = ExtResource("3_gd160")
-
-[node name="BuyAndSellButton4" type="Sprite2D" parent="."]
-position = Vector2(419, 319)
-scale = Vector2(1.00231, 0.991379)
-texture = ExtResource("3_gd160")
-
-[node name="Line2D" type="Line2D" parent="."]
-material = SubResource("ShaderMaterial_rcnk7")
-points = PackedVector2Array(572, 165, 570, 560)

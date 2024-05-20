@@ -1,6 +1,8 @@
 using Godot;
 using MagicalMountainMinery.Data;
+using MagicalMountainMinery.Data.Load;
 using MagicalMountainMinery.Main;
+using static MagicalMountainMinery.Data.Load.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,15 +13,14 @@ public partial class Runner : Node2D
 {
     public MapLevel MapLevel { get; set; }
 
-    public static float SIM_SPEED_RATIO = 1f;
-    public static float SIM_SPEED_STACK = 0f;
+    
     //public Cart Cart;
 
     public TrackPlacer Placer;
 
+    public NavBar NavBar { get; set; }
     public ColorRect LoadingScreen { get; set; }
 
-    public Label StarCountLabel { get; set; }
     public List<CartController> CartControllers { get; set; } = new List<CartController>();
 
     public bool ValidRun = true;
@@ -38,41 +39,20 @@ public partial class Runner : Node2D
     public MapSave CurrentMapSave { get; set; }
     public MapLoad CurrentMapData { get; set; }
 
-
+    public TopBar TopBar { get; set; }
     public Camera Cam { get; set; }
     public override void _Ready()
     {
-
-
-
-
         LoadingScreen = this.GetNode<ColorRect>("CanvasLayer/ColorRect");
-
 
         Cam = new Camera();
         this.AddChild(Cam);
         Cam.Zoom = new Vector2(0.1f, 0.1f);
-        StarCountLabel = this.GetNode<Label>("CanvasLayer/StarAmountBox/Label");
-        // MapLevel = new MapLevel();
-        //MapLevel.GenNodes(5);
 
         Placer = this.GetNode<TrackPlacer>("TrackPlacer");
 
-        //this.AddChild(Placer);
-        //this.MoveChild(Placer, 2);
-
-
         GemUsedDelegate used = GemUsed;
         Placer.GemUsed = used;
-        //var select = this.GetNode<OptionButton>("CanvasLayer/LevelSelect");
-        //select.ConnectTo(OptionButton.SignalName.ItemSelected, new Callable(this, nameof(OnResetSingle)));
-
-        //LoadSingleLevel(0);
-
-        //this.AddChild(player);
-        //player.Stream = ResourceLoader.Load<AudioStream>("res://Assets/Sounds/Music/SoundTrack.mp3");
-        //player.Play();
-
 
     }
 
@@ -116,11 +96,9 @@ public partial class Runner : Node2D
 
     public void StopLevelPressed()
     {
-
         this.GetNode<Control>("CanvasLayer/Container").Visible = false;
         EventDispatch.ExitUI(this.GetNode<GameButton>("CanvasLayer/Container/Stop"));
         OnRetry();
-        //BtnEnable(this.GetNode<TextureButton>("CanvasLayer/MiningStart"), true);
     }
     public override void _ExitTree()
     {
@@ -167,24 +145,24 @@ public partial class Runner : Node2D
 
     public void OnSimSpeedChange(float amount)
     {
-        if (SIM_SPEED_STACK + amount < -2)
+        if (Settings.SIM_SPEED_STACK + amount < -2)
             return;
-        if (SIM_SPEED_STACK + amount > 4)
+        if (Settings.SIM_SPEED_STACK + amount > 4)
             return;
-        SIM_SPEED_STACK += amount;
+        Settings.SIM_SPEED_STACK += amount;
 
 
-        if (SIM_SPEED_STACK < 0)
+        if (Settings.SIM_SPEED_STACK < 0)
         {
-            var percent = SIM_SPEED_STACK * -2;
-            SIM_SPEED_RATIO = percent == 0 ? 1 : 1 / percent;
+            var percent = Settings.SIM_SPEED_STACK * -2;
+            Settings.SIM_SPEED_RATIO = percent == 0 ? 1 : 1 / percent;
 
         }
         else
         {
-            SIM_SPEED_RATIO = 1 + SIM_SPEED_STACK;
+            Settings.SIM_SPEED_RATIO = 1 + Settings.SIM_SPEED_STACK;
         }
-        this.GetNode<Label>("CanvasLayer/SpeedControl/Label").Text = (SIM_SPEED_RATIO * 100) + "%";
+        NavBar.SpeedControl.GetNode<Label>("VBoxContainer/Label").Text = (Settings.SIM_SPEED_RATIO * 100) + "%";
     }
 
 
@@ -267,7 +245,7 @@ public partial class Runner : Node2D
         }
 
         CurrentProfile.StarCount += totalStars + bonusStarDiff;
-        StarCountLabel.Text = CurrentProfile.StarCount.ToString();
+        NavBar.StarLabel.Text = CurrentProfile.StarCount.ToString();
         LevelComplete(CurrentMapSave, CurrentMapData);
 
         LevelEndUI.Show(complete, CurrentMapSave.BonusStarsCompleted);
@@ -290,7 +268,7 @@ public partial class Runner : Node2D
         }
 
         CurrentProfile.StarCount -= entry.GameResource.Amount;
-        StarCountLabel.Text = CurrentProfile.StarCount.ToString();
+        NavBar.StarLabel.Text = CurrentProfile.StarCount.ToString();
 
 
     }
@@ -375,7 +353,7 @@ public partial class Runner : Node2D
 
     public override void _PhysicsProcess(double delta)
     {
-        LastEvent = EventDispatch.PopGameEvent();
+        //LastEvent = EventDispatch.PopGameEvent();
 
 
         if (!ValidRun)
@@ -383,7 +361,7 @@ public partial class Runner : Node2D
 
 
         var obj = EventDispatch.PeekHover();
-        var env = EventDispatch.FetchLast();
+        var env = EventDispatch.FetchLastInput();
 
         if (Placer.HandleSpecial || !HandleGameButtonClick(env, obj))
             Placer?.Handle(env, obj);
@@ -428,8 +406,8 @@ public partial class Runner : Node2D
         Placer.PauseHandle = true;
         //if(CartControllers.Any(item=>item.State == ))
         this.GetNode<Control>("CanvasLayer/Container").Visible = true;
-        BtnEnable(this.GetNode<TextureButton>("CanvasLayer/MiningStart"), false);
-        EventDispatch.ExitUI(this.GetNode<TextureButton>("CanvasLayer/MiningStart") as IUIComponent);
+        BtnEnable(NavBar.MiningIcon, false);
+        EventDispatch.ExitUI(NavBar.MiningIcon as IUIComponent);
         //BtnEnable(StartButton, false);
 
         var colors = new List<Color>() { Colors.AliceBlue, Colors.RebeccaPurple, Colors.Yellow, Colors.Green };

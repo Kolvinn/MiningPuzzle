@@ -1,0 +1,221 @@
+[gd_scene load_steps=14 format=3 uid="uid://cg8gtxwhe5fkm"]
+
+[ext_resource type="Script" path="res://UI/Settings/SettingsMenu.cs" id="1_hyjl6"]
+[ext_resource type="Texture2D" uid="uid://b4qst7q2fvjl2" path="res://Assets/UI/FrameBrown.png" id="2_p3476"]
+[ext_resource type="StyleBox" uid="uid://cwcx4mof2psxs" path="res://UI/Settings/SettingsButtonStyleBox.tres" id="3_f5gnv"]
+[ext_resource type="FontFile" uid="uid://cipymmhxrwq2p" path="res://Assets/Fonts/Pixel/Stepalange-x3BLm.otf" id="4_eanb4"]
+[ext_resource type="Texture2D" uid="uid://s43hmi66atcm" path="res://Assets/UI/Kasaya's Frames/Inventory & chests/2/abilities.png" id="5_7d6ee"]
+[ext_resource type="PackedScene" uid="uid://bg2stbseh0n52" path="res://UI/Settings/Gameplay.tscn" id="5_cnkms"]
+[ext_resource type="PackedScene" uid="uid://pt6sqhisaak1" path="res://UI/Settings/Video.tscn" id="6_3q4ud"]
+[ext_resource type="Script" path="res://UI/GameButton.cs" id="6_x4jmh"]
+[ext_resource type="Texture2D" uid="uid://bnwpai7x8v8ky" path="res://Assets/UI/Lucid V1.2/PNG/Flat/32/Plus.png" id="7_u3p3w"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_stexq"]
+atlas = ExtResource("2_p3476")
+region = Rect2(48, 138, 1080, 460)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bex4e"]
+content_margin_left = 30.0
+content_margin_top = 30.0
+content_margin_right = 30.0
+content_margin_bottom = 45.0
+texture = SubResource("AtlasTexture_stexq")
+
+[sub_resource type="LabelSettings" id="LabelSettings_r5aly"]
+font = ExtResource("4_eanb4")
+font_size = 64
+
+[sub_resource type="LabelSettings" id="LabelSettings_ixcif"]
+font = ExtResource("4_eanb4")
+font_size = 96
+
+[node name="SettingsOverlay" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hyjl6")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.133333, 0.133333, 0.133333, 0.466667)
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -470.5
+offset_top = -250.5
+offset_right = 470.5
+offset_bottom = 250.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_bex4e")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.31
+theme_override_constants/separation = 15
+
+[node name="Gameplay" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+texture_filter = 2
+layout_mode = 2
+theme_override_styles/normal = ExtResource("3_f5gnv")
+text = "Gameplay"
+label_settings = SubResource("LabelSettings_r5aly")
+horizontal_alignment = 2
+vertical_alignment = 1
+metadata/origin = Vector2(0, 0)
+
+[node name="TextureButton" type="TextureButton" parent="PanelContainer/HBoxContainer/VBoxContainer/Gameplay"]
+self_modulate = Color(1, 1, 1, 0.00392157)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("5_7d6ee")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("6_x4jmh")
+UIID = "Gameplay"
+metadata/_edit_lock_ = true
+
+[node name="Video" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Video"
+label_settings = SubResource("LabelSettings_r5aly")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="TextureButton" type="TextureButton" parent="PanelContainer/HBoxContainer/VBoxContainer/Video"]
+self_modulate = Color(1, 1, 1, 0.00392157)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("5_7d6ee")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("6_x4jmh")
+UIID = "Video"
+
+[node name="Audio" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Audio"
+label_settings = SubResource("LabelSettings_r5aly")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="TextureButton" type="TextureButton" parent="PanelContainer/HBoxContainer/VBoxContainer/Audio"]
+self_modulate = Color(1, 1, 1, 0.00392157)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("5_7d6ee")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("6_x4jmh")
+UIID = "Audio"
+
+[node name="Language" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 1
+text = "Language"
+label_settings = SubResource("LabelSettings_r5aly")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="TextureButton" type="TextureButton" parent="PanelContainer/HBoxContainer/VBoxContainer/Language"]
+self_modulate = Color(1, 1, 1, 0.00392157)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("5_7d6ee")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("6_x4jmh")
+UIID = "Language"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.7
+vertical_scroll_mode = 0
+metadata/_edit_lock_ = true
+
+[node name="Gameplay" parent="PanelContainer/HBoxContainer/ScrollContainer" instance=ExtResource("5_cnkms")]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 2
+
+[node name="Video" parent="PanelContainer/HBoxContainer/ScrollContainer" instance=ExtResource("6_3q4ud")]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 2
+
+[node name="Audio" parent="PanelContainer/HBoxContainer/ScrollContainer" instance=ExtResource("6_3q4ud")]
+visible = false
+layout_mode = 2
+
+[node name="Lanuage" parent="PanelContainer/HBoxContainer/ScrollContainer" instance=ExtResource("6_3q4ud")]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -152.0
+offset_top = 23.0
+offset_right = 220.0
+offset_bottom = 115.0
+grow_horizontal = 2
+text = "SETTINGS
+"
+label_settings = SubResource("LabelSettings_ixcif")
+
+[node name="Exit" type="TextureButton" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -179.0
+offset_top = 74.0
+offset_right = -106.0
+offset_bottom = 150.0
+grow_horizontal = 0
+rotation = 0.785398
+texture_normal = ExtResource("7_u3p3w")
+ignore_texture_size = true
+stretch_mode = 5
+
+[connection signal="pressed" from="Exit" to="." method="_on_exit_pressed"]

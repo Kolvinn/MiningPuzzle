@@ -1,6 +1,8 @@
 ﻿using Godot;
 using MagicalMountainMinery.Data;
+using MagicalMountainMinery.Data.Load;
 using MagicalMountainMinery.Obj;
+using static MagicalMountainMinery.Data.Load.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +11,7 @@ namespace MagicalMountainMinery.Main
 {
     public partial class CartController : Node2D
     {
-        public static float CART_SPEED = 40f;
+        public static float CART_SPEED = 80f;
 
         public static float ANIM_SPEED = 2f;
 
@@ -299,12 +301,12 @@ namespace MagicalMountainMinery.Main
                     NextVector = CartVectors.Dequeue();
                     NextDirection = CartDirs.Dequeue();
                     var thing = (NextDirection.ToString().Split("_")[1]);
-                    Cart.CurrentPlayer.Play(thing, customSpeed: 1 * Runner.SIM_SPEED_RATIO);
+                    Cart.CurrentPlayer.Play(thing, customSpeed: 1 * Settings.SIM_SPEED_RATIO);
                 }
             }
             else
             {
-                var thing = Cart.Position.MoveToward(NextVector, (float)delta * CART_SPEED * Runner.SIM_SPEED_RATIO);
+                var thing = Cart.Position.MoveToward(NextVector, (float)delta * CART_SPEED * Settings.SIM_SPEED_RATIO);
                 Cart.Position = thing;
             }
         }
@@ -493,7 +495,7 @@ namespace MagicalMountainMinery.Main
                 CurrentConnection = startTrack;
                 var thing = (LastDirection.ToString().Split("_")[1]);
 
-                Cart.CurrentPlayer.Play(thing, customSpeed: Runner.SIM_SPEED_RATIO);
+                Cart.CurrentPlayer.Play(thing, customSpeed: Settings.SIM_SPEED_RATIO);
                 State = CartState.Moving;
             }
 

@@ -73,6 +73,7 @@ namespace MagicalMountainMinery.Data
 
         };
         public static Dictionary<Connection, Texture2D> TrackTextures { get; set; } = new Dictionary<Connection, Texture2D>();
+        public static Dictionary<Connection, Texture2D> TrackBackingTextures { get; set; } = new Dictionary<Connection, Texture2D>();
 
         public static List<Connection> Curves = new List<Connection>();
 
@@ -193,8 +194,18 @@ namespace MagicalMountainMinery.Data
             return null;
         }
 
+        public static Texture2D GetBackingTex(Connection con)
+        {
+            foreach(var  item in TrackBackingTextures)
+            {
+                if(Compare(item.Key, con))
+                    return item.Value;
+            }
+            return null;
+        }
         public static void LoadTracks()
         {
+            var BaseDir = "res://Assets/TracksV2/";
             var stream = new List<string>()
             {
                 "res://Assets/Tracks/Modified/curve_down_left.tres",
@@ -269,6 +280,60 @@ namespace MagicalMountainMinery.Data
             }
 
         }
+        public static void LoadTracksV2()
+        {
+            var BaseDir = "res://Assets/TracksV2/";
+            var stream = new List<string>()
+            {
+                "Tracks/curve_down_left.tres",
+                "Tracks/curve_down_right.tres",
+                "Tracks/curve_left_up.tres",
+                "Tracks/curve_right_up.tres"
+            };
+
+            //Godot.DirAccess.GetFilesAt("res://Assets/Tracks/Modified/").Where(item => !item.Contains("straight") );
+
+            var hor = ResourceLoader.Load<Texture2D>("res://Assets/TracksV2/Tracks/straight_horizontal.tres");
+            var ver = ResourceLoader.Load<Texture2D>("res://Assets/TracksV2/Tracks/straight_vertical.tres");
+
+            var horback = ResourceLoader.Load<Texture2D>("res://Assets/TracksV2/Backing/Horizontal.tres");
+            var verBack = ResourceLoader.Load<Texture2D>("res://Assets/TracksV2/Backing/Vertical.tres");
+
+
+            TrackTextures.Add(new Connection(IndexPos.Left, IndexPos.Right, null), hor);
+            TrackTextures.Add(new Connection(IndexPos.Left, IndexPos.Zero, null), hor);
+            TrackTextures.Add(new Connection(IndexPos.Right, IndexPos.Zero, null), hor);
+            TrackTextures.Add(new Connection(IndexPos.Right, IndexPos.Left, null), hor);
+            foreach (var b in TrackTextures.Keys)
+                TrackBackingTextures.Add(b, horback);
+          
+
+            TrackTextures.Add(new Connection(IndexPos.Up, IndexPos.Down, null), ver);
+            TrackTextures.Add(new Connection(IndexPos.Up, IndexPos.Zero, null), ver);
+            TrackTextures.Add(new Connection(IndexPos.Down, IndexPos.Zero, null), ver);
+            TrackTextures.Add(new Connection(IndexPos.Down, IndexPos.Up, null), ver);
+            var verts = TrackTextures.Where(item => item.Value == ver).ToList();
+            foreach (var bb in verts) 
+                TrackBackingTextures.Add(bb.Key, verBack);
+
+            foreach (var dir in stream)
+            {
+                var texture = ResourceLoader.Load<Texture2D>(BaseDir + dir);
+
+                var file = dir.Split('/').Last().Split('.')[0];
+
+                var split = file.Split('_');
+
+                var incoming = IndexPos.MatchDirection(split[1]);
+                var outgoing = IndexPos.MatchDirection(split[2]);
+                var curve = new Connection(incoming, outgoing, texture);
+                Curves.Add(curve);
+                var backing = ResourceLoader.Load<Texture2D>("res://Assets/TracksV2/Backing/"+file+".tres");
+                TrackBackingTextures.Add(curve, backing);
+                
+            }
+
+        }
 
         public static void LoadJunctions()
         {
@@ -314,6 +379,39 @@ namespace MagicalMountainMinery.Data
                 var curve = new Junc(from, to, option, texture);
                 Junctions_Raised.Add(curve);
             }
+
+        }
+
+        public static void LoadJunctionsV2()
+        {
+            var stream = new List<string>()
+            {
+                "res://Assets/TracksV2/Tracks/Junction/down_up_left.tres",
+                "res://Assets/TracksV2/Tracks/Junction/down_up_right.tres",
+                "res://Assets/TracksV2/Tracks/Junction/left_right_down.tres",
+                "res://Assets/TracksV2/Tracks/Junction/left_right_up.tres",
+                "res://Assets/TracksV2/Tracks/Junction/right_left_down.tres",
+                "res://Assets/TracksV2/Tracks/Junction/right_left_up.tres",
+                "res://Assets/TracksV2/Tracks/Junction/up_down_left.tres",
+                "res://Assets/TracksV2/Tracks/Junction/up_down_right.tres"
+            };
+            foreach (var dir in stream)
+            {
+                var texture = ResourceLoader.Load<Texture2D>(dir);
+                var file = dir.Split('/').Last().Split('.')[0];
+                var split = file.Split('_');
+
+                var dict = new Dictionary<IndexPos, Texture2D>();
+                //i.e., down left 
+                var from = IndexPos.MatchDirection(split[0]);
+                var to = IndexPos.MatchDirection(split[1]);
+                var option = IndexPos.MatchDirection(split[2]);
+
+                var curve = new Junc(from, to, option, texture);
+                Junctions.Add(curve);
+            }
+
+
 
         }
 
@@ -386,6 +484,7 @@ namespace MagicalMountainMinery.Data
             return null;
 
         }
+
         public static void LoadLevels()
         {
 

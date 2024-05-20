@@ -1,9 +1,9 @@
-[gd_scene load_steps=26 format=3 uid="uid://mxv1hoqyypag"]
+[gd_scene load_steps=22 format=3 uid="uid://mxv1hoqyypag"]
 
-[ext_resource type="Texture2D" uid="uid://b1e7u6agbxfr" path="res://Assets/MinerCatCrop.png" id="3_r8t6t"]
 [ext_resource type="PackedScene" uid="uid://dj771pecqo0re" path="res://Obj/Miner.tscn" id="3_wcrvc"]
 [ext_resource type="Shader" path="res://Assets/Shaders/RepeatScroll.gdshader" id="4_08tsq"]
 [ext_resource type="Texture2D" uid="uid://2nhhuhs7e7a8" path="res://Assets/UI/Wenrexa Interface UI KIT #4/PNG/Icons/ArrowRow.png" id="5_60ei2"]
+[ext_resource type="Texture2D" uid="uid://dqqdra3a7kp4a" path="res://Assets/Miner/Cat3.png" id="5_i17w1"]
 [ext_resource type="Script" path="res://Obj/Cart.cs" id="CSharpScript_0a8dh"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tk4th"]
@@ -68,7 +68,7 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(-0.0937517, -18.3438)]
+"values": [Vector2(1, -47)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -81,6 +81,18 @@ tracks/4/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [1.5708]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Miner:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(3, -28)]
 }
 
 [sub_resource type="Animation" id="Animation_od535"]
@@ -133,7 +145,7 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(-0.0937517, -22.3438)]
+"values": [Vector2(-0.094, -55)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -147,39 +159,17 @@ tracks/4/keys = {
 "update": 0,
 "values": [3.14159]
 }
-
-[sub_resource type="Animation" id="Animation_e45xn"]
-resource_name = "NorthEast"
-length = 0.1
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("./Sprite2D:texture:region")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Miner:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Rect2(96, 0, 64, 64)]
-}
-
-[sub_resource type="Animation" id="Animation_vykgt"]
-resource_name = "NorthWest"
-length = 0.1
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("./Sprite2D:texture:region")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Rect2(160, 0, 64, 64)]
+"values": [Vector2(3, -36)]
 }
 
 [sub_resource type="Animation" id="Animation_x34qa"]
@@ -340,6 +330,18 @@ tracks/8/keys = {
 "update": 1,
 "values": [true]
 }
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Miner:position")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(3, -28)]
+}
 
 [sub_resource type="Animation" id="Animation_0sgka"]
 resource_name = "Right"
@@ -391,7 +393,7 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(-0.0937517, -22.3438)]
+"values": [Vector2(-0.094, -55)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -405,38 +407,17 @@ tracks/4/keys = {
 "update": 0,
 "values": [0.0]
 }
-
-[sub_resource type="Animation" id="Animation_ttt6p"]
-resource_name = "SouthEast"
-length = 0.1
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("./Sprite2D:texture:region")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Miner:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Rect2(160, 0, 64, 64)]
-}
-
-[sub_resource type="Animation" id="Animation_bnlar"]
-resource_name = "SouthWest"
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("./Sprite2D:texture:region")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Rect2(96, 0, 64, 64)]
+"values": [Vector2(3, -36)]
 }
 
 [sub_resource type="Animation" id="Animation_ha3uu"]
@@ -489,7 +470,7 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(-0.0937517, -18.3438)]
+"values": [Vector2(-0.094, -47)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -503,18 +484,26 @@ tracks/4/keys = {
 "update": 0,
 "values": [4.71239]
 }
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Miner:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(3, -28)]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ys215"]
 _data = {
 "Down": SubResource("Animation_irgjp"),
 "Left": SubResource("Animation_od535"),
-"NorthEast": SubResource("Animation_e45xn"),
-"NorthWest": SubResource("Animation_vykgt"),
 "PortalEnter": SubResource("Animation_x34qa"),
 "RESET": SubResource("Animation_6gjcb"),
 "Right": SubResource("Animation_0sgka"),
-"SouthEast": SubResource("Animation_ttt6p"),
-"SouthWest": SubResource("Animation_bnlar"),
 "Up": SubResource("Animation_ha3uu")
 }
 
@@ -568,6 +557,7 @@ texture = ExtResource("5_60ei2")
 offset = Vector2(85, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
 texture = SubResource("AtlasTexture_t4aww")
 offset = Vector2(0, -15)
 
@@ -577,6 +567,9 @@ libraries = {
 }
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_ys215")
+}
 tree_root = SubResource("AnimationNodeBlendSpace2D_wqgcv")
 anim_player = NodePath("../AnimationPlayer")
 parameters/blend_position = Vector2(0.109891, -0.0412104)
@@ -598,8 +591,14 @@ position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_edai0")
 
 [node name="Miner" parent="." instance=ExtResource("3_wcrvc")]
+position = Vector2(3, -28)
+scale = Vector2(1.58, 1.58)
 
 [node name="MinerCat" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(-0.0937517, -22.3438)
-scale = Vector2(0.036, 0.037)
-texture = ExtResource("3_r8t6t")
+scale = Vector2(1.42188, 1.60938)
+texture = ExtResource("5_i17w1")
+offset = Vector2(1.445, 6.275)
+hframes = 4
+frame = 2

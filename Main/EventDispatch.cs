@@ -21,7 +21,7 @@ namespace MagicalMountainMinery.Main
 
         private static List<GameEvent> gameEvents = new List<GameEvent>();
 
-
+        private static EventType Last { get; set; } = EventType.Nill;
 
         public override void _Ready()
         {
@@ -135,9 +135,19 @@ namespace MagicalMountainMinery.Main
             return new GameEvent();
         }
 
-        public static EventType FetchLast()
+        /// <summary>
+        /// Fetches the last event generated via key,mouse,movement input. Lasts for one physics frame
+        /// from when it is picked by the GameController
+        /// </summary>
+        /// <returns></returns>
+        public static EventType FetchLastInput()
         {
-            return eventTypes.Count == 0 ? EventType.Nill : eventTypes.Dequeue();
+            return Last;
+        }
+
+        public void SetLastInput()
+        {
+            Last = eventTypes.Count == 0 ? EventType.Nill : eventTypes.Dequeue();
         }
 
         public static IGameObject FetchInteractable()
@@ -156,18 +166,26 @@ namespace MagicalMountainMinery.Main
             GD.Print("exiting btn");
             hoverList.Remove(comp);
         }
-        public static IUIComponent GetHover()
+        //public static IUIComponent GetHover()
+        //{
+
+
+        //    if (hoverList.Count > 0)
+        //    {
+        //        GD.Print("returning btn");
+        //        var hover = hoverList.First();
+        //        hoverList.Remove(hover);
+        //        return hover;
+        //    }
+        //    return null;
+        //}
+
+        /// <summary>
+        /// Clears current Iucomponent queue. Useful for switching scenes or when buttons cannot be exited
+        /// </summary>
+        public static void ClearUIQueue()
         {
-
-
-            if (hoverList.Count > 0)
-            {
-                GD.Print("returning btn");
-                var hover = hoverList.First();
-                hoverList.Remove(hover);
-                return hover;
-            }
-            return null;
+            hoverList.Clear();
         }
 
         public static IUIComponent PeekHover()
@@ -177,6 +195,16 @@ namespace MagicalMountainMinery.Main
                 return hoverList.First();
             }
             return null;
+        }
+
+        /// <summary>
+        /// Consumes the given hover only if the hover is top level
+        /// </summary>
+        /// <param name="comp"></param>
+        public static void ConsumeHover(IUIComponent comp)
+        {
+            if (hoverList.Count > 0 && hoverList[0] == comp)
+                hoverList.RemoveAt(0);
         }
 
         public static void Entered(IGameObject interactable)

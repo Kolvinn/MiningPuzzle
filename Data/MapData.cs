@@ -36,6 +36,7 @@ namespace MagicalMountainMinery.Data
         public int BonusStars { get; set; }
         public string DataString { get; set; }
 
+        public int MapSeed { get; set; }
     }
 
 
@@ -50,15 +51,30 @@ namespace MagicalMountainMinery.Data
 
     }
 
+    public enum Difficulty
+    {
+        Chill,
+        Challenging,
+        Random_Insanity
+    }
 
+
+    public struct DifficultyData
+    {
+        public int Max { get; set; }
+        public int Min { get; set; }
+    }
     public class SaveProfile
     {
         public string ProfileName { get; set; }
         public string Filename { get; set; }
-
+        public int Seed {  get; set; }
         public int StarCount { get; set; } = 0;
         public List<GameResource> StoredGems { get; set; } = new List<GameResource>();
         public SortedList<int, MapDataBase> DataList { get; set; } = new SortedList<int, MapDataBase>();
+
+
+        public SortedList<int, MapDataBase> LoadedRandom { get; set; } = new SortedList<int, MapDataBase>();
 
         public MapSave Get(MapDataBase data)
         {
