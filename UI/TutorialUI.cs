@@ -25,7 +25,7 @@ public partial class TutorialUI : Control
     public TutorialBox CurrentTutorial { get; set; }
 
     public Control CurrentLevelControl { get; set; }
-    //public int Level { get; set; } = 1;
+    //public int LevelIndex { get; set; } = 1;
     public Control RegionControl { get; set; }
     public ColorRect Background { get; set; }
     public override void _Ready()

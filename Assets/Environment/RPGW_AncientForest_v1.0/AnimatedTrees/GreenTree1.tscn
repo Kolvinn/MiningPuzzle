@@ -76,18 +76,18 @@ animations = [{
 "texture": SubResource("AtlasTexture_ixs4e")
 }],
 "loop": true,
-"name": &"new_animation",
+"name": &"default",
 "speed": 5.0
 }]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D"]
 sprite_frames = SubResource("SpriteFrames_4xmom")
-animation = &"new_animation"
-autoplay = "new_animation"
-frame_progress = 0.363293
+autoplay = "default"
+frame_progress = 0.301657
 offset = Vector2(0, -95)
 
 [node name="HitBox" type="Area2D" parent="."]
+visible = false
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="HitBox"]
 visible = false
@@ -101,3 +101,8 @@ offset_left = -16.0
 offset_top = -17.0
 offset_right = 16.0
 offset_bottom = 15.0
+
+[node name="ViewBox" type="Area2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="ViewBox"]
+polygon = PackedVector2Array(-29, -4, -13, -14, -11, -37, -75, -60, -67, -127, -43, -174, 0, -202, 45, -205, 57, -151, 71, -105, 78, -66, 40, -47, 15, -45, 16, -22, 36, -9, 31, 15, -4, 22)

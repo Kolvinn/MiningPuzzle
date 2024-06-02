@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://d3d5ymsgg3wny"]
 
-[ext_resource type="Texture2D" uid="uid://c3pb1qb7fkify" path="res://Assets/Environment/Minerals/Copper_Node.png" id="1_eb8dx"]
+[ext_resource type="Texture2D" uid="uid://c3pb1qb7fkify" path="res://Assets/Environment/Minerals - Old/Copper_Node.png" id="1_eb8dx"]
 [ext_resource type="Script" path="res://Delete/Recolour.cs" id="2_mqpfx"]
 [ext_resource type="Texture2D" uid="uid://caha7dbgokeiq" path="res://Assets/Environment/Ore Pack by CaptainSkeleto/Ore/Ore28.png" id="3_25pyy"]
 [ext_resource type="Texture2D" uid="uid://bfcdyt1s6c8o2" path="res://Assets/Environment/Ore Pack by CaptainSkeleto/Ore/Ore4.png" id="4_wjuiw"]

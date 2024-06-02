@@ -32,7 +32,25 @@ public partial class Mineable : Sprite2D, IGameObject, ISaveable
         //canvas.Visible = true;
         this.TextureFilter = TextureFilterEnum.Nearest;
         //48 pixel node on 32 pixel squares
+        ResourceLabel = this.GetNode<Label>("ResourceLabel");
+        //GetTree().ToSignal
+        //    = new Label()
+        //{
+        //    Text = ResourceSpawn?.Amount.ToString(),
+        //    Size = new Vector2(32, 32),
+        //    Position = new Vector2(-16, -16),
+        //    LabelSettings = new LabelSettings()
+        //    {
+        //        FontSize = 16,
+        //        Font = ResourceLoader.Load<Font>("res://Assets/Fonts/Pixel/PrintChar21.ttf"),
+        //    },
+        //    HorizontalAlignment = HorizontalAlignment.Center,
+        //    VerticalAlignment = VerticalAlignment.Center,
+        //    MouseFilter = Control.MouseFilterEnum.Ignore,
+        //    TextureFilter = TextureFilterEnum.Nearest
 
+
+        //};
 
 
     }
@@ -48,39 +66,16 @@ public partial class Mineable : Sprite2D, IGameObject, ISaveable
             Hardness = 2;
 
         var list = new List<MineableType>() { MineableType.Copper, MineableType.Iron };
-        //if (list.Contains(Type))
+
+        //if (Hardness > 0)
         //{
-        //    this.Scale = new Vector2(1.75f, 1.75f);
-        //    ResourceLabel.LabelSettings.FontSize = 8;
-        //    //label.Scale = new Vector2(0.5f, 0.5f);
+        //    HardnessIcon = Runner.LoadScene<Sprite2D>("res://UI/HardnessIcon.tscn");
+        //    this.AddChild(HardnessIcon);
+        //    HardnessIcon.GetNode<Label>("Label").Text = Hardness.ToString();
 
         //}
-        if (Hardness > 0)
-        {
-            HardnessIcon = Runner.LoadScene<Sprite2D>("res://UI/HardnessIcon.tscn");
-            this.AddChild(HardnessIcon);
-            HardnessIcon.GetNode<Label>("Label").Text = Hardness.ToString();
-
-        }
-        ResourceLabel = new Label()
-        {
-            Text = ResourceSpawn?.Amount.ToString(),
-            Size = new Vector2(32, 32),
-            Position = new Vector2(-16, -16),
-            LabelSettings = new LabelSettings()
-            {
-                FontSize = 16,
-                Font = ResourceLoader.Load<Font>("res://Assets/Fonts/Pixel/PrintChar21.ttf"),
-            },
-            HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment = VerticalAlignment.Center,
-            MouseFilter = Control.MouseFilterEnum.Ignore,
-            TextureFilter = TextureFilterEnum.Nearest
-
-
-        };
-
-        this.AddChild(ResourceLabel);
+        this.Texture = ResourceStore.Mineables[Type];
+        ResourceLabel.Text = this.ResourceSpawn?.Amount.ToString();
     }
     public virtual List<string> GetSaveRefs()
     {
@@ -95,6 +90,8 @@ public partial class Mineable : Sprite2D, IGameObject, ISaveable
         this.ResourceSpawn.Amount = amount;
         ResourceLabel.Text = amount.ToString();
     }
+  
+
     public void _on_area_2d_mouse_exited()
     {
         EventDispatch.Exited(this);
@@ -103,4 +100,6 @@ public partial class Mineable : Sprite2D, IGameObject, ISaveable
     {
         EventDispatch.Entered(this);
     }
+
+
 }

@@ -55,6 +55,10 @@ namespace MagicalMountainMinery.Main
         public AudioStreamPlayer AudioStream { get; set; }
 
         public Shop ShopScreen { get; set; }
+
+        public AnimatedSprite2D TrackPlaceAnimation { get; set; }
+
+        public Queue<AnimatedSprite2D> placeAnims = new Queue<AnimatedSprite2D>();    
         public List<Track> OuterConnections { get; set; } = new List<Track>();
         //public ColorRect[,] MineableLocations { get; set; }
 
@@ -66,6 +70,7 @@ namespace MagicalMountainMinery.Main
         public Track StartTrack { get; set; }
         public override void _Ready()
         {
+            TrackPlaceAnimation = Runner.LoadScene<AnimatedSprite2D>("res://Assets/Tracks/TrackPlaceAnimation.tscn");
             this.Position = Vector2.Zero;
             Buttons = new List<GameButton>()
             {
@@ -78,6 +83,8 @@ namespace MagicalMountainMinery.Main
             SpecialLabel = this.GetNode<Label>("CanvasLayer/Special Note");
             AudioStream = new AudioStreamPlayer();
             this.AddChild(AudioStream);
+            AudioStream.Bus = "Sfx";
+
             ShopScreen = this.GetNode<Shop>("CanvasLayer/Shop");
 
             foreach (var res in ResourceStore.ShopResources)
@@ -141,7 +148,6 @@ namespace MagicalMountainMinery.Main
             }
 
         }
-
         public void Handle(EventType type, IUIComponent comp)
         {
             if (PauseHandle)
@@ -234,6 +240,11 @@ namespace MagicalMountainMinery.Main
                     Special = ResourceType.Emerald;
                     HandleSpecial = true;
                 }
+                if (btn.UIID == "Amethyst")
+                {
+                    Special = ResourceType.Amethyst;
+                    HandleSpecial = true;
+                }
                 if (btn.UIID == "ShopOpen")
                 {
                     ShopScreen.Visible = true;
@@ -277,7 +288,7 @@ namespace MagicalMountainMinery.Main
                 CurrentTrackLevel = CurrentTrackLevel == 1 ? 2 : 1;
                 var id = CurrentTrackLevel == 1 ? "Normal" : "Raised";
                 SetButtonFocus(Buttons.First(item => item.UIID == id));
-                //this.GetNode<Label>("CanvasLayer/TextureRect2/Label").Text = "Level: " + CurrentTrackLevel;
+                //this.GetNode<Label>("CanvasLayer/TextureRect2/Label").Text = "LevelIndex: " + CurrentTrackLevel;
             }
 
             else if (env == EventType.Rotate)
@@ -524,6 +535,66 @@ namespace MagicalMountainMinery.Main
 
 
             var index = FetchMouseIndex();
+
+            var direction = LastHover - index;
+            if (!MapLevel.ValidIndex(index))
+                return;
+            if (index != CurrentHover)
+            {
+                LastHover = CurrentHover;
+                //GD.Print("Setting last hover to (del): ", LastHover);
+                CurrentHover = index;
+            }
+
+            var track = MapLevel.GetTrack(index);
+
+            if (track != null)
+            {
+                if (MasterTrackList.ContainsKey(track))
+                {
+                    var connections = MasterTrackList[track].ToList();
+                    foreach (var entry in connections)
+                    {
+                        Disconnect(entry, track);
+                    }
+                }
+                AudioStream.Stream = ResourceStore.GetAudio("TrackRemove");
+                AudioStream.Play();
+                RemoveTrack(track, index);
+            }
+            //UpdateMineable();
+        }
+        //public override void _UnhandledInput(InputEvent @event)
+        //{
+        //    if(@event is InputEventMouseMotion mouse)
+        //    {
+        //        //var global = GetGlobalMousePosition();
+        //        //var dexX = (global.X / (MapLevel.TrackX));
+        //        //var dexY = (global.Y / (MapLevel.TrackY));
+
+
+        //        //var index = new IndexPos(dexX, dexY);
+        //        var index = FetchMouseIndex();
+        //        GD.Print("Moving mouse at pos: ", GetGlobalMousePosition(), " and index: ", index);
+        //        if (MapLevel.ValidIndex(index))
+        //        {
+        //            var obj = MapLevel.MapObjects[index.X, index.Y];
+                    
+
+        //            if (obj != null && obj is Mineable mine)
+        //            {
+        //                var local = mine.GetLocalMousePosition();
+        //                var poly = mine.GetNode<CollisionPolygon2D>("Area2D/CollisionPolygon2D").Polygon;
+        //                if (Geometry2D.IsPointInPolygon(local, poly))
+        //                {
+        //                    mine._on_area_2d_mouse_entered();
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+        public void DeleteAt(IndexPos index)
+        {
 
             var direction = LastHover - index;
             if (!MapLevel.ValidIndex(index))
@@ -958,6 +1029,34 @@ namespace MagicalMountainMinery.Main
 
             AudioStream.Stream = ResourceStore.GetAudio("TrackPlace2");
             AudioStream.Play();
+
+            var newAnim = new AnimatedSprite2D()
+            {
+                SpriteFrames = TrackPlaceAnimation.SpriteFrames,
+                Position = newT.Position,
+                Offset = TrackPlaceAnimation.Offset,
+                Scale = TrackPlaceAnimation.Scale,
+            };
+            placeAnims.Enqueue(newAnim);
+            newAnim.Connect(AnimatedSprite2D.SignalName.AnimationFinished, Callable.From(OnFin));
+            this.AddChild(newAnim);
+            newAnim.Play();
+
+            var tween = GetTree().CreateTween();
+            newT.Scale = new Vector2(0.1f, 0.1f);
+            tween.TweenProperty(newT, "scale", new Vector2(1,1), 0.4f).
+            SetTrans(Tween.TransitionType.Elastic).SetEase(Tween.EaseType.Out);
+
+            //tween.Parallel().TweenProperty(Cart, "scale", new Vector2(1, 1), 0.5f).
+            //SetTrans(Tween.TransitionType.Quart).
+            //        SetEase(Tween.EaseType.In);
+
+
+            //tween.TweenProperty(Cart, "visible", true, 0.2f);
+            //tween.Connect(Tween.SignalName.Finished, Callable.From(PortalLeaveEnd));
+
+            //tween.property
+            //newAnim.QueueFree();
             return true;
 
 
@@ -966,7 +1065,13 @@ namespace MagicalMountainMinery.Main
 
 
         }
-
+        public void OnFin()
+        {
+            if(placeAnims.Count > 0)
+            {
+                placeAnims.Dequeue().QueueFree();
+            }
+        }
         public void MatchOuter(Track newT)
         {
             var dirs = new List<IndexPos>() { IndexPos.Left, IndexPos.Right, IndexPos.Up, IndexPos.Down };

@@ -1,14 +1,14 @@
 [gd_scene load_steps=9 format=3 uid="uid://bg2stbseh0n52"]
 
 [ext_resource type="Texture2D" uid="uid://bnwpai7x8v8ky" path="res://Assets/UI/Lucid V1.2/PNG/Flat/32/Plus.png" id="1_21p1o"]
-[ext_resource type="FontFile" uid="uid://cdjxwrsadqdwg" path="res://Assets/Fonts/Pixel/Dogica/dogicapixel.ttf" id="1_tukca"]
+[ext_resource type="FontFile" uid="uid://byjdlexdr3rw3" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_compressed.ttf" id="1_u1quf"]
 [ext_resource type="Texture2D" uid="uid://bnqh17c1hkq3n" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Button_Small_Press_01a1.png" id="2_gf5hv"]
 [ext_resource type="Texture2D" uid="uid://begtjjxbjqcmy" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Button_Small_Press_01a2.png" id="3_edqd3"]
 [ext_resource type="Script" path="res://UI/GameButton.cs" id="4_807aj"]
 [ext_resource type="Texture2D" uid="uid://dpi3u8p8vrlon" path="res://Assets/UI/Lucid V1.2/PNG/Flat/16/Plus.png" id="4_xh3g4"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_jf3fs"]
-font = ExtResource("1_tukca")
+font = ExtResource("1_u1quf")
 font_size = 32
 font_color = Color(0.984314, 0.929412, 0.87451, 1)
 outline_size = 15
@@ -19,9 +19,9 @@ atlas = ExtResource("1_21p1o")
 region = Rect2(0, 10, 28, 8)
 
 [node name="HBoxContainer" type="HBoxContainer"]
-offset_right = 373.0
-offset_bottom = 254.0
-theme_override_constants/separation = 20
+offset_right = 390.0
+offset_bottom = 134.0
+theme_override_constants/separation = 75
 
 [node name="Labels" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -49,7 +49,7 @@ layout_mode = 2
 theme_override_constants/separation = 30
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 45)
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 
 [node name="Minus" type="TextureButton" parent="VBoxContainer/HBoxContainer"]
@@ -80,7 +80,7 @@ stretch_mode = 5
 metadata/_edit_lock_ = true
 
 [node name="Plus" type="TextureButton" parent="VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(45, 45)
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 texture_normal = ExtResource("2_gf5hv")

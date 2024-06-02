@@ -30,11 +30,18 @@ namespace MagicalMountainMinery.Obj
 
         public bool canMine { get; set; } = true;
 
+        public AudioStreamPlayer MinerAudio {  get; set; }
+
         public double time;
 
         public float QueueSpeed = 1;
         public override void _Ready()
         {
+            MinerAudio = new AudioStreamPlayer()
+            {
+                Bus = "Sfx"
+            };
+            this.AddChild(MinerAudio);
             this.CooldownBar = this.GetNode<TextureProgressBar>("CooldownBar");
             this.player = this.GetNode<AnimationPlayer>("Axe/AnimationPlayer");
             this.player.Connect(AnimationMixer.SignalName.AnimationFinished, new Callable(this, nameof(AnimationFinished)));
@@ -85,6 +92,9 @@ namespace MagicalMountainMinery.Obj
 
         public void Hit()
         {
+            var rand = new Random().Next(3);
+            MinerAudio.Stream = ResourceStore.OreHits[rand];
+            MinerAudio.Play();
             if (MiningTargets.Count > 0)
             {
 

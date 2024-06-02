@@ -50,25 +50,31 @@ namespace MagicalMountainMinery.Data
             {
                 ResourceType = ResourceType.Track,
                 Amount = 1,
-                Description = "Adds an extra track available only for this map."
+                Description = "Adds an extra track available only for this map"
             },
             new GameResource()
             {
                 ResourceType = ResourceType.Emerald,
-                Amount = 5,
-                Description = "Allows removal of one ore node\n\nIt's green and shiny"
+                Amount = 2,
+                Description = "Allows removal of one ore node"
             },
             new GameResource()
             {
                 ResourceType = ResourceType.Diamond,
-                Amount = 7,
-                Description = "You can modify an ore node's output.\n\nIt makes you feel like a real girl. "
+                Amount = 3,
+                Description = "Modify an ore node's output"
             },
             new GameResource()
             {
                 ResourceType = ResourceType.Ruby,
-                Amount = 4,
-                Description = "Allows shifting of an ore node to an adjacent square.\n\nAs red as my ass after a night in prison. "
+                Amount = 2,
+                Description = "Allows shifting of an ore node to an adjacent square"
+            },
+            new GameResource()
+            {
+                ResourceType = ResourceType.Amethyst,
+                Amount = 3,
+                Description = "Modify and ore node type"
             },
 
         };
@@ -88,8 +94,10 @@ namespace MagicalMountainMinery.Data
 
         public static Dictionary<MineableType, Texture2D> Mineables = new Dictionary<MineableType, Texture2D>();
 
+        public static Dictionary<MineableType, PackedScene> PackedMineables = new Dictionary<MineableType, PackedScene>();
 
         public static Dictionary<ResourceType, Texture2D> Resources = new Dictionary<ResourceType, Texture2D>();
+
 
         public static Dictionary<string, AudioStream> AudioRef = new Dictionary<string, AudioStream>();
 
@@ -97,9 +105,13 @@ namespace MagicalMountainMinery.Data
 
         public static SortedList<int, MapLoad> Levels = new SortedList<int, MapLoad>();
 
+        public static Dictionary<MapLoad, int> MapSeeds = new Dictionary<MapLoad, int>();
+
         public static List<SaveProfile> SaveProfiles = new List<SaveProfile>();
 
         public static List<Color> ColorPallet = new List<Color>();
+
+        public static List<AudioStream> OreHits = new List<AudioStream>();
         public static Texture2D GetTex(TrackType type, int level = 1)
         {
             var con = new Connection(IndexPos.Left, IndexPos.Right, null);
@@ -171,12 +183,22 @@ namespace MagicalMountainMinery.Data
         public static void LoadAudio()
         {
             var folder = "res://Assets/Sounds/Track/";
+            var folder2 = "res://Assets/Sounds/";
             var list = new List<string>()
             {
                 "TrackPlace",
                 "TrackRemove",
                 "TrackPlace2",
-                "Junction"
+                "Junction",
+                "Collect",
+                "Remove",
+                "zapsplat_collect",
+                "zapsplat_collect_cut",
+                "CartTrack",
+                "CartTrack2",
+                "CartTrack3",
+                "TrackMix3",
+                "TrackMix4"
             };
             foreach (var item in list)
             {
@@ -184,7 +206,28 @@ namespace MagicalMountainMinery.Data
                 {
                     AudioRef.Add(item, ResourceLoader.Load<AudioStream>(folder + item + ".mp3"));
                 }
+                else if (ResourceLoader.Exists(folder + item + ".wav"))
+                {
+                    AudioRef.Add(item, ResourceLoader.Load<AudioStream>(folder + item + ".wave"));
+                }
+                else if(ResourceLoader.Exists(folder2 + item + ".mp3"))
+                {
+                    AudioRef.Add(item, ResourceLoader.Load<AudioStream>(folder2 + item + ".mp3"));
+                }
+                else if (ResourceLoader.Exists(folder2 + item + ".wav"))
+                {
+                    AudioRef.Add(item, ResourceLoader.Load<AudioStream>(folder2 + item + ".wav"));
+                }
             }
+
+            folder = "res://Assets/Sounds/OreHit/";
+            int i = 1;
+            while(ResourceLoader.Exists(folder + i + ".mp3"))
+            {
+                OreHits.Add(ResourceLoader.Load<AudioStream>(folder + i + ".mp3"));
+                i++;
+            }
+
 
         }
         public static AudioStream GetAudio(string name)
@@ -440,6 +483,18 @@ namespace MagicalMountainMinery.Data
                         GD.Print("loading in texture: ", file);
                     }
                     Mineables.Add(min, ResourceLoader.Load<Texture2D>(folder + file + ".png"));
+
+                    string scene = folder + file + ".tscn";
+                    if (ResourceLoader.Exists(scene))
+                    {
+                        var load = ResourceLoader.Load<PackedScene>(scene);
+                        PackedMineables.Add(min, load);
+                    }
+                    else
+                    {
+                        GD.Print("file does not exist at: ", scene);
+
+                    }
                 }
             }
         }
@@ -463,6 +518,7 @@ namespace MagicalMountainMinery.Data
                     GD.Print("file does not exist at: ", directory);
 
                 }
+                
 
             }
         }
@@ -485,7 +541,7 @@ namespace MagicalMountainMinery.Data
 
         }
 
-        public static void LoadLevels()
+        public static void LoadLevels(int profileSeed)
         {
 
             var dir = "res://Levels/";
@@ -496,6 +552,7 @@ namespace MagicalMountainMinery.Data
                 "Lonely Mountain",
                 "Misty Mountains Cold"
             };
+            var random = new Random(profileSeed);
             //var levels = Godot.DirAccess.GetFilesAt(dir);
             for (int regionDex = 0; regionDex < regionList.Count; regionDex++)
             {
@@ -518,7 +575,6 @@ namespace MagicalMountainMinery.Data
                         Difficulty = 1,
                     };
 
-
                     using (var access = Godot.FileAccess.Open(dataDir, Godot.FileAccess.ModeFlags.Read))
                     {
                         JsonConvert.PopulateObject(access.GetAsText(), data);
@@ -530,12 +586,12 @@ namespace MagicalMountainMinery.Data
                         data.LevelIndex = count;
                         data.Region = name;
                         data.RegionIndex = regionDex;
-
                         //Levels[name].Add(data);
                         Levels.Add(data.GetHashCode(), data);
                         access.Close();
                     }
-
+                    data.MapSeed = random.Next();
+                   // MapSeeds.Add(data, random.Next());
                     count++;
                 }
             }

@@ -37,6 +37,12 @@ namespace MagicalMountainMinery.Data
         public string DataString { get; set; }
 
         public int MapSeed { get; set; }
+        public int AllowedTracks { get; set; }
+
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public float WidthAbsolute { get; set; }
+        public float HeightAbsolute { get; set; }
     }
 
 

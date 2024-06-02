@@ -1,7 +1,10 @@
 ﻿using Godot;
 using MagicalMountainMinery.Data;
+using MagicalMountainMinery.Obj;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using static MagicalMountainMinery.Data.DataFunc;
 
 namespace MagicalMountainMinery.Main
 {
@@ -30,7 +33,7 @@ namespace MagicalMountainMinery.Main
         public void HandleSpecialInteraction(EventType env, IUIComponent comp, IGameObject interactable)
         {
             var undo = env == EventType.Right_Action || env == EventType.Escape;
-            if (Special == Data.ResourceType.Ruby)
+            if (Special == ResourceType.Ruby)
             {
                 if (undo)
                 {
@@ -39,19 +42,26 @@ namespace MagicalMountainMinery.Main
                 else
                     HandleMoveNode(env, comp, interactable);
             }
-            else if (Special == Data.ResourceType.Diamond)
+            else if (Special == ResourceType.Diamond)
             {
                 if (undo)
                     UndoChangeAmount();
                 else
                     HandleChangeAmount(env, comp, interactable);
             }
-            else if (Special == Data.ResourceType.Emerald)
+            else if (Special == ResourceType.Emerald)
             {
                 if (undo)
                     UndoChangeAmount();
                 else
                     HandleDelete(env, comp, interactable);
+            }
+            else if (Special == ResourceType.Amethyst)
+            {
+                if (undo)
+                    UndoChangeType();
+                else
+                    HandleChangeType(env, comp, interactable);
             }
         }
 
@@ -69,7 +79,7 @@ namespace MagicalMountainMinery.Main
                 if (env == EventType.Left_Action && interactable is Mineable mine)
                 {
                     var dirs = MapLevel.GetAdjacentDirections(mine.Index);
-                    dirs = dirs.Where(item => MapLevel.Get(item + mine.Index) == null).ToList();
+                    dirs = dirs.Where(item => MapLevel.Get(item + mine.Index) == null && MapLevel.GetTrack(item + mine.Index) == null).ToList();
                     if (dirs.Count == 0)
                         return;
 
@@ -170,14 +180,23 @@ namespace MagicalMountainMinery.Main
             {
                 if (env == EventType.Left_Action && comp != null)
                 {
-                    var amount = int.Parse(comp.UIID);
-                    focus.UpdateResourceOutput(amount);
-                    focus.GetNode<Control>("Numbers").Visible = false;
+                    try
+                    {
 
-                    EventDispatch.ClearUIQueue(); //remove it
 
-                    UseGem();
-                    MineMoveFinished();
+                        var amount = int.Parse(comp.UIID);
+                        focus.UpdateResourceOutput(amount);
+                        focus.GetNode<Control>("Numbers").Visible = false;
+
+                        EventDispatch.ClearUIQueue(); //remove it
+
+                        UseGem();
+                        MineMoveFinished();
+                    }
+                    catch(Exception e)
+                    {
+    
+                    }
 
                 }
             }
@@ -195,6 +214,68 @@ namespace MagicalMountainMinery.Main
             {
                 SpecialLabel.Visible = true;
                 focus.GetNode<Control>("Numbers").Visible = false;
+                focus = null;
+                internalStateCount--;
+                EventDispatch.ClearUIQueue();
+            }
+        }
+
+
+        public void HandleChangeType(EventType env, IUIComponent comp, IGameObject interactable)
+        {
+            if (internalStateCount == 0)
+            {
+                SpecialLabel.Visible = true;
+                SpecialLabel.Text = "Select a node to modify...";
+                internalStateCount++;
+            }
+            else if (internalStateCount == 1)
+            {
+
+                if (env == EventType.Left_Action && interactable is Mineable mine)
+                {
+                    mine.GetNode<Control>("OreTypes").Visible = true;
+                    focus = mine;
+
+                    internalStateCount++;
+                }
+
+            }
+            else if (internalStateCount == 2)
+            {
+                if (env == EventType.Left_Action && comp != null)
+                {
+                    MineableType type;
+                    var obj = ResourceStore.GetEnumType(comp.UIID, typeof(MineableType));
+                    if (obj != null)
+                    {
+                        focus.Type = (MineableType)obj;
+                        focus.ResourceSpawn.ResourceType = GetResourceFromOre((MineableType)obj);
+                        focus.PostLoad();
+                        EventDispatch.ClearUIQueue(); //remove it
+                        focus.GetNode<Control>("OreTypes").Visible = false;
+                        UseGem();
+                        MineMoveFinished();
+                    }
+
+
+                    
+
+                }
+            }
+
+        }
+        public void UndoChangeType()
+        {
+            if (internalStateCount == 1)
+            {
+                MineMoveFinished();
+                EventDispatch.ClearUIQueue();
+            }
+            else if (internalStateCount == 2)
+            {
+                SpecialLabel.Visible = true;
+                focus.GetNode<Control>("OreTypes").Visible = false;
                 focus = null;
                 internalStateCount--;
                 EventDispatch.ClearUIQueue();

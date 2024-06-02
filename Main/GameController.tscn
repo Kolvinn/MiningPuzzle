@@ -1,9 +1,23 @@
-[gd_scene load_steps=5 format=3 uid="uid://cpbobqpaqjal6"]
+[gd_scene load_steps=10 format=3 uid="uid://cpbobqpaqjal6"]
 
 [ext_resource type="Script" path="res://Main/GameController.cs" id="1_ebtxg"]
 [ext_resource type="AudioStream" uid="uid://dqinpi3b864p5" path="res://Assets/Sounds/Music/SoundTrack.mp3" id="2_vukhi"]
 [ext_resource type="PackedScene" uid="uid://d0qkarki7m00d" path="res://UI/NavBar.tscn" id="3_nmwh2"]
 [ext_resource type="PackedScene" uid="uid://cg8gtxwhe5fkm" path="res://UI/Settings/SettingsMenu.tscn" id="4_3mgjf"]
+[ext_resource type="Texture2D" uid="uid://53xnbim4qs1h" path="res://Assets/UI/TheArchitect.png" id="5_wxc86"]
+[ext_resource type="Texture2D" uid="uid://cvltrg616pc7n" path="res://Assets/UI/BubbleThinFlipped.png" id="6_4esh5"]
+[ext_resource type="FontFile" uid="uid://byjdlexdr3rw3" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_compressed.ttf" id="7_e1odu"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b0cpb"]
+atlas = ExtResource("6_4esh5")
+region = Rect2(14, 8, 279, 129)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0ifcb"]
+texture = SubResource("AtlasTexture_b0cpb")
+texture_margin_left = 15.0
+texture_margin_top = 10.0
+texture_margin_right = 20.0
+texture_margin_bottom = 50.0
 
 [node name="GameController" type="Node2D"]
 script = ExtResource("1_ebtxg")
@@ -20,3 +34,53 @@ visible = false
 
 [node name="SettingsOverlay" parent="CanvasLayer" instance=ExtResource("4_3mgjf")]
 visible = false
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -224.0
+offset_top = -254.0
+offset_right = 313.0
+offset_bottom = 276.0
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("5_wxc86")
+stretch_mode = 4
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -406.0
+offset_top = -200.0
+offset_right = -168.0
+offset_bottom = -54.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+fit_content = true
+
+[node name="TutorialLayer" type="CanvasLayer" parent="."]
+visible = false
+follow_viewport_enabled = true

@@ -24,6 +24,7 @@ public partial class SettingsMenu : Control
 
     public VideoSettings VideoPanel{ get; set; }
 
+
     public override void _Ready()
 	{
 		SettingsContainer = this.GetNode<ScrollContainer>("PanelContainer/HBoxContainer/ScrollContainer");
@@ -76,6 +77,7 @@ public partial class SettingsMenu : Control
         var val = increase ? 0.5f : -0.5f;
         UI_SCALE += val;
         GetWindow().ContentScaleFactor = UI_SCALE;
+        Camera.UISCALECHANGE = true;
         UI_SCALE_LABEL.Text = "UI Scale (" +(UI_SCALE * 100) + ")"; 
 
     }

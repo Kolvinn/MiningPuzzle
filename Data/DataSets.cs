@@ -2,6 +2,7 @@
 using MagicalMountainMinery.Obj;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.Collections.Generic;
 
 namespace MagicalMountainMinery.Data
 {
@@ -446,6 +447,23 @@ namespace MagicalMountainMinery.Data
                 return ResourceType.Iron_Ore;
             return ResourceType.Gold_Ore;
         }
+
+        public static List<KeyValuePair<MineableType, float>> OreSpawnChances { get; } = new List<KeyValuePair<MineableType, float>>()
+        {
+
+            KeyValuePair.Create( MineableType.Stone,0.3f ),
+            KeyValuePair.Create( MineableType.Copper,0.3f ),
+            KeyValuePair.Create( MineableType.Ruby,0.1f ),
+            KeyValuePair.Create( MineableType.Amethyst,0.1f ),
+            KeyValuePair.Create( MineableType.Diamond,0.1f ),
+            KeyValuePair.Create( MineableType.Emerald,0.1f ),
+
+          //  {0.1f, MineableType.Iron },
+            //{0.1f, MineableType.Gold },
+            
+
+
+        };
     }
 
 

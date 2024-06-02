@@ -1,10 +1,13 @@
 using Godot;
 using MagicalMountainMinery.Data;
 using MagicalMountainMinery.Main;
+using MagicalMountainMinery.Obj;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using static MagicalMountainMinery.Main.GameController;
+
 
 public partial class NoiseTest : Node2D
 {
@@ -45,7 +48,7 @@ public partial class NoiseTest : Node2D
     public Godot.Collections.Array<Vector2I> ExpandedVecs { get; set; } = new Godot.Collections.Array<Vector2I>();
     public HashSet<IndexPos> ExpandedIndexes { get; set; } = new HashSet<IndexPos>();
 
-    
+    public Dictionary<Area2D, AnimatedSprite2D> TreeBoxes = new Dictionary<Area2D, AnimatedSprite2D>();
     public override void _Ready()
 	{
 		Node = new Node2D()
@@ -149,7 +152,7 @@ public partial class NoiseTest : Node2D
 
 
 
-	public void LoadMapLevel(MapLevel MapLevel, MapLoad load)
+	public void LoadMapLevel(MapLevel MapLevel, MapLoad load, List<Track> OuterConnections)
 	{
         if (this.MapLoad == load)
             return;
@@ -182,26 +185,48 @@ public partial class NoiseTest : Node2D
 				if (ExpandedIndexes.Contains(dex) || MapLevel.Blocked.Contains(new IndexPos(x,y)))
 					continue;
 
-                ExpandedIndexes.Add(new IndexPos(nX, nY));
-                ExpandedIndexes.Add(new IndexPos(nX+1, nY + 1));
-                ExpandedIndexes.Add(new IndexPos(nX , nY + 1));
-                ExpandedIndexes.Add(new IndexPos(nX+1, nY));
-
-                ExpandedVecs.Add(new Vector2I(nX, nY));
-                ExpandedVecs.Add(new Vector2I(nX + 1, nY + 1));
-                ExpandedVecs.Add(new Vector2I(nX, nY + 1));
-                ExpandedVecs.Add(new Vector2I(nX + 1, nY));
+                AddIndexToList(nX, nY, MapLevel);
 
             }
 		}
+        
 
-		map.SetCellsTerrainConnect(1, ExpandedVecs, 0, 0,false);
+        map.SetCellsTerrainConnect(1, ExpandedVecs, 0, 0,false);
 
+        foreach (var index in OuterConnections)
+        {
+            var X = index.Index.X * 2;
+            var Y = index.Index.Y * 2;
+            AddIndexToList(X, Y, MapLevel);
+        }
 
+        foreach (var index in MapLevel.StartData)
+        {
+            AddIndexToList(index.From.X * 2, index.From.Y * 2, MapLevel);
+        }
+        foreach (var index in MapLevel.LevelTargets)
+        {
+            AddIndexToList(index.Index.X * 2, index.Index.Y * 2, MapLevel);
+        }
         DoEnv();
 
     }
 
+
+    public void AddIndexToList(int nX, int nY, MapLevel level)
+    {
+        ExpandedIndexes.Add(new IndexPos(nX, nY));
+        ExpandedIndexes.Add(new IndexPos(nX + 1, nY + 1));
+        ExpandedIndexes.Add(new IndexPos(nX, nY + 1));
+        ExpandedIndexes.Add(new IndexPos(nX + 1, nY));
+
+        ExpandedVecs.Add(new Vector2I(nX, nY));
+        ExpandedVecs.Add(new Vector2I(nX + 1, nY + 1));
+        ExpandedVecs.Add(new Vector2I(nX, nY + 1));
+        ExpandedVecs.Add(new Vector2I(nX + 1, nY));
+
+        
+    }
     public void Reset()
     {
         this.RemoveChild(Node);
@@ -264,22 +289,33 @@ public partial class NoiseTest : Node2D
                     var sprite = new AnimatedSprite2D()
                     {
                         SpriteFrames = tree.SpriteFrames,
-						Offset = tree.Offset,
+                        Offset = tree.Offset,
+                        Autoplay = "default",
+
                     };
+                    sprite.Play();
 					sprite.Position = pos;
                     Node.AddChild(sprite);
 					bigCapSet.Add(dex + new IndexPos(1, 0));
                     bigCapSet.Add(dex + new IndexPos(0, 1));
 
-                   // bigCapSet.Add(dex + new IndexPos(1, 1));
-
                     bigCapSet.Add(dex + new IndexPos(-1, 0));
-                   // bigCapSet.Add(dex + new IndexPos(-1, -1));
+
                     bigCapSet.Add(dex + new IndexPos(0, -1));
+                    var area = new Area2D() { Name = "TreeArea"};
+                    area.AddChild(new CollisionPolygon2D()
+                    {
+                        
+                        Polygon = tree.GetNode<CollisionPolygon2D>("ViewBox/CollisionPolygon2D").Polygon
+                    });
+                    //area.AddChild(new Polygon2D()
+                    //{
+                    //    Polygon = tree.GetNode<CollisionPolygon2D>("ViewBox/CollisionPolygon2D").Polygon
+                    //});
+                    sprite.AddChild(area);
 
-                   // bigCapSet.Add(dex + new IndexPos(1, -1));
-
-                   // bigCapSet.Add(dex + new IndexPos(-1, 1));
+                    
+                    //TreeBoxes.Add(area, sprite);
 
                 }
 				else if(a < MedCap.X && a > MedCap.Y)
@@ -343,5 +379,13 @@ public partial class NoiseTest : Node2D
         }
         
 
+    }
+
+    public void AreaEntered(Area2D area)
+    {
+        if(area is SquareArea)
+        {
+
+        }
     }
 }

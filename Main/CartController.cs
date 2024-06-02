@@ -6,14 +6,14 @@ using static MagicalMountainMinery.Data.Load.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace MagicalMountainMinery.Main
 {
     public partial class CartController : Node2D
     {
         public static float CART_SPEED = 80f;
-
-        public static float ANIM_SPEED = 2f;
+        public static float SPRITE_SPEED = 100;
 
         public delegate void ValidCartEndEventHandler(bool passed, LevelTarget target);
         public Cart Cart { get; set; }
@@ -38,21 +38,26 @@ namespace MagicalMountainMinery.Main
 
         //public LevelTarget LevelTarget { get; set; } = null;
 
-        public AudioStreamPlayer Player1 { get; set; }
-        public AudioStreamPlayer Player2 { get; set; }
 
+        public AudioStreamPlayer AudioPlayer { get; set; }
+
+
+        public AudioStreamPlayer CartGoAudio { get; set; }
         public List<Mineable> GatheredNodes { get; set; }
 
         public Track StartT { get; set; }
 
         public CartStartData StartData { get; set; }
+        public float ClearSpeed = 0.04f;
+        public float currentClear = 0f;
+        public AnimatedSprite2D TrackPlaceAnimation { get; set; }
         public Dictionary<Sprite2D, GameResource> spriteSpawns { get; set; } = new Dictionary<Sprite2D, GameResource>();
-
+        public Queue<AnimatedSprite2D> AnimatedSprites { get; set; }
         public enum CartState
         {
             Moving,
             Stopped,
-            WaitOnFinish,
+            Waiting,
             Finished,
             Success,
             Paused,
@@ -66,13 +71,35 @@ namespace MagicalMountainMinery.Main
         {
             Cart = Runner.LoadScene<Cart>("res://Obj/Cart.tscn");
             MapLevel.AddChild(Cart);
+            TrackPlaceAnimation = Runner.LoadScene<AnimatedSprite2D>("res://Assets/Miner/NodeBreakAnimation.tscn");
+            AnimatedSprites = new Queue<AnimatedSprite2D>();
+            AudioPlayer = new AudioStreamPlayer()
+            {
+                Stream = ResourceStore.GetAudio("zapsplat_collect_cut"),
+                Autoplay = false,
+                VolumeDb = -5.6f,
+                PitchScale = 0.85f,
+                
+            };
+            this.AddChild(AudioPlayer);
+
+            CartGoAudio = new AudioStreamPlayer()
+            {
+                Stream = ResourceStore.GetAudio("CartTrack3"),
+                Autoplay = false,
+                VolumeDb = 1,
+                PitchScale = 1f,
+                Playing = false,
+            };
+            this.AddChild(CartGoAudio);
+            
 
             GatheredNodes = new List<Mineable>();
             Cart.Position = MapLevel.GetGlobalPosition(StartT.Index);
             Cart.CurrentPlayer.Play(StartT.Direction1.ToString().Split("_")[1]);
             Cart.GetNode<Node2D>("ArrowRot").Visible = true;
             Cart.CurrentMiner.Connect(Miner.SignalName.MiningHit, new Callable(this, nameof(MineableHit)));
-            Cart.ZIndex = 6;
+            //Cart.ZIndex = 0;
             if (StartData.Type == CartType.Double)
             {
                 Cart.GetNode<Sprite2D>("Sprite2D").Modulate = Colors.Red;
@@ -90,7 +117,7 @@ namespace MagicalMountainMinery.Main
             Cart.Position = MapLevel.GetGlobalPosition(StartT.Index);
             Cart.CurrentPlayer.Play(StartT.Direction1.ToString().Split("_")[1]);
             Cart.GetNode<Node2D>("ArrowRot").Visible = true;
-            Cart.ZIndex = 6;
+            //Cart.ZIndex = 6;
             if (StartData.Type == CartType.Double)
             {
                 Cart.GetNode<Sprite2D>("Sprite2D").Modulate = Colors.Red;
@@ -113,12 +140,14 @@ namespace MagicalMountainMinery.Main
             else if (State == CartState.Stopped)
             {
                 if (spriteSpawns.Count > 0)
-                {
                     DoSprites((float)delta);
-                }
+                else if(NextConnection != null && NextConnection is LevelTarget target)
+                    CheckFinish(delta);
+                else if(Cart.StoredResources.Count > 0)
+                    DoDrain((float)delta);
                 else
                 {
-                    CheckFinish(delta);
+                    
                     if (StartData.Type == CartType.Double)
                     {
                         //StartT = CurrentConnection as Track; 
@@ -139,13 +168,35 @@ namespace MagicalMountainMinery.Main
                 DoMine();
                 DoSprites((float)delta);
             }
-            else if (State == CartState.WaitOnFinish)
+            else if(State == CartState.Waiting)
             {
-                CheckFinish(delta);
+                if (spriteSpawns.Count > 0)
+                {
+                    DoSprites((float)delta);
+                }
             }
+   
 
         }
+       
 
+        public void DoDrain(float delta)
+        {
+            if((currentClear += delta) >= ClearSpeed)
+            {
+                currentClear = 0;
+                if (AudioPlayer.Playing)
+                {
+                    AudioPlayer.Stop();
+                }
+
+                AudioPlayer.Play();
+                foreach (var resource in Cart.StoredResources)
+                {
+                    Cart.UpdateResource(resource.Key);
+                }
+            }
+        }
         public void CheckFinish(double delta)
         {
             if (NextConnection != null && NextConnection is LevelTarget target)
@@ -154,8 +205,9 @@ namespace MagicalMountainMinery.Main
 
                 if (target.ValidateCondition(res))
                 {
+                    NextConnection = null;
                     //var remove = Cart.StoredResources.Keys.Where(res => !ResourceStore.ShopResources.Any(item=>item.ResourceType == res)).ToList();
-                    Cart.ClearResources();
+                    //Cart.ClearResources();
                 }
 
             }
@@ -288,7 +340,8 @@ namespace MagicalMountainMinery.Main
                 }
                 else
                 {
-
+                    //if (!CartGoAudio.Playing)
+                        CartGoAudio.Play();
                     NextConnection = ConnectionQueue.Dequeue();
                     if (NextConnection is LevelTarget)
                     {
@@ -306,6 +359,7 @@ namespace MagicalMountainMinery.Main
             }
             else
             {
+                
                 var thing = Cart.Position.MoveToward(NextVector, (float)delta * CART_SPEED * Settings.SIM_SPEED_RATIO);
                 Cart.Position = thing;
             }
@@ -338,6 +392,18 @@ namespace MagicalMountainMinery.Main
             }
             else
             {
+                var newAnim = new AnimatedSprite2D()
+                {
+                    SpriteFrames = TrackPlaceAnimation.SpriteFrames,
+                    Position = mineable.Position,
+                    Offset = TrackPlaceAnimation.Offset,
+                    Scale = TrackPlaceAnimation.Scale,
+                };
+                AnimatedSprites.Enqueue(newAnim);
+                newAnim.Connect(AnimatedSprite2D.SignalName.AnimationFinished, Callable.From(OnFin));
+                this.AddChild(newAnim);
+                newAnim.Play();
+
                 mineable.locked = true;
                 CreateGrownResources(mineable.ResourceSpawn, mineable.Position);
                 MapLevel.RemoveAt(mineable.Index, false);
@@ -345,11 +411,11 @@ namespace MagicalMountainMinery.Main
             }
         }
 
-        public void UpdateMineablePositions()
+        public void OnFin()
         {
-
+            if (AnimatedSprites?.Count > 0)
+                AnimatedSprites.Dequeue().QueueFree();
         }
-
         public void Start(Color c, Dictionary<IConnectable, List<IConnectable>> conList, IndexPos StartDirection, Track startTrack)
         {
 
@@ -360,7 +426,7 @@ namespace MagicalMountainMinery.Main
             CartLine = new Line2D()
             {
                 DefaultColor = c,
-                ZIndex = -1,
+                //ZIndex = -1,
                 Visible = false,
             };
             CartVectors.Clear();
@@ -487,7 +553,7 @@ namespace MagicalMountainMinery.Main
             else
             {
                 MapLevel.AddChild(CartLine);
-                CartLine.ZIndex = 100;
+                //CartLine.ZIndex = 100;
 
                 NextVector = CartVectors.Dequeue();
                 NextConnection = ConnectionQueue.Dequeue();
@@ -563,7 +629,7 @@ namespace MagicalMountainMinery.Main
                         Cart.CurrentLevel = t.TrackLevel;
                     CurrentConnection = first;
                     Cart.CurrentIndex = first.Index;
-                    Cart.ZIndex = (Cart.CurrentLevel * 5) + 1;
+                    //Cart.ZIndex = (Cart.CurrentLevel * 5) + 1;
                 }
             }
 
@@ -659,8 +725,8 @@ namespace MagicalMountainMinery.Main
                 {
                     Texture = ResourceStore.Resources[newRes.ResourceType],
                     Position = posO,
-                    ZIndex = 1,
-                    Scale = new Vector2(0.25f, 0.25f),
+                    //ZIndex = 1,
+                    //Scale = new Vector2(0.25f, 0.25f),
                 };
 
 
@@ -678,12 +744,18 @@ namespace MagicalMountainMinery.Main
             {
                 if (entry.Key.Position == Cart.Position)
                 {
-                    spriteList.Add(entry.Key);
+                    if (AudioPlayer.Playing)
+                    {
+                        AudioPlayer.Stop();
+                    }
 
+                    AudioPlayer.Play();
+                    spriteList.Add(entry.Key);
                 }
                 else
                 {
-                    var thing = entry.Key.Position.MoveToward(Cart.Position, (float)delta * 100);
+                    var amount = ((float)delta * SPRITE_SPEED * SIM_SPEED_RATIO);
+                    var thing = entry.Key.Position.MoveToward(Cart.Position, amount);
                     var diff = thing - Cart.Position;
                     entry.Key.Position = thing;
                 }

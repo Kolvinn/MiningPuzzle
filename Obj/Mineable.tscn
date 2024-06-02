@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://c4y74wv2knn86"]
+[gd_scene load_steps=18 format=3 uid="uid://c4y74wv2knn86"]
 
 [ext_resource type="Shader" path="res://Assets/Shaders/Shiny.gdshader" id="1_filn7"]
+[ext_resource type="Texture2D" uid="uid://jwqmxsxduysn" path="res://Assets/Environment/Minerals - Old/Stone_Node.png" id="2_3anxr"]
+[ext_resource type="Texture2D" uid="uid://7oiky1fb10a6" path="res://Assets/Environment/Minerals/Stone_Node.png" id="2_7omme"]
 [ext_resource type="Script" path="res://Obj/Mineable.cs" id="2_dynl1"]
-[ext_resource type="Texture2D" uid="uid://8or1f6p0gi04" path="res://Assets/Environment/Minerals/Gold_Node.png" id="2_f0m1j"]
 [ext_resource type="Texture2D" uid="uid://b578ero8imq36" path="res://Assets/UI/Lucid V1.2/PNG/Flat/16/Chevron-Arrow-Up.png" id="2_k2j8e"]
 [ext_resource type="Script" path="res://UI/GameButton.cs" id="3_yq0ms"]
 [ext_resource type="Texture2D" uid="uid://d4d71oli5pml" path="res://Assets/UI/Lucid V1.2/PNG/Flat/16/Chevron-Arrow-Down.png" id="4_5jrcr"]
@@ -11,6 +12,8 @@
 [ext_resource type="Texture2D" uid="uid://bnqh17c1hkq3n" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Button_Small_Press_01a1.png" id="7_kk5t6"]
 [ext_resource type="Texture2D" uid="uid://d3ubhlk223lmm" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Button_Small_Press_01a3.png" id="8_nx7qp"]
 [ext_resource type="FontFile" uid="uid://dbmbc4vvpfnvg" path="res://Assets/UI/GUI_Essential_v1.0_[Free]/Font/Toriko.ttf" id="9_pv7ic"]
+[ext_resource type="FontFile" uid="uid://b52oyv2dsxkq6" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_compressed_bold.ttf" id="12_42ow2"]
+[ext_resource type="Texture2D" uid="uid://c3pb1qb7fkify" path="res://Assets/Environment/Minerals - Old/Copper_Node.png" id="12_mlmxy"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nfc8f"]
 shader = ExtResource("1_filn7")
@@ -25,9 +28,12 @@ shader_parameter/glow_color = Color(0.694118, 0.572549, 0.117647, 1)
 font = ExtResource("9_pv7ic")
 font_color = Color(0.176471, 0.176471, 0.176471, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_2e20b"]
+font = ExtResource("12_42ow2")
+
 [node name="Mineable" type="Sprite2D"]
 material = SubResource("ShaderMaterial_nfc8f")
-texture = ExtResource("2_f0m1j")
+texture = ExtResource("2_7omme")
 script = ExtResource("2_dynl1")
 
 [node name="Arrows" type="Control" parent="."]
@@ -304,11 +310,106 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_lock_ = true
 
+[node name="OreTypes" type="HBoxContainer" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.5
+offset_top = -71.0
+offset_right = 3.5
+offset_bottom = -46.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureButton" type="TextureButton" parent="OreTypes"]
+texture_filter = 1
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+texture_normal = ExtResource("7_kk5t6")
+texture_pressed = ExtResource("8_nx7qp")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_yq0ms")
+UIID = "Copper"
+
+[node name="MarginContainer" type="MarginContainer" parent="OreTypes/TextureButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 1
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 1
+
+[node name="TextureRect" type="TextureRect" parent="OreTypes/TextureButton/MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("12_mlmxy")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="TextureButton2" type="TextureButton" parent="OreTypes"]
+texture_filter = 1
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+texture_normal = ExtResource("7_kk5t6")
+texture_pressed = ExtResource("8_nx7qp")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_yq0ms")
+UIID = "Stone"
+
+[node name="MarginContainer" type="MarginContainer" parent="OreTypes/TextureButton2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 1
+theme_override_constants/margin_bottom = 5
+
+[node name="TextureRect" type="TextureRect" parent="OreTypes/TextureButton2/MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("2_3anxr")
+expand_mode = 1
+stretch_mode = 4
+
 [node name="Area2D" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+collision_priority = 2.0
+priority = 2
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D"]
-visible = false
 polygon = PackedVector2Array(-14, -9, -11, -12, -7, -18, 3, -19, 15, -14, 17, 0, 15, 11, 0, 14, -9, 15, -18, 8, -18, 3, -16, -4)
+
+[node name="ResourceLabel" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -59.0
+offset_top = -58.5
+offset_right = -1.0
+offset_bottom = -7.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "1"
+label_settings = SubResource("LabelSettings_2e20b")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
 [connection signal="mouse_exited" from="Area2D" to="." method="_on_area_2d_mouse_exited"]

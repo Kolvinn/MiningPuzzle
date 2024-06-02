@@ -219,7 +219,7 @@ public partial class MapController : Node2D
             ChangeBoxColor(box, new Color(3, 3, 3, 1));
         }
 
-        //var box = FetchLevelBox(load.Region, load.LevelIndex);
+        //var box = FetchLevelBox(load.RegionIndex, load.LevelIndex);
 
     }
 

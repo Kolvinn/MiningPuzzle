@@ -159,6 +159,10 @@ namespace MagicalMountainMinery.Main
             ChangeScene(InternalState.Map);
             MapController.LoadProfile(CurrentProfile);
             Runner.LoadProfile(CurrentProfile);
+            var music = AudioServer.GetBusIndex("MUSIC");
+            this.GetNode<AudioStreamPlayer>("AudioStreamPlayer").Bus = AudioServer.GetBusName(music);
+            AudioServer.SetBusMute(music, true);
+
             this.GetNode<AudioStreamPlayer>("AudioStreamPlayer").Play(2.28f * 60.0f);
         }
         public void QuitGame()
@@ -275,7 +279,7 @@ namespace MagicalMountainMinery.Main
             ResourceStore.LoadResources();
             ResourceStore.LoadJunctionsV2();
             ResourceStore.LoadAudio();
-            ResourceStore.LoadLevels();
+            ResourceStore.LoadLevels(123456789);
             ResourceStore.LoadSaveProfiles();
             GetTree().NodeAdded += OnNodeAdded;
            // LoadSettings();

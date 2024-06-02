@@ -1,0 +1,49 @@
+[gd_scene load_steps=2 format=3 uid="uid://dx7oan5fewjkk"]
+
+[ext_resource type="Script" path="res://Design/DesignController.cs" id="1_kto8u"]
+
+[node name="DesignController" type="Node2D"]
+script = ExtResource("1_kto8u")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="Button" type="Button" parent="CanvasLayer"]
+offset_left = 326.0
+offset_top = 8.0
+offset_right = 415.0
+offset_bottom = 39.0
+mouse_filter = 1
+mouse_force_pass_scroll_events = false
+text = "Save Level"
+
+[node name="OptionButton" type="OptionButton" parent="CanvasLayer"]
+offset_left = 545.0
+offset_top = 7.0
+offset_right = 760.0
+offset_bottom = 38.0
+mouse_filter = 1
+mouse_force_pass_scroll_events = false
+item_count = 4
+selected = 0
+popup/item_0/text = "Tutorial Valley"
+popup/item_0/id = 0
+popup/item_1/text = "Weathertop"
+popup/item_1/id = 1
+popup/item_2/text = "Lonely Mountain"
+popup/item_2/id = 2
+popup/item_3/text = "Misty Mountains Cold"
+popup/item_3/id = 3
+
+[node name="NewLevelButton" type="Button" parent="CanvasLayer"]
+offset_left = 436.0
+offset_top = 8.0
+offset_right = 524.0
+offset_bottom = 39.0
+text = "New Level"
+
+[node name="LevelOptions" type="OptionButton" parent="CanvasLayer"]
+offset_left = 777.0
+offset_top = 15.0
+offset_right = 822.0
+offset_bottom = 35.0

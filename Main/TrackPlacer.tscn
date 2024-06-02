@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bf3xrtnouiei1"]
+[gd_scene load_steps=26 format=3 uid="uid://bf3xrtnouiei1"]
 
 [ext_resource type="Script" path="res://Main/TrackPlacer.cs" id="1_lh40l"]
 [ext_resource type="Texture2D" uid="uid://dxkvrfajwgurm" path="res://Assets/UI/GUI.png" id="2_fn1rx"]
@@ -13,6 +13,8 @@
 [ext_resource type="PackedScene" uid="uid://co7ty1ancpy82" path="res://UI/TutorialUI.tscn" id="10_et41v"]
 [ext_resource type="FontFile" uid="uid://cdjxwrsadqdwg" path="res://Assets/Fonts/Pixel/Dogica/dogicapixel.ttf" id="12_l4e7u"]
 [ext_resource type="PackedScene" uid="uid://bg0bihqu0271e" path="res://UI/Shop.tscn" id="12_n4f3w"]
+[ext_resource type="Texture2D" uid="uid://ca8yrgp3vv7cw" path="res://Assets/GameResource/Track.png" id="14_weqhc"]
+[ext_resource type="FontFile" uid="uid://byjdlexdr3rw3" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_compressed.ttf" id="15_l7mgf"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_h01lq"]
 atlas = ExtResource("2_fn1rx")
@@ -68,6 +70,10 @@ outline_color = Color(0.192157, 0.192157, 0.192157, 1)
 shadow_size = 15
 shadow_color = Color(0.619608, 0.32549, 0.12549, 0.501961)
 
+[sub_resource type="LabelSettings" id="LabelSettings_d4f50"]
+font = ExtResource("15_l7mgf")
+font_size = 40
+
 [node name="TrackPlacer" type="Node2D"]
 script = ExtResource("1_lh40l")
 
@@ -90,6 +96,7 @@ offset_bottom = 715.0
 color = Color(0.823529, 0.67451, 0.454902, 1)
 
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+visible = false
 self_modulate = Color(0.490196, 0.443137, 0.27451, 1)
 texture_filter = 1
 anchors_preset = 2
@@ -246,6 +253,7 @@ metadata/_edit_lock_ = true
 [node name="TutorialLayer" parent="CanvasLayer" instance=ExtResource("10_et41v")]
 
 [node name="Normal" type="VBoxContainer" parent="CanvasLayer"]
+visible = false
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -341,5 +349,25 @@ label_settings = SubResource("LabelSettings_lqqya")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
+
+[node name="TrackImage" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = -89.0
+offset_right = 86.0
+offset_bottom = -12.0
+grow_vertical = 0
+texture = ExtResource("14_weqhc")
+
+[node name="Label" type="Label" parent="CanvasLayer/TrackImage"]
+layout_mode = 0
+offset_left = 82.0
+offset_top = -2.0
+offset_right = 122.0
+offset_bottom = 63.0
+text = "5"
+label_settings = SubResource("LabelSettings_d4f50")
 
 [connection signal="toggled" from="CanvasLayer/CheckBox" to="." method="ShowConnections"]

@@ -1,13 +1,125 @@
-[gd_scene load_steps=6 format=3 uid="uid://cetsy7f1omat6"]
+[gd_scene load_steps=22 format=3 uid="uid://cetsy7f1omat6"]
 
 [ext_resource type="Texture2D" uid="uid://ceby4gk5od21j" path="res://Assets/Mines/Craftables.png" id="1_we4qa"]
 [ext_resource type="Texture2D" uid="uid://dod7hyrum53k4" path="res://Assets/BannerSlaySpire.png" id="2_6x0ob"]
 [ext_resource type="Script" path="res://Obj/LevelTarget.cs" id="2_wcw6m"]
 [ext_resource type="Texture2D" uid="uid://cj8yj0312fw6y" path="res://Assets/UI/Wenrexa Interface UI KIT #4/PNG/Icons/ArrowsLeft2.png" id="4_ckorw"]
+[ext_resource type="Texture2D" uid="uid://d0fxnuo0o8hfa" path="res://Assets/Obelisk_Full_version/Obelysk_with_souls.png" id="5_pt3gl"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nwwxg"]
 atlas = ExtResource("1_we4qa")
 region = Rect2(112, 706, 16, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sygb3"]
+atlas = ExtResource("5_pt3gl")
+region = Rect2(0, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wr2cu"]
+atlas = ExtResource("5_pt3gl")
+region = Rect2(190, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3uj16"]
+atlas = ExtResource("5_pt3gl")
+region = Rect2(380, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xyk4k"]
+atlas = ExtResource("5_pt3gl")
+region = Rect2(570, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_04jgm"]
+atlas = ExtResource("5_pt3gl")
+region = Rect2(760, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sahvl"]
+atlas = ExtResource("5_pt3gl")
+region = Rect2(950, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5i1xu"]
+atlas = ExtResource("5_pt3gl")
+region = Rect2(1140, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cvt4q"]
+atlas = ExtResource("5_pt3gl")
+region = Rect2(1330, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_56xv2"]
+atlas = ExtResource("5_pt3gl")
+region = Rect2(1520, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8gwpn"]
+atlas = ExtResource("5_pt3gl")
+region = Rect2(1710, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7aqse"]
+atlas = ExtResource("5_pt3gl")
+region = Rect2(1900, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_72ym0"]
+atlas = ExtResource("5_pt3gl")
+region = Rect2(2090, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ne7hk"]
+atlas = ExtResource("5_pt3gl")
+region = Rect2(2280, 0, 190, 380)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qe6fg"]
+atlas = ExtResource("5_pt3gl")
+region = Rect2(2470, 0, 190, 380)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_enmbu"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"Complete",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sygb3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wr2cu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3uj16")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xyk4k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_04jgm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sahvl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5i1xu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cvt4q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_56xv2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8gwpn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7aqse")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_72ym0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ne7hk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qe6fg")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
 
 [node name="LevelTarget" type="Sprite2D"]
 position = Vector2(0, -4)
@@ -27,15 +139,25 @@ rotation = -1.5708
 scale = Vector2(0.33558, 0.200276)
 texture = ExtResource("4_ckorw")
 
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-2.25, 13.6645)
+scale = Vector2(0.692105, 0.663719)
+sprite_frames = SubResource("SpriteFrames_enmbu")
+animation = &"Complete"
+autoplay = "default"
+offset = Vector2(0, -150)
+flip_h = true
+
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 1.0
-offset_top = -57.0
-offset_right = 41.0
-offset_bottom = -46.0
+offset_left = -33.0
+offset_top = -167.0
+offset_right = 7.0
+offset_bottom = -156.0
 grow_vertical = 0
+scale = Vector2(2, 2)
 size_flags_horizontal = 0
 size_flags_vertical = 8
 theme_override_constants/separation = 2

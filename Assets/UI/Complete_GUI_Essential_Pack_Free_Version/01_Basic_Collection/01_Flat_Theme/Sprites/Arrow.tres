@@ -1,0 +1,7 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://cfxs1lt23nrju"]
+
+[ext_resource type="Texture2D" uid="uid://cov624t700btc" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Dropdown_Handle.png" id="1_43ypp"]
+
+[resource]
+atlas = ExtResource("1_43ypp")
+region = Rect2(13, 13, 7, 5)

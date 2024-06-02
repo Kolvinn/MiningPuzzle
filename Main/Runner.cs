@@ -346,6 +346,8 @@ public partial class Runner : Node2D
             PlayLevelPressed();
         else if (obj.UIID == "Stop")
             StopLevelPressed();
+        else if (obj.UIID == "Map")
+            on_home_pressed();
 
         return ret;
     }
@@ -368,6 +370,7 @@ public partial class Runner : Node2D
 
         var fin = CartControllers.Count > 0 && CartControllers.All(item => item.Finished);
         var success = MapLevel.LevelTargets.Count() > 0 && MapLevel.LevelTargets.All(item => item.CompletedAll);
+        success = success && fin ;
 
         if (success)
         {

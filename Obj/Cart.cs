@@ -20,14 +20,16 @@ public partial class Cart : Area2D
     public AnimationPlayer CurrentPlayer { get; set; }
 
     public Miner CurrentMiner { get; set; }
-
+    public HBoxContainer ResourceContainer { get; set; }
 
     public bool DoubleSided { get; set; }
 
     public Dictionary<ResourceType, ResourceIcon> StoredResources { get; set; } = new Dictionary<ResourceType, ResourceIcon>();
 
+    
     public override void _Ready()
     {
+        ResourceContainer = this.GetNode<HBoxContainer>("PanelContainer/HBoxContainer");
         CurrentMiner = GetNode<Miner>("Miner");
         CurrentPlayer = this.GetNode<AnimationPlayer>("AnimationPlayer");
         SeatPositions.Add(IndexPos.Zero);
@@ -60,7 +62,7 @@ public partial class Cart : Area2D
             {
                 if (StoredResources.ContainsKey(item))
                 {
-                    GetNode<HBoxContainer>("HBoxContainer").RemoveChild(StoredResources[item]);
+                    ResourceContainer.RemoveChild(StoredResources[item]);
                     StoredResources[item].QueueFree();
                     StoredResources.Remove(item);
                 }
@@ -71,25 +73,44 @@ public partial class Cart : Area2D
         {
             foreach (var pair in StoredResources)
             {
-                GetNode<HBoxContainer>("HBoxContainer").RemoveChild(pair.Value);
+                ResourceContainer.RemoveChild(pair.Value);
                 pair.Value.QueueFree();
 
             }
             StoredResources.Clear();
         }
+        
+        this.GetNode<PanelContainer>("PanelContainer").Visible = StoredResources.Count > 0;
 
     }
 
     public void AddResource(ResourceType res)
     {
         var icon = Runner.LoadScene<ResourceIcon>("res://Obj/ResourceIcon.tscn");
-        GetNode<HBoxContainer>("HBoxContainer").AddChild(icon);
+        ResourceContainer.AddChild(icon);
         icon.Update(new GameResource()
         {
             ResourceType = res,
             Amount = 1
         });
         StoredResources.Add(res, icon);
+        this.GetNode<PanelContainer>("PanelContainer").Visible = StoredResources.Count > 0;
+    }
+
+    public void UpdateResource(ResourceType res)
+    {
+        if (StoredResources.Count == 0 || !StoredResources.ContainsKey(res))
+            return;
+        StoredResources[res].Update(-1);
+        if(StoredResources[res].GameResource.Amount ==0)
+        {
+            StoredResources[res].QueueFree();
+            ResourceContainer.RemoveChild(StoredResources[res]);
+            StoredResources.Remove(res);
+
+        }
+        this.GetNode<PanelContainer>("PanelContainer").Visible = StoredResources.Count > 0;
+
     }
 
 

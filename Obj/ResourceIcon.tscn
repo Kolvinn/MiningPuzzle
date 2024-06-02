@@ -1,10 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://cbboybyu01dbs"]
+[gd_scene load_steps=5 format=3 uid="uid://cbboybyu01dbs"]
 
 [ext_resource type="Script" path="res://Obj/ResourceIcon.cs" id="1_aguvo"]
 [ext_resource type="Texture2D" uid="uid://84nek2q58qld" path="res://Assets/GameResource/Copper_Ore.png" id="1_t7mf4"]
+[ext_resource type="FontFile" uid="uid://byjdlexdr3rw3" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_compressed.ttf" id="2_kcrgd"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_pk414"]
-font_size = 10
+font = ExtResource("2_kcrgd")
 
 [node name="ResourceIcon" type="HBoxContainer"]
 offset_right = 21.0
@@ -26,8 +27,8 @@ vertical_alignment = 1
 [node name="Tex" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
+size_flags_horizontal = 6
+size_flags_vertical = 8
 texture = ExtResource("1_t7mf4")
 expand_mode = 1
 stretch_mode = 5

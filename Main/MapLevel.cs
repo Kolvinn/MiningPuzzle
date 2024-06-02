@@ -53,9 +53,14 @@ namespace MagicalMountainMinery.Main
 
         [StoreCollection(ShouldStore = false)]
         public List<Vector2> GridVertices { get; set; } = new List<Vector2>();
+
+        [StoreCollection(ShouldStore = false)]
+        public List<SquareArea> SquareAreas { get; set; } = new List<SquareArea>();
         //public IndexPos StartPos { get; set; } = IndexPos.Zero;
         [StoreCollection(ShouldStore = true)]
         public List<IndexPos> Blocked { get; set; } = new List<IndexPos>();
+
+        public List<Polygon2D> MapPoints { get; set; } = new List<Polygon2D>();
 
         public int AllowedTracks { get; set; }
         public int AllowedTracksRaised { get; set; }
@@ -87,15 +92,21 @@ namespace MagicalMountainMinery.Main
             this.YSortEnabled = true;
             this.Position = new Vector2(0, 0);
         }
+
+        
         public void RedrawGrid()
         {
             GridLines.ForEach(item => item.QueueFree());
+            SquareAreas.ForEach(item => item.QueueFree());
+            SquareAreas.Clear();
             GridLines.Clear();
             GridVertices.Clear();
             var boxLine = new Line2D()
             {
                 Modulate = Colors.AliceBlue,
-                Width = 1.4f
+                Width = 1.5f,
+                TextureMode = Line2D.LineTextureMode.Tile,
+                Texture = ResourceLoader.Load<Texture2D>("res://Assets/linesprite.png") 
             };
 
 
@@ -109,6 +120,11 @@ namespace MagicalMountainMinery.Main
 
                     if (!Blocked.Contains(dex))
                     {
+                        var pos = GetGlobalPosition(dex, false);
+                        var area = new SquareArea(pos, new Vector2(MapLevel.TrackX, MapLevel.TrackY));
+                        this.AddChild(area);
+                        ///MoveChild(area, 0);
+                        SquareAreas.Add(area);
                         boxLine = new Line2D()
                         {
                             Modulate = Colors.AliceBlue,
@@ -209,32 +225,62 @@ namespace MagicalMountainMinery.Main
                         }
                         else if (m is Portal p)
                         {
-                            if (!string.IsNullOrEmpty(p.SiblingId) && portals.TryGetValue(p.SiblingId, out var existingPortal))
-                            {
-                                p.Sibling = existingPortal;
-                                existingPortal.Sibling = p;
-                                portals.Remove(p.SiblingId);
-                            }
-                            else
-                            {
-                                portals.Add(p.PortalId, p);
-                            }
-
-                            p.Index = ((Portal)obj).Index;
+                            LoadPortal(p, obj, portals);
                         }
-                        else
+                        else if(m is Mineable mine)
                         {
-                            var rock = (Mineable)obj;
-                            rock.Index = new IndexPos(i, j);
-
-                            rock.PostLoad();
-                            rock.Position = GetGlobalPosition(rock.Index);
+                            var mineable = LoadMineable(mine, new IndexPos(i, j));
+                            mineable.PostLoad();
                         }
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Loads a new instance of mineable as a copy of the given mineable.
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
+        public Mineable LoadMineable(Mineable mine, IndexPos index)
+        {
+            var existing = ResourceStore.PackedMineables[mine.Type]?.Instantiate<Mineable>();
+            if (existing == null)
+                existing = mine;
+            else
+            {
+                mine.GetParent()?.RemoveChild(mine);
+                existing.Name = mine.Name;
+                existing.Type = mine.Type;
+                existing.ResourceSpawn = mine.ResourceSpawn;
+                MapObjects[index.X, index.Y] = existing;
+                this.AddChild(existing);
+            }
+            existing.Index = index;
+            existing.Position = GetGlobalPosition(index);
+            return existing;
+        }
+        /// <summary>
+        /// Loads in the portal based on recorded sibling ids
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="obj"></param>
+        /// <param name="portals"></param>
+        public void LoadPortal(Portal p, Node2D obj, Dictionary<string, Portal> portals)
+        {
+            if (!string.IsNullOrEmpty(p.SiblingId) && portals.TryGetValue(p.SiblingId, out var existingPortal))
+            {
+                p.Sibling = existingPortal;
+                existingPortal.Sibling = p;
+                portals.Remove(p.SiblingId);
+            }
+            else
+            {
+                portals.Add(p.PortalId, p);
+            }
+
+            p.Index = ((Portal)obj).Index;
+        }
 
 
         public void AddTracks(Track[,] tracks1, Track[,] tracks2)
@@ -378,7 +424,7 @@ namespace MagicalMountainMinery.Main
             GD.Print("Setting track into level ", trackLevel, " at index: ", pos);
             array[pos.X, pos.Y] = track;
             track.Index = pos;
-            track.ZIndex = trackLevel * 5;
+            //track.ZIndex = trackLevel * 5;
             track.Position = GetGlobalPosition(pos);
         }
 
@@ -448,6 +494,7 @@ namespace MagicalMountainMinery.Main
             //var rock = Runner.LoadScene<Mineable>("res://Obj/Rock.tscn");
             this.AddChild(mineable);
             mineable.Position = GetGlobalPosition(pos);
+            mineable.Index = pos;
             MapObjects[pos.X, pos.Y] = mineable;
         }
         public List<IndexPos> GetAdjacentDirections(IndexPos CurrentIndex)
@@ -529,10 +576,15 @@ namespace MagicalMountainMinery.Main
         public List<IndexData> GetAdjacentData(IndexPos pos)
         {
             var list = new List<IndexData>();
-            list.Add(GetData(pos + IndexPos.Left));
-            list.Add(GetData(pos + IndexPos.Right));
-            list.Add(GetData(pos + IndexPos.Down));
-            list.Add(GetData(pos + IndexPos.Up));
+            if (ValidIndex(pos + IndexPos.Left))
+                list.Add(GetData(pos + IndexPos.Left));
+            if (ValidIndex(pos + IndexPos.Right))
+                list.Add(GetData(pos + IndexPos.Right));
+            if (ValidIndex(pos + IndexPos.Down))
+                list.Add(GetData(pos + IndexPos.Down));
+            if (ValidIndex(pos + IndexPos.Up))
+                list.Add(GetData(pos + IndexPos.Up));
+
             return list;
         }
 
@@ -575,6 +627,53 @@ namespace MagicalMountainMinery.Main
             return list;
         }
 
+
+    }
+
+    public partial class SquareArea : Area2D
+    {
+        public CollisionPolygon2D poly { get; set; }
+        public SquareArea()
+        {
+
+        }
+        public override void _Ready()
+        {
+            this.AddChild(poly);
+            this.Connect(SignalName.AreaEntered, new Callable(this, nameof(TreeAreaEntered)));
+            //this.AddChild(new ColorRect()
+            //{
+            //    Size = new Vector2(64, 64),
+            //    SelfModulate = new Color(1,1,1,0.2f)
+            //    //Position = Vector2.Zero,
+            //});
+            InputPickable = false;
+            ZIndex = -5;
+            
+        }
+        public SquareArea(Vector2 position, Vector2 size)
+        {
+            this.Position = position;
+            poly = new CollisionPolygon2D()
+            {
+                Polygon = new Vector2[]
+                {
+                    Vector2.Zero,
+                    new Vector2(0, size.Y),
+                    new Vector2(size.X, size.Y),
+                    new Vector2(size.X, 0)
+                },
+            };
+        }
+
+        public void TreeAreaEntered(Area2D area)
+        {
+            if (area != null && area.Name == "TreeArea")
+            {
+                var t = area.GetParent() as Node2D;
+                t.Modulate = new Godot.Color(1, 1, 1, 0.1f);
+            }
+        }
 
     }
 }

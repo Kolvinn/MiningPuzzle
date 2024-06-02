@@ -46,6 +46,7 @@ public partial class StartMenu : Node2D
 
     public void _on_play_pressed()
     {
+        
         Start();
 
     }

@@ -1,4 +1,5 @@
 ﻿using Godot;
+using MagicalMountainMinery.Design;
 
 namespace MagicalMountainMinery.Main
 {
@@ -15,9 +16,10 @@ namespace MagicalMountainMinery.Main
     }
     public partial class Camera : Camera2D
     {
-        public static float zoomspeed = 0.1f, upperLimit = 0.0001f, lowerLimit = 7f, currentzoom = 1, cameraSpeed = 1.6f;
+        public static float zoomspeed = 0.01f, upperLimit = 0.0001f, lowerLimit = 7f, currentzoom = 1, cameraSpeed = 1.5f;
         public static Vector2 MaxSize;
 
+        public static bool UISCALECHANGE { get; set; } = false;
         public bool CanMod { get; set; } = true;
         public CamSettings Settings
         {
@@ -36,6 +38,8 @@ namespace MagicalMountainMinery.Main
             this.MakeCurrent();
             this.Position = new Vector2(0, 0);
             this.Zoom = new Vector2(1, 1);
+
+            
             //CheckLimit();
         }
 
@@ -57,15 +61,54 @@ namespace MagicalMountainMinery.Main
             //1280,720 / 0.2 = 
             if (scrollDir < 0 && currentzoom - zoomspeed >= upperLimit)
             {
+                if(GetWindow().ContentScaleFactor % 1 == 0)
+                {
+
+                }
+                else
+                {
+
+
+                    currentzoom -= 0.3333333333333333334f;
+                    this.Zoom = new Vector2(currentzoom, currentzoom);
+                    GD.Print("Setting Zoom to: ", Zoom.ToString(), " With pos: ", this.Position);
+                    return true;
+                    //var snap2 = 0.66666667;
+                    //var next = currentzoom - snap1;
+                    //var next = currentzoom - 0.5;
+                    //int intZoom = (int)next;
+
+                    //var dist1 = intZoom - snap1;
+                    //var dist2 = intZoom - snap2;
+
+                    //var next2 = next - intZoom;
+
+                    //if (next2 == 0)
+                }
                 currentzoom -= zoomspeed;
                 this.Zoom = new Vector2(currentzoom, currentzoom);
+                
+                
                 GD.Print("Setting Zoom to: ", Zoom.ToString(), " With pos: ", this.Position);
                 return true;
 
             }
             else if (scrollDir > 0 && currentzoom + zoomspeed <= lowerLimit)
             {
-                currentzoom += zoomspeed;
+                if (GetWindow().ContentScaleFactor % 1 == 0)
+                {
+
+                }
+                else
+                {
+
+
+                    currentzoom += 0.3333333333333333334f;
+                    this.Zoom = new Vector2(currentzoom, currentzoom);
+                    GD.Print("Setting Zoom to: ", Zoom.ToString(), " With pos: ", this.Position);
+                    return true;
+                }
+                    currentzoom += zoomspeed;
                 this.Zoom = new Vector2(currentzoom, currentzoom);
                 GD.Print("Setting Zoom to: ", Zoom.ToString(), " With pos: ", this.Position);
                 return true;
@@ -105,8 +148,34 @@ namespace MagicalMountainMinery.Main
 
         public override void _PhysicsProcess(double delta)
         {
-            if (CanMod)
+            if (CanMod && !ObjectTextEdit.IS_FOCUS) 
                 HandleBaseInput();
+            if(this.IsCurrent() && UISCALECHANGE)
+            {
+                UISCALECHANGE = false;
+                SnapCamera();
+
+            }
+        }
+
+        public void SnapCamera()
+        {
+            if (GetWindow().ContentScaleFactor % 1 == 0)
+            {
+                //either 1 or 2, so result is either 1 or 0.5f
+                currentzoom = 1 / GetWindow().ContentScaleFactor;
+                this.Zoom = new Vector2(currentzoom, currentzoom);
+
+            }
+            else
+            {
+                var zoom = currentzoom % 1;
+                var snap1 = 0.333333333333333333334;
+                var snap2 = 0.666666666666666666667;
+                currentzoom = 1.33333333333333333334f;
+                this.Zoom = new Vector2(currentzoom, currentzoom);
+
+            }
         }
 
         public void HandleBaseInput()

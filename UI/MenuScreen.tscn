@@ -1,11 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://caxy0l7ayp7qd"]
+[gd_scene load_steps=10 format=3 uid="uid://caxy0l7ayp7qd"]
 
 [ext_resource type="Script" path="res://UI/StartMenu.cs" id="1_iv03y"]
 [ext_resource type="Texture2D" uid="uid://b5bm17ugphuxt" path="res://Assets/UI/Menu Buttons/Large Buttons/Large Buttons/Settings Button.png" id="3_tnai5"]
 [ext_resource type="Script" path="res://UI/GameButton.cs" id="4_qvesj"]
 [ext_resource type="FontFile" uid="uid://cipymmhxrwq2p" path="res://Assets/Fonts/Pixel/Stepalange-x3BLm.otf" id="6_pe7j7"]
 [ext_resource type="Texture2D" uid="uid://o3jbons17n21" path="res://Assets/UI/Menu Buttons/Large Buttons/Large Buttons/Play Button.png" id="71_oga2n"]
-[ext_resource type="AudioStream" uid="uid://eiq8qm147pob" path="res://Assets/Sounds/Music/MenuTheme.wav" id="72_q8qnr"]
 [ext_resource type="Texture2D" uid="uid://cqojfkr62dofh" path="res://Assets/UI/Menu Buttons/Large Buttons/Large Buttons/Quit Button.png" id="73_5jbu0"]
 [ext_resource type="Texture2D" uid="uid://cty3fuac4410f" path="res://Assets/UI/Mining_Gear_NPC.png" id="74_7csa3"]
 
@@ -89,10 +88,6 @@ texture_normal = ExtResource("73_5jbu0")
 ignore_texture_size = true
 stretch_mode = 5
 metadata/_edit_lock_ = true
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="CanvasLayer/Control"]
-stream = ExtResource("72_q8qnr")
-autoplay = true
 
 [node name="MiningGearNpc" type="Sprite2D" parent="CanvasLayer/Control"]
 texture_filter = 1
