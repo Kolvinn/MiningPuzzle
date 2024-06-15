@@ -13,6 +13,11 @@ namespace MagicalMountainMinery.Main
 
     public partial class TrackPlacer : Node2D
     {
+        [Export]
+        public Label TrackAmountLabel { get; set; }
+        [Export]
+        public Label SpecialNodeLabel { get; set; }
+
         public enum State
         {
             Constructing,
@@ -43,10 +48,6 @@ namespace MagicalMountainMinery.Main
         [JsonProperty(ItemConverterType = typeof(StringEnumConverter))]
         public MineableType mineable { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
-
-        public TutorialUI TutorialUI { get; set; }
-
         public bool TutorialDisabled { get; set; } = false;
         public ResourceType resource { get; set; }
 
@@ -54,7 +55,6 @@ namespace MagicalMountainMinery.Main
 
         public AudioStreamPlayer AudioStream { get; set; }
 
-        public Shop ShopScreen { get; set; }
 
         public AnimatedSprite2D TrackPlaceAnimation { get; set; }
 
@@ -72,23 +72,19 @@ namespace MagicalMountainMinery.Main
         {
             TrackPlaceAnimation = Runner.LoadScene<AnimatedSprite2D>("res://Assets/Tracks/TrackPlaceAnimation.tscn");
             this.Position = Vector2.Zero;
-            Buttons = new List<GameButton>()
-            {
-                this.GetNode<GameButton>("CanvasLayer/Normal/Normal"),
-                this.GetNode<GameButton>("CanvasLayer/Raised/Normal"),
-                this.GetNode<GameButton>("CanvasLayer/Junc/Normal")
-            };
+            //Buttons = new List<GameButton>()
+            //{
+            //    this.GetNode<GameButton>("CanvasLayer/Normal/Normal"),
+            //    this.GetNode<GameButton>("CanvasLayer/Raised/Normal"),
+            //    this.GetNode<GameButton>("CanvasLayer/Junc/Normal")
+            //};
 
-            TutorialUI = this.GetNode<TutorialUI>("CanvasLayer/TutorialLayer");
-            SpecialLabel = this.GetNode<Label>("CanvasLayer/Special Note");
+            //TutorialUI = this.GetNode<TutorialUI>("CanvasLayer/TutorialLayer");
             AudioStream = new AudioStreamPlayer();
             this.AddChild(AudioStream);
             AudioStream.Bus = "Sfx";
 
-            ShopScreen = this.GetNode<Shop>("CanvasLayer/Shop");
-
-            foreach (var res in ResourceStore.ShopResources)
-                ShopScreen.AddGameResource(res);
+            
             //this.AddChild(TutorialUI);
         }
 
@@ -109,15 +105,15 @@ namespace MagicalMountainMinery.Main
 
 
 
-            this.GetNode<VBoxContainer>("CanvasLayer/Raised").Visible = raised;
-            this.GetNode<TextureRect>("CanvasLayer/TextureRect3").Visible = raised;
+           // this.GetNode<VBoxContainer>("CanvasLayer/Raised").Visible = raised;
+            //this.GetNode<TextureRect>("CanvasLayer/TextureRect3").Visible = raised;
             //this.GetNode<VBoxContainer>("CanvasLayer/Junc").Visible = junc;
 
             //TutorialUI.CurrentTutorial = null;
             ////TutorialUI.CurrentIndex = (regionDex + 1);
             //TutorialUI.CurrentSubIndex = levelDex;
-            if (!TutorialDisabled)
-                TutorialUI.Load(load);
+            //f (!TutorialDisabled)
+               // TutorialUI.Load(load);
             //if(MineableLocations != null && MineableLocations.Count > 0)
             //{
             //    foreach (var m in MineableLocations)
@@ -155,21 +151,7 @@ namespace MagicalMountainMinery.Main
             var obj = comp;
             var env = type;
 
-            if (!TutorialDisabled && TutorialUI.HasTutorial)
-            {
-                if (TutorialUI.CurrentTutorial != null)
-                {
-                    if (TutorialUI.TryPass(env, obj))
-                    {
-
-                    }
-                    return;
-                }
-                else if (TutorialUI.GetNext(env, obj))
-                {
-                    return;
-                }
-            }
+           
             if (HandleSpecial)
             {
                 var inter = EventDispatch.FetchInteractable();
@@ -195,36 +177,36 @@ namespace MagicalMountainMinery.Main
 
 
 
-        public void SetButtonFocus(GameButton btn)
-        {
-            // btn.selectMat.SetShaderParameter("width", 1);
-            foreach (var item in Buttons)
-            {
-                if (item != btn)
-                {
-                    item.selectMat.SetShaderParameter("width", 0);
-                }
-            }
-            btn.selectMat?.SetShaderParameter("width", 1);
-        }
+        //public void SetButtonFocus(GameButton btn)
+        //{
+        //    // btn.selectMat.SetShaderParameter("width", 1);
+        //    foreach (var item in Buttons)
+        //    {
+        //        if (item != btn)
+        //        {
+        //            item.selectMat.SetShaderParameter("width", 0);
+        //        }
+        //    }
+        //    btn.selectMat?.SetShaderParameter("width", 1);
+        //}
         public void HandleUI(EventType env, IUIComponent comp)
         {
             if (env == EventType.Left_Action && comp is GameButton btn)
             {
-                if (btn.UIID == "Normal")
-                {
-                    CurrentTrackLevel = 1;
-                }
-                else if (btn.UIID == "Raised")
-                {
-                    CurrentTrackLevel = 2;
-                }
+                //if (btn.UIID == "Normal")
+                //{
+                //    CurrentTrackLevel = 1;
+                //}
+                //else if (btn.UIID == "Raised")
+                //{
+                //    CurrentTrackLevel = 2;
+                //}
 
-                if (btn.UIID != "Junction")
-                {
-                    SetButtonFocus(btn);
-                    //Buttons.Where(e => e != btn).ToList().ForEach(t => t.selectMat.SetShaderParameter("Width", 0));
-                }
+                //if (btn.UIID != "Junction")
+                //{
+                //    SetButtonFocus(btn);
+                //    //Buttons.Where(e => e != btn).ToList().ForEach(t => t.selectMat.SetShaderParameter("Width", 0));
+                //}
                 if (btn.UIID == "Diamond")
                 {
                     Special = ResourceType.Diamond;
@@ -245,10 +227,13 @@ namespace MagicalMountainMinery.Main
                     Special = ResourceType.Amethyst;
                     HandleSpecial = true;
                 }
-                if (btn.UIID == "ShopOpen")
+
+                if (HandleSpecial)
                 {
-                    ShopScreen.Visible = true;
+                    ((ResIcon)btn).Selected = true;
+                    SelectedIcon = (ResIcon)btn;
                 }
+
             }
 
         }
@@ -263,10 +248,6 @@ namespace MagicalMountainMinery.Main
                 CurrentState = State.Constructing;
 
             }
-            else if (env == EventType.Drag_Start)
-            {
-
-            }
             else if (env == EventType.Right_Action)
             {
                 CurrentState = State.Deleting;
@@ -275,20 +256,11 @@ namespace MagicalMountainMinery.Main
             {
                 CurrentState = State.Default;
                 LastHover = CurrentHover = new IndexPos(-1, -1);
-                //GD.Print("release in placer");
-                //GD.Print("Setting last & currrent hover to: ", LastHover);
 
             }
             else if (env == EventType.Right_Release)
             {
                 CurrentState = State.Default;
-            }
-            else if (env == EventType.Level_Toggle)
-            {
-                CurrentTrackLevel = CurrentTrackLevel == 1 ? 2 : 1;
-                var id = CurrentTrackLevel == 1 ? "Normal" : "Raised";
-                SetButtonFocus(Buttons.First(item => item.UIID == id));
-                //this.GetNode<Label>("CanvasLayer/TextureRect2/Label").Text = "LevelIndex: " + CurrentTrackLevel;
             }
 
             else if (env == EventType.Rotate)
@@ -350,7 +322,7 @@ namespace MagicalMountainMinery.Main
         public void ShowConnections(bool ButtonPressed)
         {
             _ShowConnections = ButtonPressed;
-            this.GetNode<CheckBox>("CanvasLayer/CheckBox");
+            //this.GetNode<CheckBox>("CanvasLayer/CheckBox");
             foreach (var t in MapLevel.Tracks1)
             {
                 if (t != null)
@@ -361,12 +333,12 @@ namespace MagicalMountainMinery.Main
         }
         public void UpdateUI()
         {
-            var raisedLabel = this.GetNode<Label>("CanvasLayer/Raised/Label");
-            var normLabel = this.GetNode<Label>("CanvasLayer/Normal/Label");
-            var juncLabel = this.GetNode<Label>("CanvasLayer/Junc/Label");
-            raisedLabel.Text = MapLevel.AllowedTracksRaised - MapLevel.CurrentTracksRaised + "";
-            normLabel.Text = MapLevel.AllowedTracks - MapLevel.CurrentTracks + "";
-            juncLabel.Text = MapLevel.AllowedJunctions - MapLevel.CurrentJunctions + "";
+            //var raisedLabel = this.GetNode<Label>("CanvasLayer/Raised/Label");
+            //var normLabel = this.GetNode<Label>("CanvasLayer/Normal/Label");
+            //var juncLabel = this.GetNode<Label>("CanvasLayer/Junc/Label");
+            //raisedLabel.Text = MapLevel.AllowedTracksRaised - MapLevel.CurrentTracksRaised + "";
+            TrackAmountLabel.Text = MapLevel.AllowedTracks - MapLevel.CurrentTracks + "";
+            //juncLabel.Text = MapLevel.AllowedJunctions - MapLevel.CurrentJunctions + "";
         }
 
         public void SetTrack(IndexPos pos, Track track, bool update = true, int tracklevel = 1)
@@ -378,7 +350,12 @@ namespace MagicalMountainMinery.Main
                 if (track.TrackLevel == 2)
                     MapLevel.CurrentTracksRaised++;
                 else
+                {
+
                     MapLevel.CurrentTracks++;
+                    if (MapLevel.CurrentTracks == MapLevel.AllowedTracks)
+                        EventDispatch.PushEventFlag(GameEventType.TracksExhausted);
+                }
                 UpdateUI();
             }
         }
@@ -595,7 +572,7 @@ namespace MagicalMountainMinery.Main
         //}
         public void DeleteAt(IndexPos index)
         {
-
+            //TODO need to fix deleting next to a junction when it's broken
             var direction = LastHover - index;
             if (!MapLevel.ValidIndex(index))
                 return;
@@ -652,7 +629,7 @@ namespace MagicalMountainMinery.Main
 
                 list.Remove(dir);
 
-                var t = new Track();
+                var t = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), list[0], CurrentTrackLevel);
                 MapLevel.RemoveTrack(junc.Index);
 
                 SetTrack(junc.Index, t, false, junc.TrackLevel);

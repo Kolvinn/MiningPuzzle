@@ -44,10 +44,10 @@ anchor_left = 0.513
 anchor_top = 0.513
 anchor_right = 0.513
 anchor_bottom = 0.513
-offset_left = -20.007
-offset_top = -20.007
-offset_right = -20.007
-offset_bottom = -20.007
+offset_left = -32.832
+offset_top = -32.832
+offset_right = -32.832
+offset_bottom = -32.832
 
 [node name="Up" type="TextureButton" parent="Arrows"]
 visible = false
@@ -113,10 +113,10 @@ anchor_left = 0.513
 anchor_top = 0.513
 anchor_right = 0.513
 anchor_bottom = 0.513
-offset_left = -20.007
-offset_top = -20.007
-offset_right = -20.007
-offset_bottom = -20.007
+offset_left = -32.832
+offset_top = -32.832
+offset_right = -32.832
+offset_bottom = -32.832
 
 [node name="TextureButton" type="TextureButton" parent="Numbers"]
 texture_filter = 1
@@ -317,10 +317,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -50.5
-offset_top = -71.0
-offset_right = 3.5
-offset_bottom = -46.0
+offset_left = -64.0
+offset_top = -97.0
+offset_bottom = -67.0
 grow_horizontal = 2
 grow_vertical = 2
 

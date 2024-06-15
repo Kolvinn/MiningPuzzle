@@ -1,0 +1,550 @@
+[gd_scene load_steps=7 format=3 uid="uid://b0vl11kbrg628"]
+
+[ext_resource type="FontFile" uid="uid://byjdlexdr3rw3" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_compressed.ttf" id="2_j82r7"]
+[ext_resource type="Texture2D" uid="uid://bnqh17c1hkq3n" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Button_Small_Press_01a1.png" id="3_yi0sr"]
+[ext_resource type="Texture2D" uid="uid://begtjjxbjqcmy" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Button_Small_Press_01a2.png" id="4_mnafy"]
+[ext_resource type="Script" path="res://UI/GameButton.cs" id="5_mgydy"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_bnmbw"]
+font = ExtResource("2_j82r7")
+font_color = Color(0.984314, 0.929412, 0.87451, 1)
+outline_size = 15
+outline_color = Color(0.282353, 0.282353, 0.282353, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_i06gm"]
+font = ExtResource("2_j82r7")
+font_color = Color(0.984314, 0.929412, 0.87451, 1)
+outline_size = 15
+outline_color = Color(0.282353, 0.282353, 0.282353, 1)
+
+[node name="Control" type="HBoxContainer"]
+offset_right = 785.0
+offset_bottom = 1015.0
+size_flags_horizontal = 3
+theme_override_constants/separation = 30
+
+[node name="Actions" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.45
+theme_override_constants/separation = 30
+
+[node name="Label3" type="Label" parent="Actions"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Place Track"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="Actions"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Delete Track"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label13" type="Label" parent="Actions"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Rotate"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="Actions"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Start Mining"
+label_settings = SubResource("LabelSettings_i06gm")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label4" type="Label" parent="Actions"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Sim Speed +"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label5" type="Label" parent="Actions"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Sim Speed -"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label6" type="Label" parent="Actions"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Stop Mining"
+label_settings = SubResource("LabelSettings_i06gm")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label7" type="Label" parent="Actions"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Zoom In"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label8" type="Label" parent="Actions"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Zoom Out"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label9" type="Label" parent="Actions"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Settings"
+label_settings = SubResource("LabelSettings_i06gm")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label10" type="Label" parent="Actions"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Toggle Shop"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label11" type="Label" parent="Actions"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Reset Level"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Buttons" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+theme_override_constants/separation = 30
+
+[node name="Label3" type="Label" parent="Buttons"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Left Mouse Button"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label4" type="Label" parent="Buttons"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Right Mouse Button"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label14" type="Label" parent="Buttons"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "R"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label5" type="Label" parent="Buttons"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Space"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label6" type="Label" parent="Buttons"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "2"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label7" type="Label" parent="Buttons"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "1"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label8" type="Label" parent="Buttons"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "F"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label9" type="Label" parent="Buttons"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Mouse Wheel Up"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label10" type="Label" parent="Buttons"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Mouse Wheel Down"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label11" type="Label" parent="Buttons"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Escape"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label12" type="Label" parent="Buttons"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "S"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label13" type="Label" parent="Buttons"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "L"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Rebinds" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.3
+theme_override_constants/separation = 30
+
+[node name="Rebind" type="TextureButton" parent="Rebinds"]
+modulate = Color(0.458824, 0.458824, 0.458824, 0.541176)
+custom_minimum_size = Vector2(144.47, 45)
+layout_mode = 2
+disabled = true
+texture_normal = ExtResource("3_yi0sr")
+texture_pressed = ExtResource("4_mnafy")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("5_mgydy")
+UIID = "UI_SCALE_minus"
+
+[node name="Label4" type="Label" parent="Rebinds/Rebind"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Rebind"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 1
+
+[node name="Rebind2" type="TextureButton" parent="Rebinds"]
+modulate = Color(0.458824, 0.458824, 0.458824, 0.541176)
+custom_minimum_size = Vector2(144.47, 45)
+layout_mode = 2
+disabled = true
+texture_normal = ExtResource("3_yi0sr")
+texture_pressed = ExtResource("4_mnafy")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("5_mgydy")
+UIID = "UI_SCALE_minus"
+
+[node name="Label4" type="Label" parent="Rebinds/Rebind2"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Rebind"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 1
+
+[node name="Rebind13" type="TextureButton" parent="Rebinds"]
+custom_minimum_size = Vector2(144.47, 45)
+layout_mode = 2
+texture_normal = ExtResource("3_yi0sr")
+texture_pressed = ExtResource("4_mnafy")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("5_mgydy")
+UIID = "Rebind_Rotate"
+
+[node name="Label4" type="Label" parent="Rebinds/Rebind13"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Rebind"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 1
+
+[node name="Rebind3" type="TextureButton" parent="Rebinds"]
+custom_minimum_size = Vector2(144.47, 45)
+layout_mode = 2
+texture_normal = ExtResource("3_yi0sr")
+texture_pressed = ExtResource("4_mnafy")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("5_mgydy")
+UIID = "Rebind_Start Mining"
+
+[node name="Label4" type="Label" parent="Rebinds/Rebind3"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Rebind"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 1
+
+[node name="Rebind4" type="TextureButton" parent="Rebinds"]
+custom_minimum_size = Vector2(144.47, 45)
+layout_mode = 2
+texture_normal = ExtResource("3_yi0sr")
+texture_pressed = ExtResource("4_mnafy")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("5_mgydy")
+UIID = "Rebind_Sim Speed +"
+
+[node name="Label4" type="Label" parent="Rebinds/Rebind4"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Rebind"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 1
+
+[node name="Rebind5" type="TextureButton" parent="Rebinds"]
+custom_minimum_size = Vector2(144.47, 45)
+layout_mode = 2
+texture_normal = ExtResource("3_yi0sr")
+texture_pressed = ExtResource("4_mnafy")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("5_mgydy")
+UIID = "Rebind_Sim Speed -"
+
+[node name="Label4" type="Label" parent="Rebinds/Rebind5"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Rebind"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 1
+
+[node name="Rebind6" type="TextureButton" parent="Rebinds"]
+custom_minimum_size = Vector2(144.47, 45)
+layout_mode = 2
+texture_normal = ExtResource("3_yi0sr")
+texture_pressed = ExtResource("4_mnafy")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("5_mgydy")
+UIID = "Rebind_Stop Mining"
+
+[node name="Label4" type="Label" parent="Rebinds/Rebind6"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Rebind"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 1
+
+[node name="Rebind7" type="TextureButton" parent="Rebinds"]
+custom_minimum_size = Vector2(144.47, 45)
+layout_mode = 2
+texture_normal = ExtResource("3_yi0sr")
+texture_pressed = ExtResource("4_mnafy")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("5_mgydy")
+UIID = "Rebind_Zoom In"
+
+[node name="Label4" type="Label" parent="Rebinds/Rebind7"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Rebind"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 1
+
+[node name="Rebind8" type="TextureButton" parent="Rebinds"]
+custom_minimum_size = Vector2(144.47, 45)
+layout_mode = 2
+texture_normal = ExtResource("3_yi0sr")
+texture_pressed = ExtResource("4_mnafy")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("5_mgydy")
+UIID = "Rebind_Zoom Out"
+
+[node name="Label4" type="Label" parent="Rebinds/Rebind8"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Rebind"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 1
+
+[node name="Rebind9" type="TextureButton" parent="Rebinds"]
+custom_minimum_size = Vector2(144.47, 45)
+layout_mode = 2
+texture_normal = ExtResource("3_yi0sr")
+texture_pressed = ExtResource("4_mnafy")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("5_mgydy")
+UIID = "Rebind_Settings"
+
+[node name="Label4" type="Label" parent="Rebinds/Rebind9"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Rebind"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 1
+
+[node name="Rebind10" type="TextureButton" parent="Rebinds"]
+custom_minimum_size = Vector2(144.47, 45)
+layout_mode = 2
+texture_normal = ExtResource("3_yi0sr")
+texture_pressed = ExtResource("4_mnafy")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("5_mgydy")
+UIID = "Rebind_Toggle Shop"
+
+[node name="Label4" type="Label" parent="Rebinds/Rebind10"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Rebind"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 1
+
+[node name="Rebind11" type="TextureButton" parent="Rebinds"]
+custom_minimum_size = Vector2(144.47, 45)
+layout_mode = 2
+texture_normal = ExtResource("3_yi0sr")
+texture_pressed = ExtResource("4_mnafy")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("5_mgydy")
+UIID = "Rebind_Reset Level"
+
+[node name="Label4" type="Label" parent="Rebinds/Rebind11"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_stretch_ratio = 0.09
+text = "Rebind"
+label_settings = SubResource("LabelSettings_bnmbw")
+horizontal_alignment = 1

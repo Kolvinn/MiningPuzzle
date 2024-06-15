@@ -3,7 +3,14 @@
   "Difficulty": 1,
   "BonusStars": 0,
   "DataString": null,
-  "Region": "",
-  "LevelIndex": 0,
+  "MapSeed": 0,
+  "AllowedTracks": 6,
+  "Width": 0,
+  "Height": 0,
+  "WidthAbsolute": 0.0,
+  "HeightAbsolute": 0.0,
+  "AllowRandom": false,
+  "Region": "Tutorial Valley",
+  "LevelIndex": 3,
   "RegionIndex": 0
 }

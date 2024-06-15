@@ -83,5 +83,5 @@ animations = [{
 [node name="AnimatedSprite2D" type="AnimatedSprite2D"]
 sprite_frames = SubResource("SpriteFrames_4xmom")
 autoplay = "default"
-frame_progress = 0.277831
+frame_progress = 0.91341
 offset = Vector2(0, -150)

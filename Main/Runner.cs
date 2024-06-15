@@ -8,8 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using static MagicalMountainMinery.Main.GameController;
 using Label = Godot.Label;
+using MagicalMountainMinery.Obj;
 
-public partial class Runner : Node2D
+public partial class Runner : Node2D, IMain
 {
     public MapLevel MapLevel { get; set; }
 
@@ -19,7 +20,6 @@ public partial class Runner : Node2D
     public TrackPlacer Placer;
 
     public NavBar NavBar { get; set; }
-    public ColorRect LoadingScreen { get; set; }
 
     public List<CartController> CartControllers { get; set; } = new List<CartController>();
 
@@ -27,12 +27,28 @@ public partial class Runner : Node2D
 
     public static GameEvent LastEvent { get; set; }
 
-    public AudioStreamPlayer player { get; set; } = new AudioStreamPlayer();
-
+    public Shop Shop { get; set; }  
     public LevelCompleteUI LevelEndUI { get; set; }
+
+    private bool pauseHandle = false;
+    public bool PauseHandle
+    {
+        get => pauseHandle;
+        set
+        {
+            //if(Placer!= null) 
+                //Placer.PauseHandle = value;
+            foreach (var controller in CartControllers)
+                controller.PauseHandle = value;
+            pauseHandle = value;
+
+        }
+    }
 
     public LoadHomeDelegate HomeCall { get; set; }
     public LevelCompleteDelegate LevelComplete { get; set; }
+
+    public LoadLevelDelegate LoadLevel { get; set; }
 
     public delegate void GemUsedDelegate(GameResource resource);
 
@@ -41,13 +57,13 @@ public partial class Runner : Node2D
 
     public TopBar TopBar { get; set; }
     public Camera Cam { get; set; }
+
     public override void _Ready()
     {
-        LoadingScreen = this.GetNode<ColorRect>("CanvasLayer/ColorRect");
 
         Cam = new Camera();
         this.AddChild(Cam);
-        Cam.Zoom = new Vector2(0.1f, 0.1f);
+        //Cam.Zoom = new Vector2(0.1f, 0.1f);
 
         Placer = this.GetNode<TrackPlacer>("TrackPlacer");
 
@@ -61,67 +77,61 @@ public partial class Runner : Node2D
 
     public void OnReset()
     {
-        Placer.PauseHandle = false;
-        ReloadUsedGems();
-        LevelEndUI.Visible = false;
+        PreReset();
         LoadMapLevel(CurrentMapData);
     }
 
     public void OnRetry()
     {
-        Placer.PauseHandle = false;
-        ReloadUsedGems();
-        LevelEndUI.Visible = false;
+        PreReset();
         LoadMapLevel(CurrentMapData, MapLevel);
 
     }
 
     public void _on_next_pressed()
     {
-        Placer.PauseHandle = false;
-        ReloadUsedGems();
-        LevelEndUI.Visible = false;
+        PreReset();
         var next = ResourceStore.GetNextLevel(CurrentMapData);
         if (next != null)
-            LoadMapLevel(next);
+            LoadLevel(next);
+
+        
+
     }
 
     public void on_home_pressed()
     {
-        Placer.PauseHandle = false;
-        ReloadUsedGems();
-        LevelEndUI.Visible = false;
+        PreReset();
         HomeCall();
+    }
+
+    private void PreReset()
+    {
+        ReloadUsedGems();
+        if (Placer != null)
+            Placer.PauseHandle = false;
+        if (LevelEndUI != null)
+            LevelEndUI.Visible = false;
     }
 
     public void StopLevelPressed()
     {
         this.GetNode<Control>("CanvasLayer/Container").Visible = false;
-        EventDispatch.ExitUI(this.GetNode<GameButton>("CanvasLayer/Container/Stop"));
+        EventDispatch.ClearAll();
         OnRetry();
     }
+
     public override void _ExitTree()
     {
+        PreReset();
         base._ExitTree();
-        ReloadUsedGems();
     }
     public void _on_map_pressed()
     {
-        Placer.PauseHandle = false;
-        ReloadUsedGems();
+        PreReset();
         HomeCall();
     }
 
-    public void PauseLevelPressed()
-    {
-
-        // BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Pause"), false);
-        // BtnEnable(this.GetNode<TextureButton>("CanvasLayer/Container/Play"), true);
-        foreach (var item in CartControllers)
-        {
-            item.State = CartController.CartState.Paused;
-        }
-    }
 
     public void BtnEnable(BaseButton b, bool enable)
     {
@@ -145,24 +155,24 @@ public partial class Runner : Node2D
 
     public void OnSimSpeedChange(float amount)
     {
-        if (Settings.SIM_SPEED_STACK + amount < -2)
+        if (RunningVars.SIM_SPEED_STACK + amount < -2)
             return;
-        if (Settings.SIM_SPEED_STACK + amount > 4)
+        if (RunningVars.SIM_SPEED_STACK + amount > 4)
             return;
-        Settings.SIM_SPEED_STACK += amount;
+        RunningVars.SIM_SPEED_STACK += amount;
 
 
-        if (Settings.SIM_SPEED_STACK < 0)
+        if (RunningVars.SIM_SPEED_STACK < 0)
         {
-            var percent = Settings.SIM_SPEED_STACK * -2;
-            Settings.SIM_SPEED_RATIO = percent == 0 ? 1 : 1 / percent;
+            var percent = RunningVars.SIM_SPEED_STACK * -2;
+            RunningVars.SIM_SPEED_RATIO = percent == 0 ? 1 : 1 / percent;
 
         }
         else
         {
-            Settings.SIM_SPEED_RATIO = 1 + Settings.SIM_SPEED_STACK;
+            RunningVars.SIM_SPEED_RATIO = 1 + RunningVars.SIM_SPEED_STACK;
         }
-        NavBar.SpeedControl.GetNode<Label>("VBoxContainer/Label").Text = (Settings.SIM_SPEED_RATIO * 100) + "%";
+        NavBar.SpeedControl.GetNode<Label>("VBoxContainer/Label").Text = (RunningVars.SIM_SPEED_RATIO * 100) + "%";
     }
 
 
@@ -255,7 +265,10 @@ public partial class Runner : Node2D
     {
         //cant afford poor boi
         if (CurrentProfile.StarCount < entry.GameResource.Amount)
+        {
+            Shop.PlayString(false);
             return;
+        }
 
         if (entry.GameResource.ResourceType == ResourceType.Track)
         {
@@ -267,6 +280,7 @@ public partial class Runner : Node2D
             AddGemToProfile(entry.GameResource);
         }
 
+        Shop.PlayString(true);
         CurrentProfile.StarCount -= entry.GameResource.Amount;
         NavBar.StarLabel.Text = CurrentProfile.StarCount.ToString();
 
@@ -323,54 +337,62 @@ public partial class Runner : Node2D
     {
         RemoveGemFromProfile(resource);
     }
-    public bool HandleGameButtonClick(EventType env, IUIComponent obj)
+
+  
+    public bool HandleEvent(EventType env, IUIComponent obj)
     {
-        if (env != EventType.Left_Action || string.IsNullOrEmpty(obj?.UIID))
-            return false;
+        var list = new List<EventType>() { EventType.Speed_Increase, EventType.Speed_Decrease,
+            EventType.Start_Mining,EventType.Toggle_Shop, EventType.Reset_Level,EventType.Stop_Mining,EventType.Pause};
 
-        bool ret = new string[] { "ReduceTime", "IncreaseTime", "MiningStart", "ResetLevel", "Play_Pause", "Stop" }.Contains(obj.UIID);
-
-        if (obj is ShopEntry entry)
-        {
-            HandleShopEntry(entry);
-        }
-        else if (obj.UIID == "ReduceTime")
-            OnSimSpeedChange(-1f);
-        else if (obj.UIID == "IncreaseTime")
-            OnSimSpeedChange(1f);
-        else if (obj.UIID == "MiningStart")
+        if (env is EventType.Start_Mining && !Placer.PauseHandle)
             _on_start_pressed();
-        else if (obj.UIID == "ResetLevel")
-            OnReset();
-        else if (obj.UIID == "Play_Pause")
-            PlayLevelPressed();
-        else if (obj.UIID == "Stop")
+        else if (env is EventType.Stop_Mining)
             StopLevelPressed();
-        else if (obj.UIID == "Map")
+        else if (env is EventType.Pause)
+            PlayLevelPressed();
+        else if (env is EventType.Home)
             on_home_pressed();
+        else if (env is EventType.Speed_Increase)
+            OnSimSpeedChange(1f);
+        else if (env is EventType.Speed_Decrease)
+            OnSimSpeedChange(-1f);
+        else if (env is EventType.Reset_Level)
+            OnReset();
+        else if (env is EventType.Toggle_Shop)
+        {
+            HandleShopVisible(env, obj);
+        }
 
-        return ret;
+        return list.Contains(env);
     }
 
 
     public override void _PhysicsProcess(double delta)
     {
-        //LastEvent = EventDispatch.PopGameEvent();
-
-
-        if (!ValidRun)
-            return;
-
 
         var obj = EventDispatch.PeekHover();
         var env = EventDispatch.FetchLastInput();
 
-        if (Placer.HandleSpecial || !HandleGameButtonClick(env, obj))
+        if (!ValidRun)
+            return;
+        if (PauseHandle)
+        {
+            if(Shop.Visible)
+                HandleShopVisible(env, obj);
+            return;
+        } 
+        if (Placer.HandleSpecial || !HandleEvent(env, obj))
+        {
             Placer?.Handle(env, obj);
+        }
 
-        var fin = CartControllers.Count > 0 && CartControllers.All(item => item.Finished);
-        var success = MapLevel.LevelTargets.Count() > 0 && MapLevel.LevelTargets.All(item => item.CompletedAll);
-        success = success && fin ;
+        //var fin = CartControllers.Count > 0 && CartControllers.All(item => item.State == CartController.CartState.Stopped && item.Cart.StoredResources.Count ==0);
+        var success = MapLevel.LevelTargets.All(item => item.CompletedAll);
+        //if (MapLevel.LevelTargets?.Count > 1)
+        //    success = MapLevel.LevelTargets.All(item => item.CompletedAll);
+        //else if(MapLevel.LevelTargets?.Count == 1)
+        //    success = MapLevel.LevelTargets.All(item => item.CompletedAll) && fin;
+        //success = success && fin ;
 
         if (success)
         {
@@ -378,13 +400,38 @@ public partial class Runner : Node2D
                 control.Finished = true;
 
             ValidLevelComplete();
+            EventDispatch.PushEventFlag(GameEventType.LevelComplete);
             ValidRun = false;
         }
 
     }
 
+    /// <summary>
+    /// Toggles shop visibility and pauses the current handling of Runner.
+    /// Will reject all non Shop Toggle actions if shop is visible.
+    /// </summary>
+    /// <param name="env"></param>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    public void HandleShopVisible(EventType env, IUIComponent obj)
+    {
+        if (Shop.Visible)
+        {
+            if (!string.IsNullOrEmpty(obj?.UIID) && obj.UIID.Contains("ShopEntry") && env == EventType.Left_Release)
+            {
+                HandleShopEntry(obj as ShopEntry);
+                return;
+            }
+            var entry = obj is not null && obj.UIID.Contains("ShopEntry") && env == EventType.Left_Release;
+            var shop = env == EventType.Toggle_Shop;
+            if (!(entry || shop))
+                return;
+           
+        }
+        PauseHandle = Shop.Visible = !Shop.Visible;
+        EventDispatch.ClearAll();
 
-
+    }
 
 
     public string GetOrientationString(IndexPos pos)
@@ -401,6 +448,8 @@ public partial class Runner : Node2D
             node.QueueFree();
     }
 
+
+
     public void _on_start_pressed()
     {
         if (Placer.MasterTrackList.Count == 0)
@@ -411,6 +460,7 @@ public partial class Runner : Node2D
         this.GetNode<Control>("CanvasLayer/Container").Visible = true;
         BtnEnable(NavBar.MiningIcon, false);
         EventDispatch.ExitUI(NavBar.MiningIcon as IUIComponent);
+        EventDispatch.PushEventFlag(GameEventType.MiningStart);
         //BtnEnable(StartButton, false);
 
         var colors = new List<Color>() { Colors.AliceBlue, Colors.RebeccaPurple, Colors.Yellow, Colors.Green };

@@ -2,6 +2,7 @@ using Godot;
 using MagicalMountainMinery.Data;
 using MagicalMountainMinery.Obj;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class Cart : Area2D
 {
@@ -111,6 +112,11 @@ public partial class Cart : Area2D
         }
         this.GetNode<PanelContainer>("PanelContainer").Visible = StoredResources.Count > 0;
 
+    }
+
+    public List<GameResource> GetResources()
+    {
+        return StoredResources.Values.Select(item =>  new GameResource(item.GameResource)).ToList();
     }
 
 

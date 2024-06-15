@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Reflection;
 
 public partial class NavBar : Control
 {
@@ -19,8 +20,10 @@ public partial class NavBar : Control
     public TextureButton SettingsIcon { get; set; }
     [Export]
     public TextureButton Reset { get; set; }
-    [Export]
-    public TextureButton Stop { get; set; }
+
+    public static float GlobalHeight = 0;
+    //[Export]
+    //public TextureButton Stop { get; set; }
 
     public override void _Ready()
 	{
@@ -29,5 +32,18 @@ public partial class NavBar : Control
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-	}
+
+    }
+
+    public void ModifyVisible(bool vis)
+    {
+        this.Visible = vis;
+        //ShopIcon.Visible = StarIcon.Visible = StarLabel.Visible=
+        //    SpeedControl.Visible = MiningIcon.Visible = MapIcon.Visible =
+        //    SettingsIcon.Visible = Reset.Visible  = vis;
+        //var c = vis ? new Color(1, 1, 1, 1) : new Color(1, 1, 1, 0);
+        //this.GetNode<PanelContainer>("PanelContainer").SelfModulate = c;
+
+        GlobalHeight = this.GetNode<PanelContainer>("PanelContainer").GetGlobalRect().Size.Y;
+    }
 }

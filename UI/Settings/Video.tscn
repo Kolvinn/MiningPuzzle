@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://pt6sqhisaak1"]
+[gd_scene load_steps=12 format=3 uid="uid://pt6sqhisaak1"]
 
 [ext_resource type="Script" path="res://UI/Settings/VideoSettings.cs" id="1_0sii5"]
 [ext_resource type="FontFile" uid="uid://cdjxwrsadqdwg" path="res://Assets/Fonts/Pixel/Dogica/dogicapixel.ttf" id="1_2sqla"]
@@ -7,6 +7,13 @@
 [ext_resource type="Texture2D" uid="uid://dqyqoa576gwr3" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Dropdown.png" id="4_7ejud"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_bnmbw"]
+font = ExtResource("2_2qmwh")
+font_size = 32
+font_color = Color(0.984314, 0.929412, 0.87451, 1)
+outline_size = 15
+outline_color = Color(0.282353, 0.282353, 0.282353, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_i06gm"]
 font = ExtResource("2_2qmwh")
 font_size = 32
 font_color = Color(0.984314, 0.929412, 0.87451, 1)
@@ -26,16 +33,21 @@ atlas = ExtResource("4_7ejud")
 region = Rect2(0, 10, 32, 12)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dalpe"]
+content_margin_left = 28.0
+content_margin_right = 12.0
 texture = SubResource("AtlasTexture_ok7ua")
 
 [node name="VideoSettings" type="HBoxContainer"]
-offset_right = 504.0
-offset_bottom = 92.0
-theme_override_constants/separation = 75
+offset_right = 843.0
+offset_bottom = 134.0
+size_flags_horizontal = 3
+theme_override_constants/separation = 30
 script = ExtResource("1_0sii5")
 
 [node name="Labels" type="VBoxContainer" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
 theme_override_constants/separation = 30
 
 [node name="Label" type="Label" parent="Labels"]
@@ -49,13 +61,15 @@ vertical_alignment = 1
 [node name="Label2" type="Label" parent="Labels"]
 custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
-text = "Window Mode"
-label_settings = SubResource("LabelSettings_bnmbw")
+text = "Window Mode:"
+label_settings = SubResource("LabelSettings_i06gm")
 horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="Labels2" type="VBoxContainer" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
 theme_override_constants/separation = 30
 
 [node name="OptionButton" type="OptionButton" parent="Labels2"]
@@ -79,6 +93,14 @@ clip_text = true
 [node name="OptionButton2" type="OptionButton" parent="Labels2"]
 custom_minimum_size = Vector2(150, 45)
 layout_mode = 2
+theme = SubResource("Theme_rry6a")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("1_2sqla")
 theme_override_font_sizes/font_size = 16
 theme_override_icons/arrow = ExtResource("3_30dcs")

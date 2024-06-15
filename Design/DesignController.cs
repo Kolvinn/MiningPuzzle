@@ -17,8 +17,8 @@ namespace MagicalMountainMinery.Design
         public OptionButton RegionOptions { get; set; }
 
 
-        public int RegionIndex { get; set; } = 0;
-        public int LevelIndex { get; set; } = 0;
+        public int RegionIndex { get; set; } = -1;
+        public int LevelIndex { get; set; } = -1;
         public override void _Ready()
         {
             ResourceStore.LoadTracks();
@@ -34,7 +34,7 @@ namespace MagicalMountainMinery.Design
             RegionOptions.Connect(OptionButton.SignalName.ItemSelected, new Callable(this, nameof(OnRegionSelected)));
             LevelOptions.Connect(OptionButton.SignalName.ItemSelected, new Callable(this, nameof(OnLevelSelected)));
 
-            this.GetNode<Button>("CanvasLayer/NewLevelButton").Connect(Button.SignalName.Pressed, Callable.From(OnNewLevelPressed));
+            //this.GetNode<Button>("CanvasLayer/NewLevelButton").Connect(Button.SignalName.Pressed, Callable.From(OnNewLevelPressed));
             LevelDesigner = Runner.LoadScene<LevelDesigner>("res://Design/LevelDesigner.tscn");
             this.AddChild(LevelDesigner);
             OnRegionSelected(0);
@@ -99,17 +99,29 @@ namespace MagicalMountainMinery.Design
             LevelDesigner.QueueFree();
             LevelDesigner = Runner.LoadScene<LevelDesigner>("res://Design/LevelDesigner.tscn");
             this.AddChild(LevelDesigner);
+            EventDispatch.ClearAll();
             this.CallDeferred(nameof(LevelDelegate), RegionIndex, index, false);
 
         }
 
-        public void OnNewLevelPressed()
+        
+
+        public void _on_new_level_button_pressed()
         {
             var levels = ResourceStore.Levels.Values.Where(i => i.RegionIndex == RegionIndex);
             var last = levels.Select(i => i.LevelIndex).Max() + 1;
-
-            this.CallDeferred(nameof(LevelDelegate), RegionIndex, last);
-
+            LevelDesigner.QueueFree();
+            LevelDesigner = Runner.LoadScene<LevelDesigner>("res://Design/LevelDesigner.tscn");
+            this.AddChild(LevelDesigner);
+            EventDispatch.ClearAll();
+            this.CallDeferred(nameof(LevelDelegate), RegionIndex, last, true);
         }
+        public void _on_save_button_pressed()
+        {
+            GD.Print("_on_save_button_pressed");
+
+            this.LevelDesigner.Save(RegionIndex, LevelIndex);
+        }
+
     }
 }

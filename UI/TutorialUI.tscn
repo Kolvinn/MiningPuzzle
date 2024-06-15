@@ -43,7 +43,6 @@ mouse_filter = 2
 script = ExtResource("1_17apg")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -54,7 +53,6 @@ mouse_filter = 2
 color = Color(0.129412, 0.129412, 0.129412, 0.592157)
 
 [node name="Tutorial Valley" type="Control" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -64,7 +62,6 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="1" type="Control" parent="Tutorial Valley"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -120,6 +117,7 @@ autowrap_mode = 2
 script = ExtResource("4_x0nw8")
 
 [node name="ArrowsRight2" type="Sprite2D" parent="Tutorial Valley/1/2"]
+visible = false
 position = Vector2(70, 118)
 rotation = 1.5708
 scale = Vector2(0.65271, 0.434489)

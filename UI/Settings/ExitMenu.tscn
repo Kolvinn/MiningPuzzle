@@ -1,0 +1,72 @@
+[gd_scene load_steps=6 format=3 uid="uid://cpt31m0lmdc1s"]
+
+[ext_resource type="FontFile" uid="uid://byjdlexdr3rw3" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_compressed.ttf" id="1_itfsf"]
+[ext_resource type="Texture2D" uid="uid://bnqh17c1hkq3n" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Button_Small_Press_01a1.png" id="1_oxvaj"]
+[ext_resource type="Texture2D" uid="uid://begtjjxbjqcmy" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Button_Small_Press_01a2.png" id="2_lgvvn"]
+[ext_resource type="Script" path="res://UI/GameButton.cs" id="3_qbltt"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_0ty8x"]
+font = ExtResource("1_itfsf")
+font_size = 32
+font_color = Color(0.984314, 0.929412, 0.87451, 1)
+outline_size = 15
+outline_color = Color(0.282353, 0.282353, 0.282353, 1)
+
+[node name="ExitSettings" type="HBoxContainer"]
+offset_right = 530.0
+offset_bottom = 134.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 30
+
+[node name="Title" type="TextureButton" parent="."]
+custom_minimum_size = Vector2(250, 130)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_oxvaj")
+texture_pressed = ExtResource("2_lgvvn")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_qbltt")
+UIID = "ExitTitle"
+
+[node name="Label2" type="Label" parent="Title"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Exit to Title"
+label_settings = SubResource("LabelSettings_0ty8x")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/origin = Vector2(2, 2)
+
+[node name="Title2" type="TextureButton" parent="."]
+custom_minimum_size = Vector2(250, 130)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture_normal = ExtResource("1_oxvaj")
+texture_pressed = ExtResource("2_lgvvn")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_qbltt")
+UIID = "QuitGame"
+
+[node name="Label2" type="Label" parent="Title2"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Quit Game"
+label_settings = SubResource("LabelSettings_0ty8x")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/origin = Vector2(2, 2)

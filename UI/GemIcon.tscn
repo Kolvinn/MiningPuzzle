@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://ge5o1qqnft1x"]
+[gd_scene load_steps=8 format=3 uid="uid://ge5o1qqnft1x"]
 
 [ext_resource type="Texture2D" uid="uid://bnyuuxe5pvk4c" path="res://Assets/GameResource/Diamond.png" id="1_eeooq"]
 [ext_resource type="Script" path="res://UI/ResIcon.cs" id="2_6ekn0"]
 [ext_resource type="FontFile" uid="uid://cylak8bji1wf3" path="res://Assets/Fonts/Pixel/PRNumber3.ttf" id="3_1d2cp"]
+[ext_resource type="Texture2D" uid="uid://cd6yv3rtg6usi" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Select_01a1.png" id="4_6i8uu"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gde2t"]
 
@@ -42,3 +43,18 @@ text = "1"
 label_settings = SubResource("LabelSettings_b6xqd")
 horizontal_alignment = 2
 vertical_alignment = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_right = -8
+theme_override_constants/margin_bottom = -8
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer"]
+layout_mode = 2
+texture = ExtResource("4_6i8uu")

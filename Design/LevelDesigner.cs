@@ -245,18 +245,6 @@ namespace MagicalMountainMinery.Design
             {
                 CurrentState = State.Default;
             }
-            else if (env == EventType.Level_Toggle)
-            {
-                CurrentTrackLevel = CurrentTrackLevel == 1 ? 2 : 1;
-                var id = CurrentTrackLevel == 1 ? "Normal" : "Raised";
-                //SetButtonFocus(Buttons.First(item => item.UIID == id));
-                //this.GetNode<Label>("CanvasLayer/TextureRect2/Label").Text = "LevelIndex: " + CurrentTrackLevel;
-            }
-
-            else if (env == EventType.Rotate)
-            {
-                Rotate();
-            }
         }
 
 
@@ -373,6 +361,7 @@ namespace MagicalMountainMinery.Design
                     var first = Targets.FirstOrDefault(item => item.Index == index);
                     if (first != null)
                     {
+                        RemoveTextEdit(first);
                         this.RemoveChild(first);
                         first.QueueFree();
                         Targets.Remove(first);
@@ -507,7 +496,7 @@ namespace MagicalMountainMinery.Design
             this.AddChild(node);
             item.Index = index;
             node.Position = MapLevel.GetGlobalPosition(index);
-            item.AddChild(new ObjectTextEdit());
+            AddTextEdit(node, "", node.Position);
             Targets.Add(item);
         }
 
@@ -557,8 +546,8 @@ namespace MagicalMountainMinery.Design
 
 
 
-            MapLevel.SetMineable(index, miney);
-            miney.AddChild(new ObjectTextEdit());
+            MapLevel.SetMineable(index, miney); 
+            AddTextEdit(miney, "5", miney.Position);
 
         }
         public void Delete(IndexPos index)
@@ -587,9 +576,11 @@ namespace MagicalMountainMinery.Design
                 return;
             }
             var obj = MapLevel.MapObjects[index.X, index.Y];
+            
             if (obj == null)
                 return;
-            else if (obj is Portal)
+            RemoveTextEdit(obj);
+            if (obj is Portal)
             {
                 var portal = PortalStack.Pop();
 

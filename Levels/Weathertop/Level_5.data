@@ -1,0 +1,16 @@
+{
+  "$type": "MagicalMountainMinery.Data.MapLoad, MagicalMountainMinery",
+  "Difficulty": 2,
+  "BonusStars": 1,
+  "DataString": null,
+  "MapSeed": 0,
+  "AllowedTracks": 0,
+  "Width": 0,
+  "Height": 0,
+  "WidthAbsolute": 0.0,
+  "HeightAbsolute": 0.0,
+  "AllowRandom": false,
+  "Region": "Weathertop",
+  "LevelIndex": 4,
+  "RegionIndex": 1
+}

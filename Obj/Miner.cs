@@ -4,7 +4,7 @@ using static MagicalMountainMinery.Data.Load.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using static MagicalMountainMinery.Main.GameController;
 namespace MagicalMountainMinery.Obj
 {
     public partial class Miner : Node2D
@@ -129,7 +129,7 @@ namespace MagicalMountainMinery.Obj
                    // player.Play("RESET")
                 }
                 player.Queue(str + "Axe");//, ;
-                QueueSpeed = speed * SIM_SPEED_RATIO;
+                QueueSpeed = speed * RunningVars.SIM_SPEED_RATIO;
                 //if (player.CurrentAnimation == "RESET")
                 //{
                     
@@ -139,7 +139,7 @@ namespace MagicalMountainMinery.Obj
 
             }
             else
-                player.Play(str + "Axe",customSpeed: speed * SIM_SPEED_RATIO);//, speed * Runner.SIM_SPEED_RATIO);
+                player.Play(str + "Axe",customSpeed: speed * RunningVars.SIM_SPEED_RATIO);//, speed * Runner.SIM_SPEED_RATIO);
 
 
             var speedy = player.GetPlayingSpeed();

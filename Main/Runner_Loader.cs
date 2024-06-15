@@ -12,6 +12,7 @@ using static MagicalMountainMinery.Data.DataFunc;
 using Label = Godot.Label;
 using System.Reflection;
 using System.Drawing;
+using static Godot.OpenXRInterface;
 
 public partial class Runner : Node2D
 {
@@ -199,7 +200,6 @@ public partial class Runner : Node2D
 
         BtnEnable(NavBar.MiningIcon, true);
 
-        this.LoadingScreen.Visible = false;
         newMapLevel.AddMapObjects(newMapLevel.MapObjects, CurrentMapSave?.GemsCollected);
         newMapLevel.PostLoad();
 
@@ -212,22 +212,101 @@ public partial class Runner : Node2D
         this.GetNode<NoiseTest>("NoiseMap").LoadMapLevel(newMapLevel, load, Placer.OuterConnections );
         MapLevel?.QueueFree();
         MapLevel = newMapLevel;
-        ApplyRandomGen(newMapLevel, load);
+
+        //TODO actually make this how it shouldd be not a static level check
+       // if(load.AllowRandom)
+        if(load.RegionIndex >0 || load.LevelIndex > 5)
+            ApplyRandomGen(newMapLevel, load, CurrentMapSave);
 
         ValidRun = true;
 
-        ;
-        var settings = new CamSettings(GetViewport().GetCamera2D().Zoom.X, new Vector2(MapLevel.GridWith / 2, MapLevel.GridHeight / 2));
-        settings.Position += new Vector2(0, -40);
-        if (load.LevelIndex == 2 && load.RegionIndex == 2)
-        {
-            settings.Zoom = 1.2f;
-        }
+        if(existing == null)
+            CallDeferred(nameof(CenterCamera));
+        //should always send a camera mov event so that the things affected by it can reset themselves
+        //Also defer the call because level target needs a call deferred wait as well.
 
-        GD.Print("Map load loaded - setting camera to: ", settings.Zoom, " ", settings.Position);
-        Cam.Settings = settings;
+
+       // var next = Math.Round()
+       //cam.SnapCamera();
+        /*
+         * 1,1 zoom is (17,7)
+         * as 1.5 scale ui (17/1.5,7/1.5)
+         * 
+         * 1440 /720 = 2 times the ratio, which means the upper limit is doubled. Lower limit stays.
+         * 
+         */
+        //1.5
+        //settings.Position += new Vector2(0, -40);
+        //if (load.LevelIndex == 2 && load.RegionIndex == 2)
+        //{
+        //    settings.Zoom = 1.2f;
+        //}
+
+        // GD.Print("Map load loaded - setting camera to: ", settings.Zoom, " ", settings.Position);
+        // 
     }
 
+
+
+    public void CenterCamera()
+    {
+        var cam = GetViewport().GetCamera2D() as Camera;
+        var scale = GetWindow().ContentScaleFactor;
+        var x = GetWindow().Size.Y;
+        var ratio = (x / scale) / 720;
+
+        var value = 0.333333333334f;
+        if (scale % 1 == 0)
+            value = 0.5f;
+        var roundedZoom = (float)(Math.Round(ratio / value) * value) + value;
+
+        float minX = 0, minY = 0, maxX = MapLevel.GridWith, maxY = MapLevel.GridHeight;
+        foreach (var target in MapLevel.LevelTargets)
+        {
+            if(target.Position.Y > maxY)
+                maxY = target.Position.Y;
+            else if(target.Position.Y < minY) 
+                minY = target.Position.Y;
+
+            if(target.Position.X > maxX)
+                maxX = target.Position.X;
+            else if(target.Position.X < minX)
+                minX = target.Position.X;
+        }
+
+        foreach (var target in MapLevel.StartData)
+        {
+            var pos = new Vector2(target.From.X * MapLevel.TrackX, target.From.Y * MapLevel.TrackY);
+            if (pos.Y > maxY)
+                maxY = pos.Y;
+            else if (pos.Y < minY)
+                minY = target.From.Y;
+
+            if (pos.X > maxX)
+                maxX =  pos.X;
+            else if (pos.X < minX)
+                minX = pos.X;
+        }
+        //Test(5, 5);
+        var newCenter  = new Vector2((minX + maxX)/2, (minY + maxY)/2);
+        newCenter.Y -= NavBar.GlobalHeight;
+        var settings = new CamSettings(roundedZoom, newCenter);
+        Cam.Settings = settings;
+        Cam.LimitLeft = (-this.GetNode<NoiseTest>("NoiseMap").WholeWidth * 32 / 2) + 20;
+
+        Cam.LimitTop = (-this.GetNode<NoiseTest>("NoiseMap").WholeHeight * 32 / 2) + 20;
+        Cam.LimitBottom = (this.GetNode<NoiseTest>("NoiseMap").WholeWidth * 32 / 2) - 20;
+        Cam.LimitRight = (this.GetNode<NoiseTest>("NoiseMap").WholeHeight * 32 / 2) - 20;
+        Cam.CheckLimit(0);
+        EventDispatch.PushEventFlag(GameEventType.CameraMove);
+        //cam.Zoom = new Vector2(rounded, rounded);
+    }
+
+    public void Test(out float thing, out float other)
+    {
+        thing = 0;
+        other = 0;
+    }
     public enum MapChange
     {
         OreValueChange,
@@ -237,7 +316,7 @@ public partial class Runner : Node2D
         OreMove
     }
 
-    public void ApplyRandomGen(MapLevel level, MapLoad load)
+    public void ApplyRandomGen(MapLevel level, MapLoad load, MapSave save)
     {
         //only apply the random generation once per game uptime
         // if (CurrentProfile.LoadedRandom.ContainsKey(load.GetHashCode()))
@@ -269,13 +348,13 @@ public partial class Runner : Node2D
                     OreValueChange(level, rand);
                     break;
                 case MapChange.OreTypeChange:
-                    OreTypeChange(level, rand);
+                    OreTypeChange(level, rand, save);
                     break;
                 case MapChange.OreDelete:
                     OreDelete(level, rand);
                     break;
                 case MapChange.OreAdd:
-                    OreAdd(level, rand);
+                    OreAdd(level, rand, save);
                     break;
                 case MapChange.OreMove:
                     OreMove(level, rand);
@@ -314,23 +393,43 @@ public partial class Runner : Node2D
         ore.PostLoad();
     }
 
-    public void OreTypeChange(MapLevel level, Random rand)
+    public void OreTypeChange(MapLevel level, Random rand, MapSave save)
     {
         //TODO need to add bit about actual ore vs gem types here
-        var ores = level.GetAllMineables();
-        var ore = ores[rand.Next(ores.Count)];
-        var types = new List<MineableType>() { MineableType.Copper, MineableType.Stone, MineableType.Iron };
-        if (types.Contains(ore.Type))
-        {
-            types.Remove(ore.Type);
+        var next = rand.NextDouble();
+        var count = 0.0f;
+        var index = 0;
+        var entry = OreSpawnChances[0];
 
-            var type = types[rand.Next(types.Count)];
-            GD.Print("Changing " + ore.Type + " to " + type + " at: ", ore.Index);
-            ore.Type = type;
-            ore.ResourceSpawn.ResourceType = GetResourceFromOre(type);
-            ore.PostLoad();
+        var mineables = GetSpawnables(level);
+        var spawnChances = GetModifiedSpawnChances(mineables);
+
+        for (int i = 0; i < spawnChances.Count(); i++)
+        {
+            entry = OreSpawnChances[i];
+            if (next > entry.Value)
+            {
+                next -= entry.Value;
+            }
+            else
+            {
+                break;
+            }
 
         }
+        var ores = level.GetAllMineables();
+        var ore = ores[rand.Next(ores.Count)];
+        var pos = ore.Index;
+        if (save != null && save.GemsCollected.Any(item => item == pos))
+            return;
+        //if(CurrentProfile.)
+        level.RemoveAt(ore.Index);
+        var spawn = entry;
+
+        var asset = ResourceStore.PackedMineables[spawn.Key]?.Instantiate<Mineable>();// LoadScene<Mineable>("res://Obj/Mineable.tscn");
+        var output = IsGem(asset.Type) ? 1 : rand.Next(1, 5);
+        SpawnNewNode(asset, spawn.Key, pos, output);
+
 
     }
 
@@ -346,14 +445,67 @@ public partial class Runner : Node2D
 
     }
 
-    public void OreAdd(MapLevel level, Random rand)
+    /// <summary>
+    /// Returns a modified version of the spawn chances that only uses the given mineabletypes.
+    /// This will not affect gem spawn chances and only affect ore spawn chances. Every spawnchance list total must
+    /// equal to 1 or 100% chance of spawn.
+    /// </summary>
+    /// <param name="mineables"></param>
+    /// <returns></returns>
+    public List<KeyValuePair<MineableType, float>> GetModifiedSpawnChances(List<MineableType> mineables)
+    {
+        var remove = new List<MineableType>();
+        var newList = new List<KeyValuePair<MineableType, float>>();
+        //get new list of allowed gems
+        var orecount = 0;
+        foreach(var type in OreSpawnChances)
+        {
+            //if()
+            if(!mineables.Contains(type.Key) && !IsGem(type.Key))
+            {
+                remove.Add(type.Key);
+            }
+            else
+            {
+                if(!IsGem(type.Key))
+                    orecount++;
+                newList.Add(type);
+            }
+        }
+        if (remove.Count == 0)
+            return OreSpawnChances;
+        //get the missing spawn chance
+        var chance = 0.0f;
+        foreach(var entry in remove)
+        {
+             chance += OreSpawnChances.First(i => i.Key == entry).Value;
+        }
+        float adjustedValue = (float)(orecount / chance);
+        //now finally go through the newlist and adjust all ores 
+
+        for (int i = 0; i < newList.Count(); i++)
+        {
+            var t = newList[i];
+            if (!IsGem(t.Key))
+            {
+                newList[i] =  KeyValuePair.Create(t.Key, t.Value + adjustedValue);
+            }
+        }
+        return newList;
+    }
+
+    public void OreAdd(MapLevel level, Random rand, MapSave  save)
     {
         //TODO need to add bit about actual ore vs gem types here
         var next = rand.NextDouble();
         var count = 0.0f;
         var index = 0;
         var entry = OreSpawnChances[0];
-        for (int i = 0; i < OreSpawnChances.Count; i++)
+
+        var mineables = GetSpawnables(level);
+        var spawnChances = GetModifiedSpawnChances(mineables);
+
+        for (int i = 0; i < spawnChances.Count(); i++)
         {
             entry = OreSpawnChances[i];
             if (next > entry.Value)
@@ -369,29 +521,93 @@ public partial class Runner : Node2D
 
         var emptyPositions = MapLevel.GetAllEmpty();
         var pos = emptyPositions[rand.Next(emptyPositions.Count)];
+        if (save != null && save.GemsCollected.Any(item => item == pos))
+            return;
         var spawn = entry;
         if (level.Tracks1[pos.X,pos.Y] != null)
         {
             Placer.DeleteAt(pos);
         }
+        
+
         var asset = ResourceStore.PackedMineables[spawn.Key]?.Instantiate<Mineable>();// LoadScene<Mineable>("res://Obj/Mineable.tscn");
-        if(asset != null)
-        {
-            asset.Type = spawn.Key;
-            asset.ResourceSpawn = new GameResource()
-            {
-                ResourceType = GetResourceFromOre(spawn.Key),
-                Amount = rand.Next(1, 8)
-            };
-            MapLevel.SetMineable(pos, asset);
-            asset.PostLoad();
-            GD.Print("Adding " + asset.Type + " ore at: ", asset.Index);
-        }
+        var output = IsGem(asset.Type) ? 1 : rand.Next(1, 5);
+        SpawnNewNode(asset, spawn.Key, pos, output);
 
         
 
 
 
+    }
+    public void SpawnNewNode(Mineable asset, MineableType type, IndexPos pos, int output)
+    {
+        if (asset != null)
+        {
+            asset.Type = type;
+            asset.ResourceSpawn = new GameResource()
+            {
+                ResourceType = GetResourceFromOre(type),
+                Amount = output,
+            };
+            MapLevel.SetMineable(pos, asset);
+            asset.PostLoad();
+            GD.Print("Adding " + asset.Type + " ore at: ", asset.Index);
+        }
+        //var gems = CurrentProfile.StoredGems;
+    }
+    public bool IsGem(MineableType type)
+    {
+        return type == MineableType.Ruby
+            || type == MineableType.Amethyst
+            || type == MineableType.Diamond
+            || type == MineableType.Topaz
+            || type == MineableType.Jade
+            || type == MineableType.Emerald;
+    }
+
+    public MineableType ToMineable(ResourceType type)
+    {
+
+        if (Enum.TryParse(typeof(MineableType), type.ToString(), out var en))
+        {
+            return (MineableType)en;
+        }
+        else
+        {
+            foreach (var val in Enum.GetValues(typeof(MineableType)))
+                if (type.ToString().ToLower().Contains(val.ToString().ToLower()))
+                    return (MineableType)val;
+        }
+        return MineableType.Nil;
+    }
+
+   /// <summary>
+   /// Returns a list of MineableTypes that can be spawned on this level
+   /// </summary>
+   /// <param name="level"></param>
+   /// <returns></returns>
+    public List<MineableType> GetSpawnables(MapLevel level)
+    {
+        var set = new HashSet<ResourceType>();
+        //get all the different resource types of this level's conditions
+        foreach(var t in level.LevelTargets)
+        {
+            var things = t.ConUI.Select(i => i.Key.ResourceType);
+            foreach(var th in things)
+            {
+                if(!set.Contains(th))
+                    set.Add(th);
+            }
+        }
+        //get corresponding mineables
+        var mineables = set.Select(i => ToMineable(i)).Where(j=> j != MineableType.Nil).ToList();
+
+        mineables.AddRange(new List<MineableType>()
+        {
+            MineableType.Ruby,MineableType.Amethyst,MineableType.Diamond,MineableType.Topaz
+           ,MineableType.Jade
+        });
+        return mineables;
     }
 
     public void OreMove(MapLevel level, Random rand)
@@ -432,8 +648,10 @@ public partial class Runner : Node2D
 
             var last = target as IConnectable;
             var nextPos = target.Index + directionIndex;
-            level.AddChild(target);
+
             target.Position = level.GetGlobalPosition(target.Index);
+            level.AddChild(target);
+
             while (!level.ValidIndex(nextPos))
             {
                 var track = new Track(ResourceStore.GetTex(TrackType.Straight), directionIndex);

@@ -4,14 +4,18 @@ using MagicalMountainMinery.Data;
 public partial class ResIcon : GameButton
 {
     public GameResource GameResource { get; set; }
+
+    public MarginContainer HoverContainer { get; set; }
+
+    public bool Selected { get; set; }
     public void AddResource(GameResource resource)
     {
         GameResource = resource;
         UIID = resource.ResourceType.ToString();
-        this.TextureNormal = ResourceStore.Resources[resource.ResourceType];
+        this.TextureNormal = ResourceStore.GetResTex(resource.ResourceType);
         this.GetNode<Label>("Label").Text = resource.Amount.ToString();
         this.Name = resource.ResourceType.ToString();
-
+        this.HoverContainer = this.GetNode<MarginContainer>("MarginContainer");
 
     }
     public void UpdateAmount(int amount)
@@ -28,5 +32,18 @@ public partial class ResIcon : GameButton
         //t.CustomMinimumSize = 
         t.CustomMinimumSize = t.Size;
         return t;
+    }
+
+    public override void OnEnter()
+    {
+        base.OnEnter();
+        HoverContainer.Visible = true;
+    }
+
+    public override void OnExit()
+    {
+        base.OnExit();
+        if(!Selected)
+            HoverContainer.Visible = false;
     }
 }

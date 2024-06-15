@@ -59,9 +59,6 @@ namespace MagicalMountainMinery.Main
         //public IndexPos StartPos { get; set; } = IndexPos.Zero;
         [StoreCollection(ShouldStore = true)]
         public List<IndexPos> Blocked { get; set; } = new List<IndexPos>();
-
-        public List<Polygon2D> MapPoints { get; set; } = new List<Polygon2D>();
-
         public int AllowedTracks { get; set; }
         public int AllowedTracksRaised { get; set; }
         public int AllowedJunctions { get; set; }
@@ -332,21 +329,6 @@ namespace MagicalMountainMinery.Main
 
         }
 
-        public void GenerateRandom()
-        {
-
-        }
-
-
-        public void SetCondition(IndexPos pos, params Condition[] cons)
-        {
-            var t = Runner.LoadScene<LevelTarget>("res://Obj/Target.tscn");
-            t.Conditions = cons.ToList();
-            this.AddChild(t);
-            t.GlobalPosition = GetGlobalPosition(pos);
-            MapObjects[pos.X, pos.Y] = t;
-
-        }
         public IGameObject Get(IndexPos pos)
         {
             return MapObjects[pos.X, pos.Y];
@@ -483,7 +465,7 @@ namespace MagicalMountainMinery.Main
         /// <returns></returns>
         public Track GetTrack(IndexPos pos)
         {
-            return Tracks2[pos.X, pos.Y] != null ? Tracks2[pos.X, pos.Y] : Tracks1[pos.X, pos.Y];
+            return Tracks1[pos.X, pos.Y]; //Tracks2[pos.X, pos.Y] != null ? Tracks2[pos.X, pos.Y] : 
         }
 
 

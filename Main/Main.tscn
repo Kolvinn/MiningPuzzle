@@ -1,24 +1,18 @@
-[gd_scene load_steps=19 format=3 uid="uid://wq76ad7cyi0p"]
+[gd_scene load_steps=20 format=3 uid="uid://wq76ad7cyi0p"]
 
 [ext_resource type="Script" path="res://Main/Runner.cs" id="1_m33n5"]
 [ext_resource type="PackedScene" uid="uid://diiy2ucnw1hmx" path="res://Delete/NoiseTest.tscn" id="2_i2xsn"]
-[ext_resource type="Texture2D" uid="uid://rtar24xusxgt" path="res://Assets/UI/SlaySpireTopBar.png" id="3_jnkec"]
-[ext_resource type="Texture2D" uid="uid://vhpi4hfu864b" path="res://Assets/UI/Shikashi's Fantasy Icons Pack v2/#1 - Transparent Icons.png" id="4_2n7eh"]
 [ext_resource type="PackedScene" uid="uid://bf3xrtnouiei1" path="res://Main/TrackPlacer.tscn" id="4_gnfs1"]
-[ext_resource type="Texture2D" uid="uid://cs3jnhm2v7drv" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Scrollbar_Handle_01.png" id="10_v4clg"]
+[ext_resource type="FontFile" uid="uid://cdjxwrsadqdwg" path="res://Assets/Fonts/Pixel/Dogica/dogicapixel.ttf" id="11_56kdd"]
+[ext_resource type="Texture2D" uid="uid://ca8yrgp3vv7cw" path="res://Assets/GameResource/Track.png" id="12_seer6"]
+[ext_resource type="Texture2D" uid="uid://6wcjwwaquu80" path="res://Assets/UI/Wenrexa Interface UI KIT #4/PNG/Icons/Circle02.png" id="13_su7gd"]
+[ext_resource type="FontFile" uid="uid://byjdlexdr3rw3" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_compressed.ttf" id="13_t0vfc"]
 [ext_resource type="Texture2D" uid="uid://dp7k0gecqdd5k" path="res://Assets/UI/Lucid V1.2/PNG/Shadow/32/Stop.png" id="14_2yhn3"]
 [ext_resource type="Script" path="res://UI/GameButton.cs" id="15_7jtru"]
 [ext_resource type="Texture2D" uid="uid://ckips87rpsh4t" path="res://Assets/UI/Lucid V1.2/PNG/Shadow/32/Next.png" id="15_hvj4a"]
 [ext_resource type="PackedScene" uid="uid://bcufgs3ng8yr2" path="res://UI/LevelSelectBox.tscn" id="15_kcgdd"]
 [ext_resource type="Texture2D" uid="uid://ckxesomrsqs14" path="res://Assets/UI/Kasaya's Frames/Inventory & chests/1/dialogues2.png" id="16_c7c1m"]
 [ext_resource type="FontFile" uid="uid://bwxcy1yplwsmm" path="res://Assets/Fonts/Pixel/PrintChar21.ttf" id="17_u5xby"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_g710c"]
-atlas = ExtResource("4_2n7eh")
-region = Rect2(355, 387, 26, 26)
-
-[sub_resource type="LabelSettings" id="LabelSettings_7qjql"]
-font_size = 12
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tjrms"]
 resource_local_to_scene = true
@@ -47,146 +41,28 @@ font = ExtResource("17_u5xby")
 font_size = 24
 font_color = Color(0.160784, 0.160784, 0.160784, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_ft5io"]
+font = ExtResource("11_56kdd")
+font_size = 24
+outline_size = 2
+outline_color = Color(0.192157, 0.192157, 0.192157, 1)
+shadow_size = 15
+shadow_color = Color(0.619608, 0.32549, 0.12549, 0.501961)
+
+[sub_resource type="LabelSettings" id="LabelSettings_0trjl"]
+font = ExtResource("13_t0vfc")
+font_size = 40
+
 [node name="Main" type="Node2D"]
 script = ExtResource("1_m33n5")
 
 [node name="NoiseMap" parent="." instance=ExtResource("2_i2xsn")]
 
-[node name="TrackPlacer" parent="." instance=ExtResource("4_gnfs1")]
+[node name="TrackPlacer" parent="." node_paths=PackedStringArray("TrackAmountLabel", "SpecialNodeLabel") instance=ExtResource("4_gnfs1")]
+TrackAmountLabel = NodePath("../CanvasLayer/TrackImage/Label")
+SpecialNodeLabel = NodePath("../CanvasLayer/Special Note")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="TopBar" type="TextureRect" parent="CanvasLayer"]
-visible = false
-anchors_preset = 10
-anchor_right = 1.0
-offset_right = 1.0
-offset_bottom = 70.0
-grow_horizontal = 2
-texture = ExtResource("3_jnkec")
-expand_mode = 1
-stretch_mode = 4
-
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/TopBar"]
-layout_mode = 0
-offset_left = 143.0
-offset_top = -5.0
-offset_right = 158.0
-offset_bottom = 10.0
-texture = SubResource("AtlasTexture_g710c")
-expand_mode = 1
-
-[node name="Label" type="Label" parent="CanvasLayer/TopBar"]
-layout_mode = 0
-offset_left = 166.0
-offset_top = -2.0
-offset_right = 206.0
-offset_bottom = 21.0
-text = "301"
-label_settings = SubResource("LabelSettings_7qjql")
-
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
-process_thread_group = 1
-process_thread_group_order = 0
-process_thread_messages = 1
-visible = false
-self_modulate = Color(1, 1, 1, 0.545098)
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-
-[node name="Label" type="Label" parent="CanvasLayer/ColorRect"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -11.5
-offset_right = 20.0
-offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
-text = "Loading..."
-
-[node name="Retry" type="Button" parent="CanvasLayer/ColorRect"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -118.0
-offset_top = 26.0
-offset_right = -12.0
-offset_bottom = 70.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Try Again"
-
-[node name="Next" type="Button" parent="CanvasLayer/ColorRect"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 3.0
-offset_top = 27.0
-offset_right = 115.0
-offset_bottom = 69.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Next Level"
-
-[node name="HSlider" type="HSlider" parent="CanvasLayer"]
-visible = false
-offset_left = 125.0
-offset_top = 20.0
-offset_right = 397.0
-offset_bottom = 68.0
-theme_override_icons/grabber = ExtResource("10_v4clg")
-min_value = -3.0
-max_value = 5.0
-step = 2.0
-value = 1.0
-scrollable = false
-tick_count = 5
-ticks_on_borders = true
-
-[node name="Label" type="Label" parent="CanvasLayer/HSlider"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = -0.00735294
-anchor_top = 0.208333
-anchor_right = -0.00735294
-anchor_bottom = 0.208333
-offset_left = -9.0
-offset_top = 23.0
-offset_right = 23.0
-offset_bottom = 49.0
-text = "0.25"
-metadata/_edit_use_anchors_ = true
-
-[node name="Label2" type="Label" parent="CanvasLayer/HSlider"]
-layout_mode = 0
-offset_left = 267.0
-offset_top = 32.0
-offset_right = 295.0
-offset_bottom = 58.0
-text = "4"
-
-[node name="Label" type="Label" parent="CanvasLayer"]
-visible = false
-offset_left = 215.0
-offset_top = 5.0
-offset_right = 295.0
-offset_bottom = 31.0
-text = "Sim Speed"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
 anchors_preset = 2
@@ -226,7 +102,7 @@ texture_normal = ExtResource("14_2yhn3")
 ignore_texture_size = true
 stretch_mode = 5
 script = ExtResource("15_7jtru")
-UIID = "Stop"
+UIID = "Stop Mining"
 
 [node name="Play_Pause" type="TextureButton" parent="CanvasLayer/Container"]
 custom_minimum_size = Vector2(45, 45)
@@ -239,7 +115,7 @@ texture_normal = ExtResource("15_hvj4a")
 ignore_texture_size = true
 stretch_mode = 5
 script = ExtResource("15_7jtru")
-UIID = "Play_Pause"
+UIID = "Pause"
 
 [node name="CurrentLevelBox" parent="CanvasLayer" instance=ExtResource("15_kcgdd")]
 anchors_preset = 1
@@ -275,8 +151,52 @@ offset_top = 14.0
 offset_right = 748.0
 offset_bottom = 56.0
 
-[connection signal="pressed" from="CanvasLayer/ColorRect/Retry" to="." method="OnRetry"]
-[connection signal="pressed" from="CanvasLayer/ColorRect/Next" to="." method="_on_next_pressed"]
-[connection signal="value_changed" from="CanvasLayer/HSlider" to="." method="OnSimSpeedChange"]
+[node name="Special Note" type="Label" parent="CanvasLayer"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -245.0
+offset_top = 226.0
+offset_right = 274.0
+offset_bottom = 314.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Select an ore node to move..."
+label_settings = SubResource("LabelSettings_ft5io")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="TrackImage" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = -89.0
+offset_right = 86.0
+offset_bottom = -12.0
+grow_vertical = 0
+texture = ExtResource("12_seer6")
+
+[node name="Label" type="Label" parent="CanvasLayer/TrackImage"]
+layout_mode = 0
+offset_left = 82.0
+offset_top = -2.0
+offset_right = 122.0
+offset_bottom = 63.0
+text = "5"
+label_settings = SubResource("LabelSettings_0trjl")
+
+[node name="Line2D" type="Line2D" parent="."]
+visible = false
+points = PackedVector2Array(-186, -8, -186, 432, 666, 432, 666, -8)
+
+[node name="Circle02" type="Sprite2D" parent="Line2D"]
+visible = false
+position = Vector2(240, 192)
+texture = ExtResource("13_su7gd")
 
 [editable path="CanvasLayer/CurrentLevelBox"]

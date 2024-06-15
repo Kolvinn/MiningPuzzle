@@ -1,13 +1,26 @@
 using Godot;
 using MagicalMountainMinery.Data;
 using MagicalMountainMinery.Main;
+using System.Collections.Generic;
 
 public partial class GameButton : TextureButton, IUIComponent
 {
 
     [Export]
     public string UIID { get; set; }
+    [Export]
+    public string Exit { get; set; }
+
+    [Export]
+    public string Enter { get; set; }
+
+    [Export]
+    public string Click { get; set; }
+
     public ShaderMaterial selectMat { get; set; }
+
+    //public Dictionary<string, Aud>
+    
     public override void _Ready()
     {
         if (this.Material != null)
@@ -31,13 +44,13 @@ public partial class GameButton : TextureButton, IUIComponent
     {
     }
 
-    public void OnEnter()
+    public virtual void OnEnter()
     {
         GD.Print("entered ", this.Name);
         if (!this.Disabled)
             EventDispatch.HoverUI(this);
     }
-    public void OnExit()
+    public virtual void OnExit()
     {
         if (!this.Disabled)
             EventDispatch.ExitUI(this);

@@ -19,17 +19,18 @@ namespace MagicalMountainMinery.Design
     public partial class LevelDesigner
     {
 
-        public int RegionIndex { get; set; } = 0;
-        public int LevelIndex { get; set; } = 0;
-
+        //public int RegionIndex { get; set; } = 0;
+       // public int LevelIndex { get; set; } = 0;
+        public CanvasLayer TextLayer { get; set; }
+        public Dictionary<object, ObjectTextEdit> TextEdits { get; set; } = new Dictionary<object, ObjectTextEdit>();
         
         public override void _Ready()
         {
-            
 
-            
 
-            
+
+
+            this.TextLayer = this.GetNode<CanvasLayer>("TextEditLayer");
 
             this.GetNode<TextureButton>("CanvasLayer/Track").Connect(TextureButton.SignalName.Pressed, Callable.From(OnTrackPressed));
             this.GetNode<TextureButton>("CanvasLayer/Iron").Connect(TextureButton.SignalName.Pressed, Callable.From(OnIronPressed));
@@ -39,18 +40,37 @@ namespace MagicalMountainMinery.Design
 
             this.GetNode<TextureButton>("CanvasLayer/EndCon").Connect(TextureButton.SignalName.Pressed, Callable.From(OnEndConPressed));
 
-            
-            var cam = new Camera()
-            {
-                CanMod = true
-            };
+
+            var cam = new DevCamera();
 
             this.AddChild(cam);
             cam.MakeCurrent();
         }
 
-        
 
+        public void AddTextEdit(object key, string text, Vector2 pos)
+        {
+            var lab = new ObjectTextEdit()
+            {
+                Text = text,
+                Position = pos,
+                ObjRef = key
+            };
+
+            TextEdits.Add(key, lab);
+            TextLayer.AddChild(lab);
+
+        }
+
+        public void RemoveTextEdit(object key)
+        {
+            if (TextEdits.ContainsKey(key))
+            {
+                var val = TextEdits[key];
+                val.QueueFree();
+                TextEdits.Remove(key);   
+            }
+        }
         
         public void LoadLevelDelegate(MapLevel level)
         {
@@ -64,7 +84,7 @@ namespace MagicalMountainMinery.Design
                 MapBlocks.Add(pos, rect);
                 this.AddChild(rect);
             }
-
+            level.Tracks1 = new Track[level.MapObjects.GetLength(0), level.MapObjects.GetLength(1)];
             for (var x = 0; x < level.MapObjects.GetLength(0); x++)
             {
                 for (var y = 0; y < level.MapObjects.GetLength(1); y++)
@@ -82,8 +102,10 @@ namespace MagicalMountainMinery.Design
                             this.AddChild(mine);
                             mine.Index = pos;
                             mine.Position = level.GetGlobalPosition(pos);
-                            mine.AddChild(new ObjectTextEdit() { Text = mine.ResourceSpawn.Amount.ToString() });
-                            mine.ResourceLabel.Visible = false;
+
+                            AddTextEdit(mine, mine.ResourceSpawn.Amount.ToString(), mine.Position);
+                            //mine.AddChild( });
+                            //mine.ResourceLabel.Visible = false;
                         }
                     }
                 }
@@ -102,19 +124,31 @@ namespace MagicalMountainMinery.Design
                 {
                     var con = entry.Conditions[i];
 
-                    if (entry.Batches.Contains(i))
-                    {
-                        asString = "* ";
-                    }
+                    //if (entry.Bonus.Contains(i))
+                    //{
+                    //    asString = "* ";
+                    //}
                     asString += con.ResourceType + " " + con.ConCheck + " " + con.Amount + "\n";
                 }
+                for (int i = 0; i < entry.BonusConditions.Count; i++)
+                {
+                    var con = entry.BonusConditions[i];
 
+                    //if (entry.Bonus.Contains(i))
+                    //{
+                    //    asString = 
+                    //}
+                    asString += "* " +con.ResourceType + " " + con.ConCheck + " " + con.Amount + "\n";
+                }
 
+                //entry.GetParent()?.RemoveChild(entry);
                 var item = Runner.LoadScene<LevelTarget>("res://Obj/Target.tscn");
                 this.AddChild(item);
                 item.Index = entry.Index;
-                item.Position = MapLevel.GetGlobalPosition(entry.Index);
-                item.AddChild(new ObjectTextEdit() { Text = asString});
+                var pos =  MapLevel.GetGlobalPosition(item.Index);
+                item.Position = pos;
+                AddTextEdit(item, asString, pos);
+                //item.AddChild(new ObjectTextEdit() { Text = asString});
                 Targets.Add(item);
                 
 
@@ -122,6 +156,7 @@ namespace MagicalMountainMinery.Design
             }
 
             level.RedrawGrid();
+            //level.AllowedTracks = 
         }
         public void LoadLevel(string data)
         {
@@ -131,13 +166,31 @@ namespace MagicalMountainMinery.Design
             CallDeferred(nameof(LoadLevelDelegate), level);
             
         }
-
-        public void Save()
+        public void ConnectPortals()
         {
+            foreach (var entry in PortalStack)
+            {
+                entry.PortalId = "portal" + entry.GetInstanceId().ToString();
+                if (entry.Sibling != null)
+                {
+
+                    entry.SiblingId = "portal" + entry.Sibling.GetInstanceId().ToString();
+                    entry.Sibling.SiblingId = "portal" + entry.GetInstanceId().ToString();
+
+
+                    entry.Sibling.Sibling = null; //remove ref to entry
+                    entry.Sibling = null; //remove ref to sibling
+                }
+            }
+        }
+        public void Save(int regionindex, int levelindex)
+        {
+            if(regionindex  < 0 || levelindex < 0) 
+            { return; }
             try
             {
                 MapLevel.AllowedJunctions = MapLevel.CurrentJunctions;
-                MapLevel.AllowedTracks = MapLevel.CurrentTracks;
+                MapLevel.AllowedTracks = MapLevel.AllowedTracks > 0 ? MapLevel.AllowedTracks : MapLevel.CurrentTracks;
                 MapLevel.AllowedTracksRaised = MapLevel.CurrentTracksRaised;
                 MapLevel.CurrentJunctions = 0;
                 MapLevel.CurrentTracks = 0;
@@ -146,49 +199,56 @@ namespace MagicalMountainMinery.Design
                 MapLevel.Blocked = MapBlocks.Keys.ToList();
 
                 MapLevel.StartData = CartStarts.Keys.ToList();
-                MapLevel.LevelTargets = this.Targets;
+                MapLevel.LevelTargets = this.Targets.Select(i => TextEdits[i].ConvertToTarget()).ToList();
+
+                ConnectPortals();
 
 
-                foreach (var entry in PortalStack)
-                {
-                    entry.PortalId = "portal" + entry.GetInstanceId().ToString();
-                    if (entry.Sibling != null)
-                    {
-
-                        entry.SiblingId = "portal" + entry.Sibling.GetInstanceId().ToString();
-                        entry.Sibling.SiblingId = "portal" + entry.GetInstanceId().ToString();
-
-
-                        entry.Sibling.Sibling = null; //remove ref to entry
-                        entry.Sibling = null; //remove ref to sibling
-                    }
-                }
-
-                //this.MapLevel.QueueFree();
                 var obj = SaveLoader.SaveGame(MapLevel);
-                //serializer.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
                 var thingy = JsonConvert.SerializeObject(obj, SaveLoader.jsonSerializerSettings);
-                var dir = "res://Levels/";
+                
 
-                var region = this.GetNode<OptionButton>("CanvasLayer/OptionButton").Text;
+                //var region = this.GetNode<OptionButton>("CanvasLayer/OptionButton").Text;
+
+                var load = new MapLoad() { RegionIndex = regionindex, LevelIndex = 0 }.GetHashCode();
+                MapLoad existing = null;
+
                 MapLoad data = new MapLoad()
                 {
+                    //dont overwrite level targets cos we might change it in this level
+                    //should add a thing that checks if it's changed, but for now just dont reload it.
                     BonusStars = MapLevel.LevelTargets.Sum(i => i.BonusConditions.Count),
                     Difficulty = 1,
-                    Region = region
 
                 };
+                if (ResourceStore.Levels.ContainsKey(load.GetHashCode()))
+                {
+                    existing = ResourceStore.Levels[load.GetHashCode()];
+                    data.Difficulty = existing.Difficulty;
+                    data.AllowRandom = existing.AllowRandom;
 
+                    data.AllowedTracks = data.AllowedTracks == 0 ? existing.AllowedTracks : data.AllowedTracks;
+                    
+                   // MapLevel.AllowedTracks = data.AllowedTracks;
+                }
+
+                data.LevelIndex = levelindex;
+                data.RegionIndex = regionindex;
+                //just to make sure that we get the actual region
+                var firstInRegion = new MapLoad() { RegionIndex = regionindex, LevelIndex = 0}.GetHashCode();
+                var region = ResourceStore.Levels[load.GetHashCode()].Region;
+                data.Region = region;
                 var dataString = JsonConvert.SerializeObject(data, SaveLoader.jsonSerializerSettings);
+                var path = "res://Levels/" + region + "/";
+               // dir += 
+                //var levels = (Godot.DirAccess.GetFilesAt(path).Count() / 2) + 1;
+                path += "Level_" + (levelindex + 1);
 
-                dir += region + "/";
-                var levels = (Godot.DirAccess.GetFilesAt(dir).Count() / 2) + 1;
-
-                using (var access = Godot.FileAccess.Open(dir + "Level_" + levels + ".data", Godot.FileAccess.ModeFlags.WriteRead))
+                using (var access = Godot.FileAccess.Open(path  + ".data", Godot.FileAccess.ModeFlags.Write))
                 {
                     access.StoreString(dataString);
                 }
-                using (var access = Godot.FileAccess.Open(dir + "Level_" + levels + ".lvl", Godot.FileAccess.ModeFlags.WriteRead))
+                using (var access = Godot.FileAccess.Open(path + ".lvl", Godot.FileAccess.ModeFlags.Write))
                 {
                     access.StoreString(thingy);
                 }

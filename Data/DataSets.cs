@@ -2,6 +2,7 @@
 using MagicalMountainMinery.Obj;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 
 namespace MagicalMountainMinery.Data
@@ -273,18 +274,19 @@ namespace MagicalMountainMinery.Data
         Right_Release,
         Left_Release,
         Left_Action,
-        Drag_Start,
-        Drag_End,
-        North_Cart,
-        South_Cart,
-        East_Cart,
-        West_Cart,
+        Speed_Increase,
+        Speed_Decrease,
+        Start_Mining,
+        Zoom_In,
+        Zoom_Out,
+        Toggle_Shop,
+        Stop_Mining,
+        Reset_Level,
+        Settings,
+        Home,
         Nill,
-        Level_Toggle,
-        Rotate,
-        Space,
-        Escape
-
+        Pause,
+        Rotate
     }
 
 
@@ -301,6 +303,7 @@ namespace MagicalMountainMinery.Data
         Gold,
         Ruby,
         Jade,
+        Nil
 
     }
     
@@ -414,7 +417,15 @@ namespace MagicalMountainMinery.Data
         JunctionPlace,
         JunctionDelete,
         JunctionsExhausted,
-        Nil
+        LevelComplete,
+        Nil,
+        CameraMove,
+        WindowSizeChange,
+        CartStart,
+        OreMineStart,
+        MiningStart,
+        GemMined
+        
 
 
 
@@ -445,6 +456,16 @@ namespace MagicalMountainMinery.Data
                 return ResourceType.Stone;
             if (type == MineableType.Iron)
                 return ResourceType.Iron_Ore;
+            if (type == MineableType.Ruby)
+                return ResourceType.Ruby;
+            if (type == MineableType.Amethyst)
+                return ResourceType.Amethyst;
+            if(type == MineableType.Diamond) 
+                return ResourceType.Diamond;
+            if(type == MineableType.Topaz)
+                return ResourceType.Topaz;
+            if (type == MineableType.Jade)
+                return ResourceType.Jade;
             return ResourceType.Gold_Ore;
         }
 
@@ -464,7 +485,42 @@ namespace MagicalMountainMinery.Data
 
 
         };
+
+        public static object GetEnumType(string name, Type type)
+        {
+            //CardState cardState = CardState.Default;
+            if (type == typeof(ResourceType) && Enum.TryParse(name, true, out ResourceType parsedEnumValue))
+                return parsedEnumValue;
+
+            //MouseEventState mouseState = MouseEventState.Exited;
+            if (type == typeof(ConCheck) && Enum.TryParse(name, true, out ConCheck mouseState))
+                return mouseState;
+
+            if (type == typeof(TurnType) && Enum.TryParse(name, true, out TurnType cardRarity))
+                return cardRarity;
+
+            if (type == typeof(MineableType) && Enum.TryParse(name, true, out MineableType bob))
+                return bob;
+
+            if (type == typeof(EventType) && Enum.TryParse(name, true, out EventType bob2))
+                return bob2;
+            // foreach(object o in Enum.GetValues(typeof(MouseEventState))){
+            //     if(o.ToString() == name)
+            //         return o;
+            //     ////GD.Print(o.ToString(), "   ",name);
+            // }
+
+            // foreach(object o in Enum.GetValues(typeof(CardState))){
+            //     if(o.GetType()+"+"+o.ToString() == name)
+            //         return o;
+            //     ////GD.Print(o.ToString(), "   ",o.GetType(), "    ",name);
+            // }
+
+            return null;
+        }
     }
+
+    
 
 
 

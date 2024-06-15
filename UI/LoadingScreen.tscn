@@ -1,0 +1,107 @@
+[gd_scene load_steps=7 format=3 uid="uid://bgs0gpiiqi33j"]
+
+[ext_resource type="PackedScene" uid="uid://dch5xmgjxhyi8" path="res://Assets/Environment/Minerals/Diamond_Node.tscn" id="1_ugppc"]
+[ext_resource type="PackedScene" uid="uid://dj771pecqo0re" path="res://Obj/Miner.tscn" id="2_qca4d"]
+[ext_resource type="FontFile" uid="uid://d22bw0ao30uup" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_bold.ttf" id="3_n03yx"]
+[ext_resource type="Texture2D" uid="uid://p5e3h6q5oe2w" path="res://Assets/UI/Wenrexa Interface UI KIT #4/PNG/ProgressBar_04/BarV4_ProgressBar.png" id="4_sox7o"]
+[ext_resource type="Texture2D" uid="uid://btgsu266his3b" path="res://Assets/UI/Wenrexa Interface UI KIT #4/PNG/ProgressBar_01/BarV1_ProgressBarBorder.png" id="5_dk3i2"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_hy438"]
+font = ExtResource("3_n03yx")
+font_size = 48
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.129412, 0.129412, 0.129412, 1)
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 29.0
+offset_top = -19.0
+offset_right = 69.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Mineable" parent="Control" instance=ExtResource("1_ugppc")]
+position = Vector2(94, 49)
+scale = Vector2(2, 2)
+
+[node name="CollisionPolygon2D" parent="Control/Mineable/Area2D" index="0"]
+disabled = true
+
+[node name="ResourceLabel" parent="Control/Mineable" index="4"]
+visible = false
+
+[node name="Control" type="Control" parent="Control"]
+anchors_preset = 0
+offset_left = 259.804
+offset_top = 30.3922
+offset_right = 299.804
+offset_bottom = 70.3922
+scale = Vector2(5.655, 5.655)
+
+[node name="Miner" parent="Control/Control" instance=ExtResource("2_qca4d")]
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -431.0
+offset_top = -8.0
+offset_right = -113.0
+offset_bottom = 70.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Loading..."
+label_settings = SubResource("LabelSettings_hy438")
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -436.5
+offset_top = 75.5
+offset_right = 436.5
+offset_bottom = 132.5
+grow_horizontal = 2
+grow_vertical = 2
+value = 20.0
+nine_patch_stretch = true
+texture_progress = ExtResource("4_sox7o")
+
+[node name="TextureRect" type="TextureRect" parent="TextureProgressBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_dk3i2")
+expand_mode = 1
+
+[editable path="Control/Mineable"]

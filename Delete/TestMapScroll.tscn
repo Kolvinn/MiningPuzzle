@@ -1,0 +1,408 @@
+[gd_scene load_steps=15 format=3 uid="uid://83dqov7eg0ex"]
+
+[ext_resource type="Texture2D" uid="uid://ciekkg1cyo36h" path="res://Assets/Environment/Biomes_map (1).png" id="1_gk51j"]
+[ext_resource type="PackedScene" uid="uid://bcufgs3ng8yr2" path="res://UI/LevelSelectBox.tscn" id="2_8xqom"]
+[ext_resource type="Texture2D" uid="uid://bpmnp1q0c288v" path="res://Assets/UI/Lucid V1.2/PNG/Flat/16/Chevron-Arrow-Left.png" id="2_r8run"]
+[ext_resource type="FontFile" uid="uid://b52oyv2dsxkq6" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_compressed_bold.ttf" id="3_05dqe"]
+[ext_resource type="Texture2D" uid="uid://cs3jnhm2v7drv" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Scrollbar_Handle_01.png" id="4_okd61"]
+[ext_resource type="Texture2D" uid="uid://cfxs1lt23nrju" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/Arrow.tres" id="5_5jr11"]
+[ext_resource type="Texture2D" uid="uid://brbmrbfixfgki" path="res://Assets/UI/Lucid V1.2/PNG/Flat/16/Chevron-Arrow-Right.png" id="6_2taeh"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ogwir"]
+atlas = ExtResource("1_gk51j")
+region = Rect2(4339, 4640, 2825, 1793)
+
+[sub_resource type="LabelSettings" id="LabelSettings_iu6st"]
+resource_local_to_scene = true
+font = ExtResource("3_05dqe")
+font_size = 24
+outline_size = 8
+outline_color = Color(0.160784, 0.0745098, 0.184314, 1)
+
+[sub_resource type="Gradient" id="Gradient_g6qmj"]
+offsets = PackedFloat32Array(0.86, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 0.305882)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_fnnop"]
+gradient = SubResource("Gradient_g6qmj")
+width = 1280
+height = 720
+
+[sub_resource type="Animation" id="Animation_rcvk3"]
+resource_name = "Change"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Background:texture:region")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Rect2(4339, 4640, 2825, 1793), Rect2(5720, 3120, 2660, 1580)]
+}
+
+[sub_resource type="Animation" id="Animation_oeakw"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Background:texture:region")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Rect2(4339, 4640, 2825, 1793)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_8i805"]
+_data = {
+"Change": SubResource("Animation_rcvk3"),
+"RESET": SubResource("Animation_oeakw")
+}
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(323, -262)
+scale = Vector2(0.511477, 0.552492)
+texture = ExtResource("1_gk51j")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="CanvasLayer/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("AtlasTexture_ogwir")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Control/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/VBoxContainer/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 55
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(28.77, 0)
+layout_mode = 2
+texture = ExtResource("2_r8run")
+expand_mode = 4
+stretch_mode = 5
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "1"
+label_settings = SubResource("LabelSettings_iu6st")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("4_okd61")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="Line2D" type="Line2D" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer/VBoxContainer2/TextureRect"]
+points = PackedVector2Array(10, 10, 236, 10)
+width = 2.0
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer/VBoxContainer2"]
+visible = false
+custom_minimum_size = Vector2(7.305, 19.41)
+layout_mode = 2
+texture = ExtResource("5_5jr11")
+expand_mode = 1
+flip_v = true
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "1"
+label_settings = SubResource("LabelSettings_iu6st")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer/VBoxContainer3"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("4_okd61")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer/VBoxContainer3"]
+visible = false
+custom_minimum_size = Vector2(7.305, 19.41)
+layout_mode = 2
+texture = ExtResource("5_5jr11")
+expand_mode = 1
+flip_v = true
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer/VBoxContainer4"]
+layout_mode = 2
+text = "1"
+label_settings = SubResource("LabelSettings_iu6st")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer/VBoxContainer4"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("4_okd61")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer/VBoxContainer4"]
+visible = false
+custom_minimum_size = Vector2(7.305, 19.41)
+layout_mode = 2
+texture = ExtResource("5_5jr11")
+expand_mode = 1
+flip_v = true
+
+[node name="VBoxContainer5" type="VBoxContainer" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer/VBoxContainer5"]
+layout_mode = 2
+text = "1"
+label_settings = SubResource("LabelSettings_iu6st")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer/VBoxContainer5"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("4_okd61")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer/VBoxContainer5"]
+visible = false
+custom_minimum_size = Vector2(7.305, 19.41)
+layout_mode = 2
+texture = ExtResource("5_5jr11")
+expand_mode = 1
+flip_v = true
+
+[node name="TextureRect3" type="TextureRect" parent="CanvasLayer/Control/VBoxContainer/CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(28.77, 0)
+layout_mode = 2
+texture = ExtResource("6_2taeh")
+expand_mode = 4
+stretch_mode = 5
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Control/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_right = 60
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+theme_override_constants/separation = 180
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+size_flags_stretch_ratio = 2.0
+mouse_filter = 2
+theme_override_constants/h_separation = 30
+theme_override_constants/v_separation = 100
+columns = 5
+
+[node name="LevelBox" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox2" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox3" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox4" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox5" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox6" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox7" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox8" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox9" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox10" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox11" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox12" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox13" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="GridContainer2" type="GridContainer" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+size_flags_stretch_ratio = 2.0
+mouse_filter = 2
+theme_override_constants/h_separation = 30
+theme_override_constants/v_separation = 100
+columns = 5
+
+[node name="LevelBox" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer2" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox2" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer2" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox3" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer2" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox4" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer2" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox5" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer2" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox6" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer2" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox7" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer2" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox8" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer2" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox9" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer2" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox10" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer2" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox11" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer2" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox12" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer2" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox13" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer2" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="GridContainer3" type="GridContainer" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+size_flags_stretch_ratio = 2.0
+mouse_filter = 2
+theme_override_constants/h_separation = 30
+theme_override_constants/v_separation = 100
+columns = 5
+
+[node name="LevelBox" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer3" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox2" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer3" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox3" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer3" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox4" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer3" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox5" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer3" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox6" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer3" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox7" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer3" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox8" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer3" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox9" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer3" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox10" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer3" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox11" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer3" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox12" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer3" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="LevelBox13" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer/MarginContainer/HBoxContainer/GridContainer3" instance=ExtResource("2_8xqom")]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_fnnop")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer/Control"]
+libraries = {
+"": SubResource("AnimationLibrary_8i805")
+}

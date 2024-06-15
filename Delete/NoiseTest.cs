@@ -34,7 +34,6 @@ public partial class NoiseTest : Node2D
 	public Vector2 MedCap { get; set; } = new Vector2(0.65f, 0.55f); //20%ish
     public Vector2 SmallCap { get; set; } = new Vector2(0.55f, -0.1f); //40%ish
 
-
 	public List<Sprite2D> SmallSprites { get; set; }
     public List<Sprite2D> MedSprites { get; set; }
     public List<Sprite2D> BigSprites { get; set; }
@@ -155,20 +154,33 @@ public partial class NoiseTest : Node2D
 	public void LoadMapLevel(MapLevel MapLevel, MapLoad load, List<Track> OuterConnections)
 	{
         if (this.MapLoad == load)
-            return;
+        {
+            if (IsInstanceValid(Node) && Node.GetParent() != null)
+            {
+                /*
+                 * Need to actually reset the map level because it's a different object passed in everytime
+                 * The previous map level will be freed later in Runner_Loader
+                 */
+                Node.GetParent().RemoveChild(Node);
+                this.MapLevel = MapLevel;
+                this.MapLevel.AddChild(Node);
+                return;
+            }
+            
+        }
+        this.MapLevel = MapLevel;
 
-
+        Reset();
         RandGen = new Random(load.MapSeed);
-        this.AddChild(Node);
+        MapLevel.AddChild(Node);
         freq = this.GetNode<TextEdit>("CanvasLayer/TextEdit");
         Noise = new FastNoiseLite()
         {
             NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex,
-            Frequency = 0.15f,
+            Frequency = 0.2f,
             Seed = load.MapSeed,
         };
 
-        Reset();
         this.MapLoad = load;
         
         ExpandedIndexes = new HashSet<IndexPos>();
@@ -180,7 +192,6 @@ public partial class NoiseTest : Node2D
 			{
 				var nX = x * 2;
 				var nY = y * 2;
-				var obj = MapLevel.MapObjects[x, y];
 				var dex = new IndexPos(nX, nY);
 				if (ExpandedIndexes.Contains(dex) || MapLevel.Blocked.Contains(new IndexPos(x,y)))
 					continue;
@@ -229,26 +240,30 @@ public partial class NoiseTest : Node2D
     }
     public void Reset()
     {
-        this.RemoveChild(Node);
-        Node.QueueFree();
+        if(Node != null && IsInstanceValid(Node))
+        {
+            Node.GetParent()?.RemoveChild(Node);
+            Node.QueueFree();
+        }
+
         Node = new Node2D()
         {
             YSortEnabled = true,
         };
-        this.AddChild(Node);
+        MapLevel.AddChild(Node);
         map.ClearLayer(1);
 
     }
 	public void ReGenMap()
 	{
 
-        this.RemoveChild(Node);
+        MapLevel.RemoveChild(Node);
         Node.QueueFree();
         Node = new Node2D()
         {
             YSortEnabled = true,
         };
-        this.AddChild(Node);
+        MapLevel.AddChild(Node);
         DoEnv();
     }
 

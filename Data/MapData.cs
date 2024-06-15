@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace MagicalMountainMinery.Data
@@ -43,6 +44,8 @@ namespace MagicalMountainMinery.Data
         public int Height { get; set; }
         public float WidthAbsolute { get; set; }
         public float HeightAbsolute { get; set; }
+
+        public bool AllowRandom {  get; set; } = false;
     }
 
 
@@ -70,6 +73,7 @@ namespace MagicalMountainMinery.Data
         public int Max { get; set; }
         public int Min { get; set; }
     }
+
     public class SaveProfile
     {
         public string ProfileName { get; set; }
@@ -79,9 +83,7 @@ namespace MagicalMountainMinery.Data
         public List<GameResource> StoredGems { get; set; } = new List<GameResource>();
         public SortedList<int, MapDataBase> DataList { get; set; } = new SortedList<int, MapDataBase>();
 
-
-        public SortedList<int, MapDataBase> LoadedRandom { get; set; } = new SortedList<int, MapDataBase>();
-
+        public RunningVariables RunningVars { get; set; }
         public MapSave Get(MapDataBase data)
         {
             return DataList.GetValueOrDefault(data.GetHashCode()) as MapSave;

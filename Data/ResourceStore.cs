@@ -10,38 +10,8 @@ namespace MagicalMountainMinery.Data
     public static class ResourceStore
     {
         //public static Dictionary<string, Texture2D> TrackTextures;
-        public static object GetEnumType(string name, Type type)
-        {
-            //CardState cardState = CardState.Default;
-            if (type == typeof(ResourceType) && Enum.TryParse(name, true, out ResourceType parsedEnumValue))
-                return parsedEnumValue;
-
-            //MouseEventState mouseState = MouseEventState.Exited;
-            if (type == typeof(ConCheck) && Enum.TryParse(name, true, out ConCheck mouseState))
-                return mouseState;
-
-            if (type == typeof(TurnType) && Enum.TryParse(name, true, out TurnType cardRarity))
-                return cardRarity;
-
-            if (type == typeof(MineableType) && Enum.TryParse(name, true, out MineableType bob))
-                return bob;
-
-            if (type == typeof(EventType) && Enum.TryParse(name, true, out EventType bob2))
-                return bob2;
-            // foreach(object o in Enum.GetValues(typeof(MouseEventState))){
-            //     if(o.ToString() == name)
-            //         return o;
-            //     ////GD.Print(o.ToString(), "   ",name);
-            // }
-
-            // foreach(object o in Enum.GetValues(typeof(CardState))){
-            //     if(o.GetType()+"+"+o.ToString() == name)
-            //         return o;
-            //     ////GD.Print(o.ToString(), "   ",o.GetType(), "    ",name);
-            // }
-
-            return null;
-        }
+        public static bool LOADED = false;
+        
 
 
         public static List<GameResource> ShopResources { get; set; } = new List<GameResource>()
@@ -96,7 +66,7 @@ namespace MagicalMountainMinery.Data
 
         public static Dictionary<MineableType, PackedScene> PackedMineables = new Dictionary<MineableType, PackedScene>();
 
-        public static Dictionary<ResourceType, Texture2D> Resources = new Dictionary<ResourceType, Texture2D>();
+        public static Dictionary<ResourceType, Texture2D> Resources { get; set; } = new Dictionary<ResourceType, Texture2D>();
 
 
         public static Dictionary<string, AudioStream> AudioRef = new Dictionary<string, AudioStream>();
@@ -198,7 +168,8 @@ namespace MagicalMountainMinery.Data
                 "CartTrack2",
                 "CartTrack3",
                 "TrackMix3",
-                "TrackMix4"
+                "TrackMix4",
+                "tracksound1"
             };
             foreach (var item in list)
             {
@@ -469,7 +440,7 @@ namespace MagicalMountainMinery.Data
                 "Amethyst_Node",
                 "Emerald_Node",
                 "Iron_Node",
-                "Gold_Node",
+                //"Gold_Node",
                 "Diamond_Node",
             };
 
@@ -541,16 +512,23 @@ namespace MagicalMountainMinery.Data
 
         }
 
+        public static Texture2D GetResTex(ResourceType type)
+        {
+            if(Resources.ContainsKey(type))
+                    return Resources[type];
+            return null;
+        }
+
         public static void LoadLevels(int profileSeed)
         {
-
+            Levels.Clear();
             var dir = "res://Levels/";
             var regionList = new List<String>()
             {
                 "Tutorial Valley",
                 "Weathertop",
                 "Lonely Mountain",
-                "Misty Mountains Cold"
+               // "Misty Mountains Cold"
             };
             var random = new Random(profileSeed);
             //var levels = Godot.DirAccess.GetFilesAt(dir);
@@ -620,7 +598,7 @@ namespace MagicalMountainMinery.Data
         }
 
 
-        public static void LoadSaveProfiles()
+        public static void LoadSaveProfiles(string encrypt)
         {
             var saveFiles = Godot.DirAccess.GetFilesAt("user://saves/");
             foreach (var file in saveFiles)
@@ -635,11 +613,15 @@ namespace MagicalMountainMinery.Data
 
                     if (saveGame != null)
                     {
-                        var thingy = JsonConvert.DeserializeObject<SaveProfile>(saveGame.GetAsText(), SaveLoader.jsonSerializerSettings);
-                        if (thingy != null)
+                        using var extra = Godot.FileAccess.OpenEncryptedWithPass("user://saves/" + "SaveProfile.save", Godot.FileAccess.ModeFlags.Write, encrypt);
                         {
-                            SaveProfiles.Add(thingy);
+                            extra.StoreString(saveGame.GetAsText());
                         }
+                        //var thingy = JsonConvert.DeserializeObject<SaveProfile>(saveGame.GetAsText(), SaveLoader.jsonSerializerSettings);
+                        //if (thingy != null)
+                        //{
+                           // SaveProfiles.Add(thingy);
+                       // }
                     }
                 }
             }

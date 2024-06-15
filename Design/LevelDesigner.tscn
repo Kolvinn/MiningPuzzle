@@ -264,4 +264,8 @@ stretch_mode = 0
 script = ExtResource("9_eq3wg")
 UIID = "Double"
 
+[node name="TextEditLayer" type="CanvasLayer" parent="."]
+layer = 2
+follow_viewport_enabled = true
+
 [connection signal="focus_exited" from="CanvasLayer/MapSizeText" to="." method="OnMapSizeFocusExit"]

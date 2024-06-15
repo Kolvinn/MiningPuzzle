@@ -67,6 +67,7 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 60.0
 grow_horizontal = 2
+mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_6m5tr")
 
 [node name="Left" type="HBoxContainer" parent="PanelContainer"]
@@ -74,13 +75,15 @@ layout_mode = 2
 size_flags_horizontal = 0
 
 [node name="MiningStart" type="TextureButton" parent="PanelContainer/Left"]
+z_index = 155
+z_as_relative = false
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 texture_normal = SubResource("AtlasTexture_png6i")
 ignore_texture_size = true
 stretch_mode = 5
 script = ExtResource("4_eqohc")
-UIID = "MiningStart"
+UIID = "Start Mining"
 
 [node name="SpeedControl" parent="PanelContainer/Left" instance=ExtResource("5_b8enq")]
 layout_mode = 2
@@ -99,7 +102,7 @@ texture_normal = SubResource("AtlasTexture_p3053")
 ignore_texture_size = true
 stretch_mode = 5
 script = ExtResource("4_eqohc")
-UIID = "Map"
+UIID = "Home"
 
 [node name="Settings" type="TextureButton" parent="PanelContainer/Right"]
 custom_minimum_size = Vector2(35, 35)
@@ -128,10 +131,11 @@ texture_normal = SubResource("AtlasTexture_nmtdh")
 ignore_texture_size = true
 stretch_mode = 5
 script = ExtResource("4_eqohc")
-UIID = "ResetLevel"
+UIID = "Reset Level"
 metadata/_edit_use_anchors_ = true
 
 [node name="Undo" type="TextureButton" parent="PanelContainer/Middle/Left"]
+visible = false
 self_modulate = Color(1, 1, 1, 0.364706)
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
@@ -143,6 +147,7 @@ stretch_mode = 5
 metadata/_edit_use_anchors_ = true
 
 [node name="Redo" type="TextureButton" parent="PanelContainer/Middle/Left"]
+visible = false
 self_modulate = Color(1, 1, 1, 0.364706)
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
@@ -196,4 +201,4 @@ texture_normal = SubResource("AtlasTexture_iaxva")
 ignore_texture_size = true
 stretch_mode = 5
 script = ExtResource("4_eqohc")
-UIID = "ShopOpen"
+UIID = "Toggle Shop"

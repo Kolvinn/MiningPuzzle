@@ -9,9 +9,10 @@ public partial class ShopEntry : PanelContainer, IUIComponent
     [Export]
     public string UIID { get; set; }
 
+
     public override void _Ready()
     {
-
+        
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -25,8 +26,8 @@ public partial class ShopEntry : PanelContainer, IUIComponent
         this.GetNode<Label>("HBoxContainer/HBoxContainer/CostLabel").Text = resource.Amount.ToString();
         this.GetNode<Label>("HBoxContainer/VBoxContainer/NameLabel").Text = resource.ResourceType.ToString();
         this.GetNode<Label>("HBoxContainer/VBoxContainer/Description").Text = resource.Description.ToString();
-        this.GetNode<TextureRect>("HBoxContainer/PanelContainer/Icon").Texture = ResourceStore.Resources[resource.ResourceType];
-        UIID = "shop_" + resource.ResourceType.ToString();
+        this.GetNode<TextureRect>("HBoxContainer/PanelContainer/Icon").Texture = ResourceStore.GetResTex(resource.ResourceType);
+        UIID = "ShopEntry_" + resource.ResourceType.ToString();
         ///this.TooltipText = GameResource.Description;
 
 
@@ -36,11 +37,15 @@ public partial class ShopEntry : PanelContainer, IUIComponent
 
     public void _on_mouse_entered()
     {
+        Shop.Play();
+        var col = new Color("a68000");
+        this.SelfModulate = col;
         EventDispatch.HoverUI(this);
     }
 
     public void _on_mouse_exited()
     {
+        this.SelfModulate = Colors.White;
         EventDispatch.ExitUI(this);
     }
 }

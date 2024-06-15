@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cg8gtxwhe5fkm"]
+[gd_scene load_steps=17 format=3 uid="uid://cg8gtxwhe5fkm"]
 
 [ext_resource type="Script" path="res://UI/Settings/SettingsMenu.cs" id="1_hyjl6"]
 [ext_resource type="Texture2D" uid="uid://b4qst7q2fvjl2" path="res://Assets/UI/FrameBrown.png" id="2_p3476"]
@@ -9,6 +9,9 @@
 [ext_resource type="PackedScene" uid="uid://pt6sqhisaak1" path="res://UI/Settings/Video.tscn" id="6_3q4ud"]
 [ext_resource type="Script" path="res://UI/GameButton.cs" id="6_x4jmh"]
 [ext_resource type="Texture2D" uid="uid://bnwpai7x8v8ky" path="res://Assets/UI/Lucid V1.2/PNG/Flat/32/Plus.png" id="7_u3p3w"]
+[ext_resource type="PackedScene" uid="uid://bh246hk11fbjl" path="res://UI/Settings/Audio.tscn" id="9_h1y1q"]
+[ext_resource type="PackedScene" uid="uid://cpt31m0lmdc1s" path="res://UI/Settings/ExitMenu.tscn" id="10_aayo2"]
+[ext_resource type="PackedScene" uid="uid://b0vl11kbrg628" path="res://UI/Settings/Controls.tscn" id="11_pu7qe"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_stexq"]
 atlas = ExtResource("2_p3476")
@@ -55,9 +58,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -470.5
+offset_left = -514.0
 offset_top = -250.5
-offset_right = 470.5
+offset_right = 514.0
 offset_bottom = 250.5
 grow_horizontal = 2
 grow_vertical = 2
@@ -66,13 +69,20 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_bex4e")
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer"]
+[node name="ScrollContainer2" type="ScrollContainer" parent="PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.31
-theme_override_constants/separation = 15
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 3
 
-[node name="Gameplay" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer/ScrollContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.31
+theme_override_constants/separation = 25
+
+[node name="Gameplay" type="Label" parent="PanelContainer/HBoxContainer/ScrollContainer2/VBoxContainer"]
 texture_filter = 2
 layout_mode = 2
 theme_override_styles/normal = ExtResource("3_f5gnv")
@@ -82,7 +92,7 @@ horizontal_alignment = 2
 vertical_alignment = 1
 metadata/origin = Vector2(0, 0)
 
-[node name="TextureButton" type="TextureButton" parent="PanelContainer/HBoxContainer/VBoxContainer/Gameplay"]
+[node name="TextureButton" type="TextureButton" parent="PanelContainer/HBoxContainer/ScrollContainer2/VBoxContainer/Gameplay"]
 self_modulate = Color(1, 1, 1, 0.00392157)
 layout_mode = 1
 anchors_preset = 15
@@ -97,14 +107,14 @@ script = ExtResource("6_x4jmh")
 UIID = "Gameplay"
 metadata/_edit_lock_ = true
 
-[node name="Video" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+[node name="Video" type="Label" parent="PanelContainer/HBoxContainer/ScrollContainer2/VBoxContainer"]
 layout_mode = 2
 text = "Video"
 label_settings = SubResource("LabelSettings_r5aly")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="TextureButton" type="TextureButton" parent="PanelContainer/HBoxContainer/VBoxContainer/Video"]
+[node name="TextureButton" type="TextureButton" parent="PanelContainer/HBoxContainer/ScrollContainer2/VBoxContainer/Video"]
 self_modulate = Color(1, 1, 1, 0.00392157)
 layout_mode = 1
 anchors_preset = 15
@@ -118,14 +128,14 @@ stretch_mode = 0
 script = ExtResource("6_x4jmh")
 UIID = "Video"
 
-[node name="Audio" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+[node name="Audio" type="Label" parent="PanelContainer/HBoxContainer/ScrollContainer2/VBoxContainer"]
 layout_mode = 2
 text = "Audio"
 label_settings = SubResource("LabelSettings_r5aly")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="TextureButton" type="TextureButton" parent="PanelContainer/HBoxContainer/VBoxContainer/Audio"]
+[node name="TextureButton" type="TextureButton" parent="PanelContainer/HBoxContainer/ScrollContainer2/VBoxContainer/Audio"]
 self_modulate = Color(1, 1, 1, 0.00392157)
 layout_mode = 1
 anchors_preset = 15
@@ -139,16 +149,15 @@ stretch_mode = 0
 script = ExtResource("6_x4jmh")
 UIID = "Audio"
 
-[node name="Language" type="Label" parent="PanelContainer/HBoxContainer/VBoxContainer"]
+[node name="Controls" type="Label" parent="PanelContainer/HBoxContainer/ScrollContainer2/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 1
-text = "Language"
+text = "Controls
+"
 label_settings = SubResource("LabelSettings_r5aly")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="TextureButton" type="TextureButton" parent="PanelContainer/HBoxContainer/VBoxContainer/Language"]
+[node name="TextureButton" type="TextureButton" parent="PanelContainer/HBoxContainer/ScrollContainer2/VBoxContainer/Controls"]
 self_modulate = Color(1, 1, 1, 0.00392157)
 layout_mode = 1
 anchors_preset = 15
@@ -160,31 +169,56 @@ texture_normal = ExtResource("5_7d6ee")
 ignore_texture_size = true
 stretch_mode = 0
 script = ExtResource("6_x4jmh")
-UIID = "Language"
+UIID = "Controls"
+
+[node name="Exit" type="Label" parent="PanelContainer/HBoxContainer/ScrollContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Exit"
+label_settings = SubResource("LabelSettings_r5aly")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="TextureButton" type="TextureButton" parent="PanelContainer/HBoxContainer/ScrollContainer2/VBoxContainer/Exit"]
+self_modulate = Color(1, 1, 1, 0.00392157)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("5_7d6ee")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("6_x4jmh")
+UIID = "Exit"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.7
-vertical_scroll_mode = 0
+vertical_scroll_mode = 3
 metadata/_edit_lock_ = true
 
 [node name="Gameplay" parent="PanelContainer/HBoxContainer/ScrollContainer" instance=ExtResource("5_cnkms")]
-visible = false
 layout_mode = 2
-size_flags_horizontal = 6
 size_flags_vertical = 2
+theme_override_constants/separation = 30
 
 [node name="Video" parent="PanelContainer/HBoxContainer/ScrollContainer" instance=ExtResource("6_3q4ud")]
+visible = false
 layout_mode = 2
-size_flags_horizontal = 6
 size_flags_vertical = 2
 
-[node name="Audio" parent="PanelContainer/HBoxContainer/ScrollContainer" instance=ExtResource("6_3q4ud")]
+[node name="Audio" parent="PanelContainer/HBoxContainer/ScrollContainer" instance=ExtResource("9_h1y1q")]
 visible = false
 layout_mode = 2
 
-[node name="Lanuage" parent="PanelContainer/HBoxContainer/ScrollContainer" instance=ExtResource("6_3q4ud")]
+[node name="Exit" parent="PanelContainer/HBoxContainer/ScrollContainer" instance=ExtResource("10_aayo2")]
+visible = false
+layout_mode = 2
+
+[node name="Controls" parent="PanelContainer/HBoxContainer/ScrollContainer" instance=ExtResource("11_pu7qe")]
 visible = false
 layout_mode = 2
 
@@ -205,17 +239,20 @@ label_settings = SubResource("LabelSettings_ixcif")
 
 [node name="Exit" type="TextureButton" parent="."]
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -179.0
-offset_top = 74.0
-offset_right = -106.0
-offset_bottom = 150.0
-grow_horizontal = 0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 496.0
+offset_top = -283.0
+offset_right = 569.0
+offset_bottom = -207.0
+grow_horizontal = 2
+grow_vertical = 2
 rotation = 0.785398
 texture_normal = ExtResource("7_u3p3w")
 ignore_texture_size = true
 stretch_mode = 5
-
-[connection signal="pressed" from="Exit" to="." method="_on_exit_pressed"]
+script = ExtResource("6_x4jmh")
+UIID = "Settings"

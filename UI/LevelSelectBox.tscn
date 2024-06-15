@@ -29,12 +29,12 @@ modulate_color = Color(1.5, 1.5, 1.5, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_qdi2a"]
 resource_local_to_scene = true
 font = ExtResource("3_ddfpp")
-font_size = 48
+font_size = 32
 font_color = Color(0.160784, 0.160784, 0.160784, 1)
 
 [node name="LevelBox" type="VBoxContainer"]
-offset_right = 63.0
-offset_bottom = 50.0
+offset_right = 132.0
+offset_bottom = 73.0
 theme_override_constants/separation = 1
 
 [node name="Stars" type="HBoxContainer" parent="."]
@@ -59,7 +59,7 @@ theme_override_constants/separation = 0
 
 [node name="Label" type="Label" parent="."]
 self_modulate = Color(0.505882, 0.505882, 0.505882, 1)
-custom_minimum_size = Vector2(170, 70)
+custom_minimum_size = Vector2(132.4, 70)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_7rrx6")
 text = "1-1
@@ -81,3 +81,4 @@ texture_normal = ExtResource("4_plen7")
 ignore_texture_size = true
 stretch_mode = 0
 script = ExtResource("4_l42hn")
+metadata/_edit_lock_ = true

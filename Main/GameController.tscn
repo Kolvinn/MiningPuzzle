@@ -1,38 +1,52 @@
-[gd_scene load_steps=10 format=3 uid="uid://cpbobqpaqjal6"]
+[gd_scene load_steps=17 format=3 uid="uid://cpbobqpaqjal6"]
 
 [ext_resource type="Script" path="res://Main/GameController.cs" id="1_ebtxg"]
-[ext_resource type="AudioStream" uid="uid://dqinpi3b864p5" path="res://Assets/Sounds/Music/SoundTrack.mp3" id="2_vukhi"]
+[ext_resource type="AudioStream" uid="uid://1s1j8hquct0c" path="res://Assets/Sounds/Music/FullTrack.wav" id="2_yhqbd"]
 [ext_resource type="PackedScene" uid="uid://d0qkarki7m00d" path="res://UI/NavBar.tscn" id="3_nmwh2"]
 [ext_resource type="PackedScene" uid="uid://cg8gtxwhe5fkm" path="res://UI/Settings/SettingsMenu.tscn" id="4_3mgjf"]
+[ext_resource type="PackedScene" uid="uid://bg0bihqu0271e" path="res://UI/Shop.tscn" id="5_hh5uu"]
 [ext_resource type="Texture2D" uid="uid://53xnbim4qs1h" path="res://Assets/UI/TheArchitect.png" id="5_wxc86"]
 [ext_resource type="Texture2D" uid="uid://cvltrg616pc7n" path="res://Assets/UI/BubbleThinFlipped.png" id="6_4esh5"]
+[ext_resource type="Script" path="res://UI/TutorialUI.cs" id="6_x51gt"]
 [ext_resource type="FontFile" uid="uid://byjdlexdr3rw3" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_compressed.ttf" id="7_e1odu"]
+[ext_resource type="PackedScene" uid="uid://bgs0gpiiqi33j" path="res://UI/LoadingScreen.tscn" id="8_r2jv4"]
+[ext_resource type="Script" path="res://UI/Helpers/TutorialLabel.cs" id="9_4btf7"]
+[ext_resource type="Texture2D" uid="uid://c8k28kv6rwkbj" path="res://Assets/UI/Lucid V1.2/PNG/Flat/16/Up-Arrow.png" id="12_rf5jj"]
+[ext_resource type="Script" path="res://UI/HoverArrowHelper.cs" id="13_2tjbo"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_b0cpb"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_h788l"]
 atlas = ExtResource("6_4esh5")
 region = Rect2(14, 8, 279, 129)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0ifcb"]
-texture = SubResource("AtlasTexture_b0cpb")
+texture = SubResource("AtlasTexture_h788l")
 texture_margin_left = 15.0
 texture_margin_top = 10.0
 texture_margin_right = 20.0
 texture_margin_bottom = 50.0
 
+[sub_resource type="LabelSettings" id="LabelSettings_15ki2"]
+font = ExtResource("7_e1odu")
+
 [node name="GameController" type="Node2D"]
 script = ExtResource("1_ebtxg")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("2_vukhi")
-volume_db = -9.638
+stream = ExtResource("2_yhqbd")
+bus = &"Music"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = 2
 
 [node name="NavBar" parent="CanvasLayer" instance=ExtResource("3_nmwh2")]
-visible = false
+
+[node name="MiningStart" parent="CanvasLayer/NavBar/PanelContainer/Left" index="0"]
+z_index = 0
 
 [node name="SettingsOverlay" parent="CanvasLayer" instance=ExtResource("4_3mgjf")]
+visible = false
+
+[node name="Shop" parent="CanvasLayer" instance=ExtResource("5_hh5uu")]
 visible = false
 
 [node name="Control" type="Control" parent="CanvasLayer"]
@@ -44,43 +58,632 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/Control"]
+[node name="Loading" parent="CanvasLayer" instance=ExtResource("8_r2jv4")]
+visible = false
+top_level = true
+
+[node name="TextureProgressBar" parent="CanvasLayer/Loading" index="3"]
+value = 0.0
+
+[node name="TutorialLayer" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("TutorialPolyLayer")]
+visible = false
+z_as_relative = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("6_x51gt")
+TutorialPolyLayer = NodePath("../../TutorialPolyLayer")
+
+[node name="Background" type="ColorRect" parent="CanvasLayer/TutorialLayer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.0901961, 0.0901961, 0.0901961, 0.498039)
+
+[node name="Cat" type="TextureRect" parent="CanvasLayer/TutorialLayer"]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -224.0
-offset_top = -254.0
-offset_right = 313.0
-offset_bottom = 276.0
+offset_left = -223.0
+offset_top = -253.0
+offset_right = 314.0
+offset_bottom = 277.0
 grow_horizontal = 0
 grow_vertical = 0
 scale = Vector2(0.5, 0.5)
+mouse_filter = 2
 texture = ExtResource("5_wxc86")
 stretch_mode = 4
 
-[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/Control"]
+[node name="0" type="Control" parent="CanvasLayer/TutorialLayer"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="0" type="Control" parent="CanvasLayer/TutorialLayer/0"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="1" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/0/0"]
+visible = false
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -406.0
-offset_top = -200.0
-offset_right = -168.0
-offset_bottom = -54.0
+offset_left = -603.0
+offset_top = -261.0
+offset_right = -175.0
+offset_bottom = -45.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+text = "Ah, excellent. You've finally arrived. 
+
+Come now, I don't have all day. Let's get this started..."
+fit_content = true
+script = ExtResource("9_4btf7")
+ShadowBackground = true
+
+[node name="2" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/0/0"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -798.0
+offset_top = -231.0
+offset_right = -181.0
+offset_bottom = -15.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+text = "Place your tracks with [right mouse]. Delete your tracks with [left-mouse].
+
+Come now, Melon is waiting for you..."
+fit_content = true
+script = ExtResource("9_4btf7")
+ExitTrigger = 2
+
+[node name="3" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/0/0"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -613.0
+offset_top = -300.0
+offset_right = -185.0
+offset_bottom = -45.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+text = "Oh, you're not a complete idiot, that will make things go faster!
+
+Click the pickaxe to let Melon start the cart. You can also zoom with the mousewheel."
+fit_content = true
+script = ExtResource("9_4btf7")
+ExitTrigger = 14
+AcceptedEvent = 6
+UIFocusTreePath = "CanvasLayer/NavBar/PanelContainer/Left/MiningStart"
+ExitUIID = "Start Mining"
+ShadowBackground = true
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/TutorialLayer/0/0/3"]
+top_level = true
+custom_minimum_size = Vector2(18, 18)
+layout_mode = 0
+offset_left = 10.0
+offset_top = 62.0
+offset_right = 50.0
+offset_bottom = 102.0
+texture = ExtResource("12_rf5jj")
+expand_mode = 1
+script = ExtResource("13_2tjbo")
+
+[node name="4" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/0/0"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -709.0
+offset_top = -226.0
+offset_right = -181.0
+offset_bottom = -37.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+text = "Melon will automatically mine one ore node per square. The number show is the ore amount that is received."
+fit_content = true
+script = ExtResource("9_4btf7")
+EntryTrigger = 12
+PauseHandle = true
+
+[node name="5" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/0/0"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -709.0
+offset_top = -226.0
+offset_right = -181.0
+offset_bottom = -37.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+text = "As long as you match the target conditions, you will pass the level.
+
+Poor Melon, does he have any hope with you as his guide?"
+fit_content = true
+script = ExtResource("9_4btf7")
+PauseHandle = true
+
+[node name="1" type="Control" parent="CanvasLayer/TutorialLayer/0"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="1" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/0/1"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -575.0
+offset_top = -236.0
+offset_right = -175.0
+offset_bottom = -45.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/default_color = Color(0, 0, 0, 1)
 theme_override_fonts/normal_font = ExtResource("7_e1odu")
-theme_override_font_sizes/normal_font_size = 16
+theme_override_font_sizes/normal_font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
 bbcode_enabled = true
+text = "While Melon may only mine one ore node per square, you can use that to your advantage.
+"
 fit_content = true
+script = ExtResource("9_4btf7")
+ShadowBackground = true
 
-[node name="TutorialLayer" type="CanvasLayer" parent="."]
+[node name="2" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/0/1"]
 visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -581.0
+offset_top = -223.0
+offset_right = -181.0
+offset_bottom = -32.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+text = "Melon will mine always mine first on the left side of the cart, and then the right."
+fit_content = true
+script = ExtResource("9_4btf7")
+ShadowBackground = true
+
+[node name="3" type="Control" parent="CanvasLayer/TutorialLayer/0"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="1" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/0/3"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -575.0
+offset_top = -236.0
+offset_right = -175.0
+offset_bottom = -45.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+text = "Would you look at that, you've made it this far. How utterly uninteresting. 
+"
+fit_content = true
+script = ExtResource("9_4btf7")
+ShadowBackground = true
+
+[node name="2" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/0/3"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -770.0
+offset_top = -243.0
+offset_right = -170.0
+offset_bottom = -52.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+text = "Since you need it, there will be gem nodes scattered throughout the regions. Why don't you try completing a level after breaking the gem node?"
+fit_content = true
+script = ExtResource("9_4btf7")
+ShadowBackground = true
+
+[node name="3" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/0/3"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -663.0
+offset_top = -268.0
+offset_right = -170.0
+offset_bottom = -52.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+text = "Ah excellent, you've picked something useful. The shop is now open to you!
+I have rare gems available to you, for a price, of course..."
+fit_content = true
+script = ExtResource("9_4btf7")
+EntryTrigger = 15
+AcceptedEvent = 9
+UIFocusTreePath = "CanvasLayer/NavBar/PanelContainer/Middle/Right/Shop"
+ExitUIID = "Toggle Shop"
+ShadowBackground = true
+PauseHandle = true
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/TutorialLayer/0/3/3"]
+top_level = true
+custom_minimum_size = Vector2(18, 18)
+layout_mode = 0
+offset_left = 735.0
+offset_top = 58.0
+offset_right = 775.0
+offset_bottom = 98.0
+texture = ExtResource("12_rf5jj")
+expand_mode = 1
+script = ExtResource("13_2tjbo")
+
+[node name="4" type="Control" parent="CanvasLayer/TutorialLayer/0"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="1" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/0/4"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -640.0
+offset_top = -300.0
+offset_right = -175.0
+offset_bottom = -45.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+text = "Oh dear, it seems I left a rock in the way. 
+
+No matter! Try moving it out of the way by using the Ruby you collected earlier.
+"
+fit_content = true
+script = ExtResource("9_4btf7")
+ShadowBackground = true
+
+[node name="5" type="Control" parent="CanvasLayer/TutorialLayer/0"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="1" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/0/5"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -640.0
+offset_top = -300.0
+offset_right = -175.0
+offset_bottom = -45.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+text = "Well, I've done enough for you, for now. From here on out I can no longer prevent each level from random changes.
+
+Good Luck, I suppose."
+fit_content = true
+script = ExtResource("9_4btf7")
+ShadowBackground = true
+
+[node name="1" type="Control" parent="CanvasLayer/TutorialLayer"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="0" type="Control" parent="CanvasLayer/TutorialLayer/1"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="1" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/1/0"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -640.0
+offset_top = -300.0
+offset_right = -175.0
+offset_bottom = -45.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+text = "You've discovered Copper Ore!
+
+Keep mining deeper and you will keep finding more interesting nodes."
+fit_content = true
+script = ExtResource("9_4btf7")
+ShadowBackground = true
+
+[node name="2" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/1/0"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -640.0
+offset_top = -222.0
+offset_right = -175.0
+offset_bottom = -45.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+text = "Although, bear in mind that the deeper you go, the more complex things may seem..."
+fit_content = true
+script = ExtResource("9_4btf7")
+ShadowBackground = true
+
+[node name="2" type="Control" parent="CanvasLayer/TutorialLayer"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="0" type="Control" parent="CanvasLayer/TutorialLayer/2"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="1" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/2/0"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -640.0
+offset_top = -193.0
+offset_right = -175.0
+offset_bottom = -45.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+text = "Oh dear, two targets and one cart, how will your poor human mind cope!"
+fit_content = true
+script = ExtResource("9_4btf7")
+ShadowBackground = true
+
+[node name="2" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/2/0"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -640.0
+offset_top = -222.0
+offset_right = -175.0
+offset_bottom = -45.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+text = "No matter, I've modified the Cart such that it will not stop until the level is completed. But know that a level target will consume ALL ORE regardless of the target conditions!"
+fit_content = true
+script = ExtResource("9_4btf7")
+ShadowBackground = true
+
+[node name="ContinueLabel" type="Label" parent="CanvasLayer/TutorialLayer"]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -117.0
+offset_top = -44.0
+offset_right = 117.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Click to continue...."
+label_settings = SubResource("LabelSettings_15ki2")
+horizontal_alignment = 1
+
+[node name="UIPoly" type="Polygon2D" parent="CanvasLayer/TutorialLayer"]
+visible = false
+texture_filter = 2
+color = Color(0, 0, 0, 0.27451)
+antialiased = true
+invert_enabled = true
+invert_border = 6091.6
+polygon = PackedVector2Array(9, 10, 52, 10, 20, 45, 19, 45, 19, 46, 18, 46, 18, 47)
+
+[node name="TutorialPolyLayer" type="CanvasLayer" parent="."]
 follow_viewport_enabled = true
+
+[node name="Polygon2D" type="Polygon2D" parent="TutorialPolyLayer"]
+visible = false
+color = Color(0.160784, 0.160784, 0.160784, 0.568627)
+antialiased = true
+invert_enabled = true
+invert_border = 9293.9
+polygon = PackedVector2Array(-670, -400, -323, -539, -120, -160, -323, -165)
+
+[editable path="CanvasLayer/NavBar"]
+[editable path="CanvasLayer/Loading"]
+[editable path="CanvasLayer/Loading/Control/Mineable"]

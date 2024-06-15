@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://rwgvry72mfqk" path="res://Assets/UI/Kasaya's Frames/Inventory & chests/1/dialogues1.png" id="1_e40ej"]
 [ext_resource type="Texture2D" uid="uid://wc1dc7sio13j" path="res://Assets/GameResource/Stone.png" id="2_t570u"]
-[ext_resource type="FontFile" uid="uid://bwxcy1yplwsmm" path="res://Assets/Fonts/Pixel/PrintChar21.ttf" id="3_k8542"]
+[ext_resource type="FontFile" uid="uid://byjdlexdr3rw3" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_compressed.ttf" id="3_6hv08"]
 [ext_resource type="PackedScene" uid="uid://qru3r3tp0osm" path="res://UI/StarRect.tscn" id="4_trejl"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gova7"]
@@ -11,8 +11,7 @@ content_margin_right = 4.0
 texture = ExtResource("1_e40ej")
 
 [sub_resource type="LabelSettings" id="LabelSettings_n1dql"]
-font = ExtResource("3_k8542")
-font_size = 8
+font = ExtResource("3_6hv08")
 outline_size = 2
 outline_color = Color(0, 0, 0, 1)
 

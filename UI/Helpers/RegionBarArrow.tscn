@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://egomxrlck25m"]
+
+[ext_resource type="Texture2D" uid="uid://cfxs1lt23nrju" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/Arrow.tres" id="1_gmxqu"]
+
+[node name="TextureRect" type="TextureRect"]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_gmxqu")
+stretch_mode = 5
+flip_v = true

@@ -1,8 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://bg0bihqu0271e"]
+[gd_scene load_steps=12 format=3 uid="uid://bg0bihqu0271e"]
 
 [ext_resource type="Script" path="res://UI/Shop.cs" id="1_fd6gm"]
 [ext_resource type="Texture2D" uid="uid://ddvmanele13ny" path="res://Assets/UI/Frame.png" id="2_tr6qc"]
 [ext_resource type="Texture2D" uid="uid://bnwpai7x8v8ky" path="res://Assets/UI/Lucid V1.2/PNG/Flat/32/Plus.png" id="3_whfg6"]
+[ext_resource type="Script" path="res://UI/GameButton.cs" id="4_5hrwl"]
+[ext_resource type="Texture2D" uid="uid://53xnbim4qs1h" path="res://Assets/UI/TheArchitect.png" id="5_ixm4l"]
+[ext_resource type="FontFile" uid="uid://byjdlexdr3rw3" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_compressed.ttf" id="6_uw24x"]
+[ext_resource type="Texture2D" uid="uid://cvltrg616pc7n" path="res://Assets/UI/BubbleThinFlipped.png" id="7_4650w"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1klfn"]
 atlas = ExtResource("2_tr6qc")
@@ -16,6 +20,17 @@ content_margin_bottom = 2.0
 texture = SubResource("AtlasTexture_1klfn")
 axis_stretch_horizontal = 2
 axis_stretch_vertical = 2
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b0cpb"]
+atlas = ExtResource("7_4650w")
+region = Rect2(14, 8, 279, 129)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_o1x4e"]
+texture = SubResource("AtlasTexture_b0cpb")
+texture_margin_left = 15.0
+texture_margin_top = 10.0
+texture_margin_right = 20.0
+texture_margin_bottom = 50.0
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -43,10 +58,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -341.5
+offset_left = -341.0
 offset_top = -199.0
-offset_right = 341.5
-offset_bottom = 199.0
+offset_right = 342.0
+offset_bottom = 171.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_n0t5h")
@@ -65,6 +80,8 @@ theme_override_constants/margin_bottom = 10
 
 [node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/ScrollContainer"]
 layout_mode = 2
@@ -80,14 +97,54 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = 337.0
-offset_top = -225.0
+offset_top = -235.0
 offset_right = 387.0
-offset_bottom = -175.0
+offset_bottom = -185.0
 grow_horizontal = 2
 grow_vertical = 2
 rotation = 0.785398
 texture_normal = ExtResource("3_whfg6")
 ignore_texture_size = true
 stretch_mode = 5
+script = ExtResource("4_5hrwl")
+UIID = "Toggle Shop"
 
-[connection signal="pressed" from="Exit" to="." method="_on_exit_pressed"]
+[node name="Cat" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -223.0
+offset_top = -253.0
+offset_right = 314.0
+offset_bottom = 277.0
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(0.5, 0.5)
+mouse_filter = 2
+texture = ExtResource("5_ixm4l")
+stretch_mode = 4
+
+[node name="Label" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -645.0
+offset_top = -122.0
+offset_right = -177.0
+offset_bottom = -15.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("6_uw24x")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_o1x4e")
+bbcode_enabled = true
+text = "What can I get for you?"
+fit_content = true

@@ -20,7 +20,7 @@ public partial class ResourceIcon : HBoxContainer
     }
     public void Update(GameResource res)
     {
-        this.GetNode<TextureRect>("Tex").Texture = ResourceStore.Resources[res.ResourceType];
+        this.GetNode<TextureRect>("Tex").Texture = ResourceStore.GetResTex(res.ResourceType);
         GameResource = res;
         Update(0);
     }

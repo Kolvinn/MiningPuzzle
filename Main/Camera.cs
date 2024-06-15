@@ -1,5 +1,7 @@
 ﻿using Godot;
 using MagicalMountainMinery.Design;
+using System;
+using System.Collections.Generic;
 
 namespace MagicalMountainMinery.Main
 {
@@ -16,11 +18,18 @@ namespace MagicalMountainMinery.Main
     }
     public partial class Camera : Camera2D
     {
-        public static float zoomspeed = 0.01f, upperLimit = 0.0001f, lowerLimit = 7f, currentzoom = 1, cameraSpeed = 1.5f;
-        public static Vector2 MaxSize;
+        public static float upperLimit = 0.3f, lowerLimit = 2f, currentzoom = 1 ,cameraSpeed = 2f;
+
+
+        public static Vector2 MaxSize { get; set; }
 
         public static bool UISCALECHANGE { get; set; } = false;
         public bool CanMod { get; set; } = true;
+
+        public Rect2 RelativeBounds { get; set; }
+        public List<Vector2> RelativePoints { get; set; }
+
+        public bool moving = false;
         public CamSettings Settings
         {
             get => camSettings;
@@ -29,6 +38,7 @@ namespace MagicalMountainMinery.Main
                 this.Zoom = new Vector2(value.Zoom, value.Zoom);
                 this.Position = value.Position;
                 camSettings = value;
+                currentzoom = value.Zoom;
             }
         }
         private CamSettings camSettings;
@@ -36,8 +46,8 @@ namespace MagicalMountainMinery.Main
         {
             MaxSize = new Vector2(LimitRight - LimitLeft, LimitBottom - LimitTop);
             this.MakeCurrent();
-            this.Position = new Vector2(0, 0);
-            this.Zoom = new Vector2(1, 1);
+            //this.Position = new Vector2(0, 0);
+            //this.Zoom = new Vector2(1, 1);
 
             
             //CheckLimit();
@@ -51,85 +61,130 @@ namespace MagicalMountainMinery.Main
             return pos != this.Position;
 
         }
+        public void ZoomFinished()
+        {
 
+            EventDispatch.PushEventFlag(Data.GameEventType.CameraMove);
+
+            //var cuttoff = (int)Zoom.X;
+            var cuttoff = (float)Math.Abs(Math.Floor(Zoom.X) - Zoom.X);
+            if (cuttoff < 0.1f)
+            {
+                //round to whole if within bounds (due to eventual rounding errors)
+                Zoom = new Vector2(cuttoff, cuttoff);
+            }
+
+            currentzoom = Zoom.X;
+            GD.Print("setting zoom to: ", currentzoom);
+            moving = false;
+        }
+
+        public void SetTween(Vector2 zoom)
+        {
+            moving = true;
+            var t = GetTree().CreateTween();
+            t.TweenProperty(this, "zoom", zoom, 0.2f).
+                SetTrans(Tween.TransitionType.Sine).
+                SetEase(Tween.EaseType.Out);
+            t.Connect(Tween.SignalName.Finished, Callable.From(ZoomFinished));
+        }
 
         public bool SetZoom(float scrollDir)
         {
             //get_viewport_rect().size / self.zoom
-            if (CheckLimit(scrollDir))
-                return false;
+            var scale = GetTree().Root.ContentScaleFactor;
             //1280,720 / 0.2 = 
-            if (scrollDir < 0 && currentzoom - zoomspeed >= upperLimit)
+            if (scrollDir < 0)
             {
-                if(GetWindow().ContentScaleFactor % 1 == 0)
-                {
+                var amount = -0.3333333333333333334f;
+                if (Math.Floor(scale) == scale)
+                     amount = -0.5f;
 
-                }
-                else
-                {
-
-
-                    currentzoom -= 0.3333333333333333334f;
-                    this.Zoom = new Vector2(currentzoom, currentzoom);
-                    GD.Print("Setting Zoom to: ", Zoom.ToString(), " With pos: ", this.Position);
-                    return true;
-                    //var snap2 = 0.66666667;
-                    //var next = currentzoom - snap1;
-                    //var next = currentzoom - 0.5;
-                    //int intZoom = (int)next;
-
-                    //var dist1 = intZoom - snap1;
-                    //var dist2 = intZoom - snap2;
-
-                    //var next2 = next - intZoom;
-
-                    //if (next2 == 0)
-                }
-                currentzoom -= zoomspeed;
-                this.Zoom = new Vector2(currentzoom, currentzoom);
-                
-                
-                GD.Print("Setting Zoom to: ", Zoom.ToString(), " With pos: ", this.Position);
-                return true;
+                if (!CheckLimit(amount))
+                    SetTween(new Vector2(currentzoom + amount, currentzoom + amount));
 
             }
-            else if (scrollDir > 0 && currentzoom + zoomspeed <= lowerLimit)
+            else
             {
-                if (GetWindow().ContentScaleFactor % 1 == 0)
-                {
+                var amount = 0.3333333333333333334f;
+                if (Math.Floor(scale) == scale)
+                    amount = 0.5f;
 
-                }
-                else
-                {
-
-
-                    currentzoom += 0.3333333333333333334f;
-                    this.Zoom = new Vector2(currentzoom, currentzoom);
-                    GD.Print("Setting Zoom to: ", Zoom.ToString(), " With pos: ", this.Position);
-                    return true;
-                }
-                    currentzoom += zoomspeed;
-                this.Zoom = new Vector2(currentzoom, currentzoom);
-                GD.Print("Setting Zoom to: ", Zoom.ToString(), " With pos: ", this.Position);
-                return true;
+                if (!CheckLimit(amount))
+                    SetTween(new Vector2(currentzoom + amount, currentzoom + amount));
             }
+            //if (scrollDir < 0 && currentzoom - zoomspeed >= upperLimit)
+            //{
+            //    if(GetWindow().ContentScaleFactor % 1 == 0)
+            //    {
+
+            //    }
+            //    else
+            //    {
+
+
+            //        currentzoom -= 0.3333333333333333334f;
+            //        this.Zoom = new Vector2(currentzoom, currentzoom);
+            //        GD.Print("Setting Zoom to: ", Zoom.ToString(), " With pos: ", this.Position);
+            //        return true;
+            //        //var snap2 = 0.66666667;
+            //        //var next = currentzoom - snap1;
+            //        //var next = currentzoom - 0.5;
+            //        //int intZoom = (int)next;
+
+            //        //var dist1 = intZoom - snap1;
+            //        //var dist2 = intZoom - snap2;
+
+            //        //var next2 = next - intZoom;
+
+            //        //if (next2 == 0)
+            //    }
+            //    currentzoom -= zoomspeed;
+            //    this.Zoom = new Vector2(currentzoom, currentzoom);
+                
+                
+            //    GD.Print("Setting Zoom to: ", Zoom.ToString(), " With pos: ", this.Position);
+            //    return true;
+
+            //}
+            //else if (scrollDir > 0 && currentzoom + zoomspeed <= lowerLimit)
+            //{
+            //    if (GetWindow().ContentScaleFactor % 1 == 0)
+            //    {
+
+            //    }
+            //    else
+            //    {
+
+
+            //        currentzoom += 0.3333333333333333334f;
+            //        this.Zoom = new Vector2(currentzoom, currentzoom);
+            //        GD.Print("Setting Zoom to: ", Zoom.ToString(), " With pos: ", this.Position);
+            //        return true;
+            //    }
+            //        currentzoom += zoomspeed;
+            //    this.Zoom = new Vector2(currentzoom, currentzoom);
+            //    GD.Print("Setting Zoom to: ", Zoom.ToString(), " With pos: ", this.Position);
+            //    return true;
+            //}
             return false;
         }
 
 
 
-        public bool CheckLimit(float scrollDir)
+        public bool CheckLimit(float change)
         {
-            var size = GetViewportRect().Size;
-            var pos = GetViewportRect().Position;
-            var nextZoom = zoomspeed * scrollDir;
-            var nextZoomvec = new Vector2(Zoom.X + nextZoom, Zoom.Y + nextZoom);
 
-            var relativeSize = size / nextZoomvec;
-            var relativePosition = this.Position - relativeSize / 2;
+            if (currentzoom + change < upperLimit)
+                return true;
+            if (currentzoom + change > lowerLimit)
+                return true;
 
 
 
+            var rect = GetRelativeRect(change);
+            var relativePosition = rect.Position;
+            var relativeSize = rect.Size;
 
             if (relativePosition.X < LimitLeft || relativePosition.Y < LimitTop
                 || relativePosition.X + relativeSize.X > LimitRight
@@ -141,10 +196,42 @@ namespace MagicalMountainMinery.Main
                 GD.Print("cant go beyond limit");
                 return true;
             }
+            var nextZoomvec = Zoom.X + change;
+            UpdateBoundingBox(relativePosition, relativeSize, nextZoomvec);
             return false;
 
         }
 
+        public void UpdateBoundingBox(Vector2 relativePosition, Vector2 relativeSize, float nextZoom)
+        {
+            RelativeBounds = new Rect2(relativePosition, relativeSize);
+
+            //get the relative pixel distance of top bar of a unzoomed camera (i.e, 1-1 UI pixel to world pixel)
+            var change = GetTree().Root.ContentScaleFactor * NavBar.GlobalHeight;
+            //now get relative world pos based on zoom pixel
+            change = change / nextZoom ;
+            RelativePoints = new List<Vector2>()
+            {
+                new Vector2(RelativeBounds.Position.X, RelativeBounds.Position.Y + change ), //top left
+                new Vector2(RelativeBounds.Position.X, RelativeBounds.Size.Y + RelativeBounds.Position.Y ),//- change), //bot left
+                new Vector2(RelativeBounds.Size.X + RelativeBounds.Position.X, RelativeBounds.Size.Y + RelativeBounds.Position.Y ),//- change), //bot right
+                new Vector2(RelativeBounds.Size.X + RelativeBounds.Position.X, RelativeBounds.Position.Y + change), //top right
+                new Vector2(RelativeBounds.Position.X, RelativeBounds.Position.Y + change ),  //IMPORTANT ADDD BACK  IN BECAUSE WE MUST CHECK THE 3-4 CONNECTION AGAIN
+
+            };
+        }
+
+        public Rect2 GetRelativeRect(float zoomAdd = 0)
+        {
+            var size = GetViewportRect().Size;
+            var pos = GetViewportRect().Position;
+           // var nextZoom = zoomspeed * scrollDir;
+            var nextZoomvec = new Vector2(Zoom.X + zoomAdd, Zoom.Y + zoomAdd);
+
+            var relativeSize = size / nextZoomvec;
+            var relativePosition = this.Position - relativeSize / 2;
+            return new Rect2(relativePosition, relativeSize);
+        }
 
         public override void _PhysicsProcess(double delta)
         {
@@ -180,26 +267,28 @@ namespace MagicalMountainMinery.Main
 
         public void HandleBaseInput()
         {
+            if (moving)
+                return;
             var scrollDir = 0.0f;
             var speedCheck = Vector2.Zero;
             //these will return 1s and 0s as it's a keyboard input. Otherwise, controller will do something else
-            speedCheck.X = Input.GetActionStrength("ui_right") - Input.GetActionStrength("ui_left");
-            speedCheck.Y = Input.GetActionStrength("ui_down") - Input.GetActionStrength("ui_up");
+            //speedCheck.X = Input.GetActionStrength("ui_right") - Input.GetActionStrength("ui_left");
+            //speedCheck.Y = Input.GetActionStrength("ui_down") - Input.GetActionStrength("ui_up");
 
 
-            var down = Input.IsActionJustReleased("scroll_down");
-            var up = Input.IsActionJustReleased("scroll_up");
-            if (down)
+            //var down = Input.IsActionJustReleased("scroll_down");
+            //var up = Input.IsActionJustReleased("scroll_up");
+            if (EventDispatch.FetchLastInput() == Data.EventType.Zoom_Out)
             {
                 scrollDir = -1;
             }
-            else if (up)
+            else if (EventDispatch.FetchLastInput() == Data.EventType.Zoom_In)
             {
                 scrollDir = 1;
             }
             if (speedCheck != Vector2.Zero || scrollDir != 0)
             {
-                SetPan(speedCheck);
+               // SetPan(speedCheck);
                 SetZoom(scrollDir);
             }
 

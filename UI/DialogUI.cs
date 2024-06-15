@@ -15,8 +15,11 @@ public partial class DialogUI : Control
 
 	public double currentSpeed = 0.0f;
 	public RichTextLabel Label { get; set; }
+
+	public TextureRect Cat {  get; set; }
 	public override void _Ready()
 	{
+		Cat = this.GetNode<TextureRect>("Cat");
 		Label = this.GetNode<RichTextLabel>("Label");
 
     }
@@ -24,7 +27,7 @@ public partial class DialogUI : Control
 	{
 		if(index + 1 >= Dialogs.Count)
 		{
-
+			Cat.Visible = false;
 		}
 		else
 		{
@@ -45,6 +48,11 @@ public partial class DialogUI : Control
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _PhysicsProcess(double delta)
 	{
+		if (Input.IsActionJustPressed("space"))
+		{
+			Next();
+
+        }
 		//if(typing)
 		//{
 		//	currentSpeed += delta;

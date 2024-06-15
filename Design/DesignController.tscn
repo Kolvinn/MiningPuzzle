@@ -8,7 +8,7 @@ script = ExtResource("1_kto8u")
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = 2
 
-[node name="Button" type="Button" parent="CanvasLayer"]
+[node name="SaveButton" type="Button" parent="CanvasLayer"]
 offset_left = 326.0
 offset_top = 8.0
 offset_right = 415.0
@@ -47,3 +47,6 @@ offset_left = 777.0
 offset_top = 15.0
 offset_right = 822.0
 offset_bottom = 35.0
+
+[connection signal="pressed" from="CanvasLayer/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/NewLevelButton" to="." method="_on_new_level_button_pressed"]

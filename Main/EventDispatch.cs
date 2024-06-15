@@ -21,14 +21,47 @@ namespace MagicalMountainMinery.Main
 
         private static List<GameEvent> gameEvents = new List<GameEvent>();
 
+        private static Queue<GameEventType> EventFlags = new Queue<GameEventType>();
+
         private static EventType Last { get; set; } = EventType.Nill;
+
+        private static GameEventType LastFlag { get; set; } = GameEventType.Nil;
+
+        public static Dictionary<string, EventType> Events { get; private set; } = new Dictionary<string, EventType>()
+        {
+            { "Start Mining", EventType.Start_Mining },
+            { "Stop Mining", EventType.Stop_Mining },
+            { "Sim Speed +", EventType.Speed_Increase },
+            { "Sim Speed -", EventType.Speed_Decrease },
+            { "Zoom In", EventType.Zoom_In },
+            { "Zoom Out", EventType.Zoom_Out },
+            { "Settings", EventType.Settings },
+            { "Home", EventType.Home },
+            { "Toggle Shop", EventType.Toggle_Shop },
+            { "Reset Level", EventType.Reset_Level },
+            { "Pause", EventType.Pause },
+            { "Rotate", EventType.Rotate }
+        };
 
         public override void _Ready()
         {
 
             //this.SetProcessInput(false);
         }
-
+        /// <summary>
+        /// Returns true if the given string is a stored event that the given event matches
+        /// </summary>
+        /// <param name="event"></param>
+        /// <param name="env"></param>
+        /// <returns></returns>
+        public static bool MatchEvent(string @event, EventType env)
+        {
+            if (Events.ContainsKey(@event))
+            {
+                return Events[@event] == env;
+            }
+            return false;
+        }
         public static List<GuiOverride> overrides { get; set; } = new List<GuiOverride>();
         public static void WithinOverride(GuiOverride control)
         {
@@ -41,39 +74,55 @@ namespace MagicalMountainMinery.Main
             if (overrides.Contains(control)) { overrides.Remove(control); }
 
         }
+        public static bool TryClickEvent(IUIComponent comp)
+        {
+            if(string.IsNullOrEmpty(comp?.UIID))
+                return false;
+            var s = hoverList.First().UIID;
+            if (Events.ContainsKey(s))
+            {
+                
+                eventTypes.Enqueue(Events[s]);
+                return true;
+            }
+            return false;
 
+        }
         public override void _PhysicsProcess(double delta)
         {
-            if (overrides.Count > 0)
+            //IGNORE ALL mouse clicks when inside UI override
+            if (overrides.Count > 0 && (Input.IsActionJustPressed("left_click")
+                || Input.IsActionJustReleased("left_click")
+                || Input.IsActionJustPressed("right_click")
+                || Input.IsActionJustReleased("right_click")))
             {
                 if (hoverList.Count > 0 && Input.IsActionJustPressed("left_click"))
                 {
+                    if(!TryClickEvent(PeekHover()))
+                        eventTypes.Enqueue(EventType.Left_Action);
                     LastPressedPosition = GetGlobalMousePosition();
-                    eventTypes.Enqueue(EventType.Left_Action);
+                }
+                else if (hoverList.Count > 0 && Input.IsActionJustReleased("left_click"))
+                {
+                    LastPressedPosition = GetGlobalMousePosition();
+                    eventTypes.Enqueue(EventType.Left_Release);
                 }
                 return;
             }
-
-            mousePos = GetGlobalMousePosition();
             //Need to fetch context
-            if (Input.IsActionJustPressed("left_click"))
+            //TODO reject inputs that shop and settings dont want
+            else if (Input.IsActionJustPressed("left_click"))
             {
-
-                LastPressedPosition = GetGlobalMousePosition();
-                // mouseMoveWait = true;
-                //SetProcessInput(true);
-                eventTypes.Enqueue(EventType.Left_Action);
+                if (!TryClickEvent(PeekHover()))
+                    eventTypes.Enqueue(EventType.Left_Action);
+                else
+                {
+                    LastPressedPosition = GetGlobalMousePosition();
+                    //eventTypes.Enqueue(EventType.Left_Action);
+                }
             }
             else if (Input.IsActionJustReleased("left_click"))
             {
-                //this.SetProcessInput(false);
-
-                //GD.Print("release in dispatch");
-                //if (mouseMoveWait)
-                //{
-                //    eventTypes.Enqueue(EventType.Drag_End);
-                //    mouseMoveWait = false;
-                //}
                 eventTypes.Enqueue(EventType.Left_Release);
             }
             else if (Input.IsActionJustPressed("right_click"))
@@ -84,39 +133,17 @@ namespace MagicalMountainMinery.Main
             {
                 eventTypes.Enqueue(EventType.Right_Release);
             }
-
-            else if (Input.IsActionJustPressed("level_toggle"))
-            {
-                eventTypes.Enqueue(EventType.Level_Toggle);
+            else 
+            { 
+                foreach(var entry in Events)
+                {
+                    if(Input.IsActionJustPressed(entry.Key))
+                    {
+                        eventTypes.Enqueue(entry.Value);
+                    }
+                }
             }
-            else if (Input.IsActionJustPressed("north_cart"))
-            {
-                eventTypes.Enqueue(EventType.North_Cart);
-            }
-            else if (Input.IsActionJustPressed("south_cart"))
-            {
-                eventTypes.Enqueue(EventType.South_Cart);
-            }
-            else if (Input.IsActionJustPressed("east_cart"))
-            {
-                eventTypes.Enqueue(EventType.East_Cart);
-            }
-            else if (Input.IsActionJustPressed("west_cart"))
-            {
-                eventTypes.Enqueue(EventType.West_Cart);
-            }
-            else if (Input.IsActionJustPressed("rotate"))
-            {
-                eventTypes.Enqueue(EventType.Rotate);
-            }
-            else if (Input.IsActionJustPressed("space"))
-            {
-                eventTypes.Enqueue(EventType.Space);
-            }
-            else if (Input.IsActionJustPressed("escape"))
-            {
-                eventTypes.Enqueue(EventType.Escape);
-            }
+            mousePos = GetGlobalMousePosition();
 
         }
 
@@ -140,7 +167,7 @@ namespace MagicalMountainMinery.Main
         /// from when it is picked by the GameController
         /// </summary>
         /// <returns></returns>
-        public static EventType FetchLastInput()
+        public  static EventType FetchLastInput()
         {
             return Last;
         }
@@ -149,7 +176,15 @@ namespace MagicalMountainMinery.Main
         {
             Last = eventTypes.Count == 0 ? EventType.Nill : eventTypes.Dequeue();
         }
+        public void SetLastFlag()
+        {
+            LastFlag = EventFlags.Count > 0 ? EventFlags.Dequeue() : GameEventType.Nil;
+        }
 
+        public static GameEventType FetchLastFlag()
+        {
+            return LastFlag;
+        }
         public static IGameObject FetchInteractable()
         {
             return interactables.Count == 0 ? null : interactables.First();
@@ -157,13 +192,10 @@ namespace MagicalMountainMinery.Main
 
         public static void HoverUI(IUIComponent comp)
         {
-
-            GD.Print("entering btn");
             hoverList.Add(comp);
         }
         public static void ExitUI(IUIComponent comp)
         {
-            GD.Print("exiting btn");
             hoverList.Remove(comp);
         }
         //public static IUIComponent GetHover()
@@ -197,6 +229,15 @@ namespace MagicalMountainMinery.Main
             return null;
         }
 
+        public static void PushEventFlag(GameEventType eventType)
+        {
+            EventFlags.Enqueue(eventType);
+        }
+
+        public GameEventType PopEventFlag()
+        {
+            return EventFlags.Count > 0 ? EventFlags.Dequeue() : GameEventType.Nil;
+        }
         /// <summary>
         /// Consumes the given hover only if the hover is top level
         /// </summary>
@@ -224,7 +265,10 @@ namespace MagicalMountainMinery.Main
 
         }
 
-
+        public static void FrameDisableLastInput()
+        {
+            Last = EventType.Nill;
+        }
         //public override void _Input(InputEvent @event)
         //{
         //    if (@event is InputEventMouseMotion input)
@@ -261,6 +305,8 @@ namespace MagicalMountainMinery.Main
             eventTypes.Clear();
             hoverList.Clear();
             interactables.Clear();
+            Last = EventType.Nill;
+            
         }
     }
 }

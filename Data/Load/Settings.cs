@@ -10,30 +10,28 @@ namespace MagicalMountainMinery.Data.Load
 {
     public class Settings
     {
-        [JsonProperty]
-        public static float SIM_SPEED_RATIO { get; set; } = 1f;
-        [JsonProperty]
-        public static float SIM_SPEED_STACK { get; set; } = 0f;
-        public static Label SIM_SPEED_STACK_LABEL { get; set; }
-        [JsonProperty]
-        public static float UI_SCALE { get; set; } = 1f;
+        public static RunningVariables RunningVars { get; set; } = new RunningVariables();
         public static Label UI_SCALE_LABEL { get; set; }
-        [JsonProperty]
-        public static float CAMERA_ZOOM { get; set; } = 1f;
+        public static Label SIM_SPEED_STACK_LABEL { get; set; }
         public static Label CAMERA_ZOOM_LABEL { get; set; }
         [JsonProperty]
         public static int WINDOW_MODE { get; set; } = 1;
         [JsonProperty]
         public static int RESOLUTION { get; set; } = 0;
         [JsonProperty]
-        public static float AUDIO_MUSIC { get; set; } = 1f;
+        public static float AUDIO_MUSIC { get; set; } = 0f;
         [JsonProperty]
-        public static float AUDIO_MASTER { get; set; } = 1f;
+        public static float AUDIO_MASTER { get; set; } = 0f;
         [JsonProperty]
-        public static float AUDIO_SFX { get; set; } = 1f;
+        public static float AUDIO_SFX { get; set; } = 0f;
         [JsonProperty]
         public static bool VSYNC { get; set; } = false;
 
+        public static float WINDOW_WIDTH { get; set; } = 0;
+        public static float WINDOW_HEIGHT { get; set; } = 0;
+        public static Vector2 CUSTOM_RESOLUTION { get; set; } = Vector2.Zero;
+
+        
         [JsonProperty]
         public static List<Vector2I> Resolutions = new List<Vector2I>()
         {
@@ -55,5 +53,26 @@ namespace MagicalMountainMinery.Data.Load
             "Borderless Window",
             "Borderless Full-Screen"
         };
+
+        public static Dictionary<string, string> OverrideRefs = new Dictionary<string, string>()
+        {
+            //{ nameof(WINDOW_MODE),"display/window/size/mode"},
+            { nameof(WINDOW_WIDTH),"display/window/size/window_width_override"},
+            { nameof(WINDOW_HEIGHT),"display/window/size/window_height_override"},
+            { nameof(VSYNC),"display/window/stretch/scale"},
+            { nameof(CUSTOM_RESOLUTION),"custom_res"},
+            {nameof(RunningVars.UI_SCALE),"display/window/stretch/scale" },
+           // { "", "display/window/size/borderless" },
+           // { nameof(WINDOW_MODE),"display/window/stretch/scale"},
+
+            { nameof(RESOLUTION),"res_index"},
+            { nameof(WINDOW_MODE),"window_index"},
+            { nameof(AUDIO_MASTER),"audio_master"},
+            { nameof(AUDIO_SFX),"audio_sfx"},
+            { nameof(AUDIO_MUSIC),"audio_music"},
+            
+
+        };
+
     }
 }

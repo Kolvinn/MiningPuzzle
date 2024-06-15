@@ -65,8 +65,10 @@ namespace MagicalMountainMinery.Main
 
         }
         public CartState State { get; set; } = CartState.Paused;
-
+        public bool PauseHandle { get; set; } = false;
         public Dictionary<IConnectable, List<IConnectable>> Connections { get; set; }
+
+        public List<GameResource> DrainedResouces { get; set; } = new List<GameResource>();
         public override void _Ready()
         {
             Cart = Runner.LoadScene<Cart>("res://Obj/Cart.tscn");
@@ -79,17 +81,18 @@ namespace MagicalMountainMinery.Main
                 Autoplay = false,
                 VolumeDb = -5.6f,
                 PitchScale = 0.85f,
+                Bus = "Sfx"
                 
             };
             this.AddChild(AudioPlayer);
 
             CartGoAudio = new AudioStreamPlayer()
             {
-                Stream = ResourceStore.GetAudio("CartTrack3"),
+                Stream = ResourceStore.GetAudio("tracksound1"),
                 Autoplay = false,
                 VolumeDb = 1,
                 PitchScale = 1f,
-                Playing = false,
+                Bus = "Sfx"
             };
             this.AddChild(CartGoAudio);
             
@@ -133,33 +136,50 @@ namespace MagicalMountainMinery.Main
             Cart.ClearResources();
             GatheredNodes = new List<Mineable>();
         }
+
+
+        private void CheckCartTypeFinish()
+        {
+            if (StartData.Type == CartType.Double)
+            {
+                Start(Colors.Beige, Connections, LastDirection.Opposite(), CurrentConnection as Track);
+            }
+            else
+            {
+                Finished = true;
+                Cart.Completed = true;
+            }
+        }
         public override void _PhysicsProcess(double delta)
         {
-            if (Finished || State == CartState.Paused)
+            if (Finished || State == CartState.Paused || PauseHandle)
                 return;
             else if (State == CartState.Stopped)
             {
                 if (spriteSpawns.Count > 0)
                     DoSprites((float)delta);
-                else if(NextConnection != null && NextConnection is LevelTarget target)
-                    CheckFinish(delta);
-                else if(Cart.StoredResources.Count > 0)
-                    DoDrain((float)delta);
-                else
+                else if (NextConnection != null && NextConnection is LevelTarget target)
                 {
-                    
-                    if (StartData.Type == CartType.Double)
+                    if(Cart.StoredResources.Count > DrainedResouces.Count)
+                        DrainedResouces = Cart.GetResources();
+                    else if (Cart.StoredResources.Count > 0)
                     {
-                        //StartT = CurrentConnection as Track; 
-                        Start(Colors.Beige, Connections, LastDirection.Opposite(), CurrentConnection as Track);
-
+                        DoDrain((float)delta);
                     }
                     else
                     {
-                        Finished = true;
-                        Cart.Completed = true;
+                        target.ValidateCondition(DrainedResouces);
+                        DrainedResouces.Clear();
+                        //only validate once so we can continue to check the cart type finish below
+                        NextConnection = null;
+
                     }
                 }
+                else
+                {
+                    CheckCartTypeFinish();
+                }
+               
             }
             else if (State == CartState.Moving)
             {
@@ -197,17 +217,16 @@ namespace MagicalMountainMinery.Main
                 }
             }
         }
-        public void CheckFinish(double delta)
+        public void ValidateLevelTarget(double delta)
         {
             if (NextConnection != null && NextConnection is LevelTarget target)
             {
-                var res = Cart.StoredResources.Values.Select(item => item.GameResource).ToList();
+                //var res = Cart.StoredResources.Values.Select(item => item.GameResource).ToList();
 
-                if (target.ValidateCondition(res))
+                if (target.ValidateCondition(DrainedResouces))
                 {
                     NextConnection = null;
-                    //var remove = Cart.StoredResources.Keys.Where(res => !ResourceStore.ShopResources.Any(item=>item.ResourceType == res)).ToList();
-                    //Cart.ClearResources();
+
                 }
 
             }
@@ -279,7 +298,7 @@ namespace MagicalMountainMinery.Main
             NextDirection = CartDirs.Dequeue();
             LastDirection = NextDirection;
         }
-        public void Move(double delta)
+        public virtual void Move(double delta)
         {
             if (Cart.HasOverlappingAreas())
             {
@@ -335,7 +354,7 @@ namespace MagicalMountainMinery.Main
                 LastDirection = NextDirection;
                 if (CartVectors.Count == 0)
                 {
-
+                    State = CartState.Stopped;
                     return;
                 }
                 else
@@ -354,13 +373,13 @@ namespace MagicalMountainMinery.Main
                     NextVector = CartVectors.Dequeue();
                     NextDirection = CartDirs.Dequeue();
                     var thing = (NextDirection.ToString().Split("_")[1]);
-                    Cart.CurrentPlayer.Play(thing, customSpeed: 1 * Settings.SIM_SPEED_RATIO);
+                    Cart.CurrentPlayer.Play(thing, customSpeed: 1 * RunningVars.SIM_SPEED_RATIO);
                 }
             }
             else
             {
                 
-                var thing = Cart.Position.MoveToward(NextVector, (float)delta * CART_SPEED * Settings.SIM_SPEED_RATIO);
+                var thing = Cart.Position.MoveToward(NextVector, (float)delta * CART_SPEED * RunningVars.SIM_SPEED_RATIO);
                 Cart.Position = thing;
             }
         }
@@ -416,7 +435,7 @@ namespace MagicalMountainMinery.Main
             if (AnimatedSprites?.Count > 0)
                 AnimatedSprites.Dequeue().QueueFree();
         }
-        public void Start(Color c, Dictionary<IConnectable, List<IConnectable>> conList, IndexPos StartDirection, Track startTrack)
+        public virtual void Start(Color c, Dictionary<IConnectable, List<IConnectable>> conList, IndexPos StartDirection, Track startTrack)
         {
 
             Connections = conList;
@@ -561,7 +580,7 @@ namespace MagicalMountainMinery.Main
                 CurrentConnection = startTrack;
                 var thing = (LastDirection.ToString().Split("_")[1]);
 
-                Cart.CurrentPlayer.Play(thing, customSpeed: Settings.SIM_SPEED_RATIO);
+                Cart.CurrentPlayer.Play(thing, customSpeed: RunningVars.SIM_SPEED_RATIO);
                 State = CartState.Moving;
             }
 
@@ -690,10 +709,14 @@ namespace MagicalMountainMinery.Main
                 if (mineable != null && IsInstanceValid(mineable) && !mineable.locked)
                 {
 
+                    //TODO make this more useful. It's currently here as an exception for level 1-3 tutorial
+                    if (mineable.ResourceSpawn.ResourceType == ResourceType.Ruby)
+                        EventDispatch.PushEventFlag(GameEventType.GemMined);
                     Cart.LastMinedIndex = Cart.CurrentIndex;
 
                     Cart.CurrentMiner.Mine(dex, mineable);
 
+                    EventDispatch.PushEventFlag(GameEventType.OreMineStart);
                     return;
                 }
             }
@@ -723,7 +746,7 @@ namespace MagicalMountainMinery.Main
 
                 var sprite2d = new Sprite2D()
                 {
-                    Texture = ResourceStore.Resources[newRes.ResourceType],
+                    Texture = ResourceStore.GetResTex(newRes.ResourceType),
                     Position = posO,
                     //ZIndex = 1,
                     //Scale = new Vector2(0.25f, 0.25f),
@@ -754,7 +777,7 @@ namespace MagicalMountainMinery.Main
                 }
                 else
                 {
-                    var amount = ((float)delta * SPRITE_SPEED * SIM_SPEED_RATIO);
+                    var amount = ((float)delta * SPRITE_SPEED * RunningVars.SIM_SPEED_RATIO);
                     var thing = entry.Key.Position.MoveToward(Cart.Position, amount);
                     var diff = thing - Cart.Position;
                     entry.Key.Position = thing;

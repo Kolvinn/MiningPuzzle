@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://71y3rvx1vugt"]
+
+[ext_resource type="FontFile" uid="uid://b52oyv2dsxkq6" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_compressed_bold.ttf" id="1_rbq7j"]
+[ext_resource type="Texture2D" uid="uid://cs3jnhm2v7drv" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Scrollbar_Handle_01.png" id="2_h48ne"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_v0x8q"]
+resource_local_to_scene = true
+font = ExtResource("1_rbq7j")
+font_size = 24
+outline_size = 8
+outline_color = Color(0.160784, 0.0745098, 0.184314, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kefiq"]
+atlas = ExtResource("2_h48ne")
+region = Rect2(12, 12, 8, 8)
+
+[node name="RegionBarNumber" type="VBoxContainer"]
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "1"
+label_settings = SubResource("LabelSettings_v0x8q")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Tex" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = SubResource("AtlasTexture_kefiq")
+expand_mode = 1
+stretch_mode = 5

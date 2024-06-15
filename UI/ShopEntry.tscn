@@ -1,13 +1,13 @@
-[gd_scene load_steps=19 format=3 uid="uid://ds8nbifrwu71h"]
+[gd_scene load_steps=16 format=3 uid="uid://ds8nbifrwu71h"]
 
 [ext_resource type="Texture2D" uid="uid://ckxesomrsqs14" path="res://Assets/UI/Kasaya's Frames/Inventory & chests/1/dialogues2.png" id="1_jn3nv"]
 [ext_resource type="Script" path="res://UI/ShopEntry.cs" id="2_4hqap"]
 [ext_resource type="Texture2D" uid="uid://by8d5w3jrplws" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Select_02a2.png" id="2_33083"]
 [ext_resource type="Texture2D" uid="uid://bnyuuxe5pvk4c" path="res://Assets/GameResource/Diamond.png" id="3_1keyc"]
-[ext_resource type="PackedScene" uid="uid://qru3r3tp0osm" path="res://UI/StarRect.tscn" id="4_sowom"]
 [ext_resource type="FontFile" uid="uid://d22bw0ao30uup" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_bold.ttf" id="5_85msq"]
 [ext_resource type="FontFile" uid="uid://byjdlexdr3rw3" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_compressed.ttf" id="6_m3lml"]
 [ext_resource type="FontFile" uid="uid://b52oyv2dsxkq6" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_compressed_bold.ttf" id="7_0rq4g"]
+[ext_resource type="Texture2D" uid="uid://ds05n02he8adt" path="res://Assets/UI/Lucid V1.2/PNG/Flat/160/Star.png" id="8_boucf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gde2t"]
 
@@ -42,33 +42,6 @@ font = ExtResource("6_m3lml")
 [sub_resource type="LabelSettings" id="LabelSettings_816kj"]
 font = ExtResource("7_0rq4g")
 font_size = 24
-
-[sub_resource type="Shader" id="Shader_r64i6"]
-code = "shader_type canvas_item;
-uniform bool filled; 
-uniform float alpha;
-void fragment() 
-{
-
-	
-	if(filled && COLOR.r > 0.8)
-	{
-		COLOR.a = alpha;
-	}
-	COLOR.rgb = COLOR.rgb * 1.25;
-	
-}
-"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rb5uq"]
-resource_local_to_scene = true
-shader = SubResource("Shader_r64i6")
-shader_parameter/filled = true
-shader_parameter/alpha = 0.0
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_tyy04"]
-resource_local_to_scene = true
-load_path = "res://.godot/imported/icons8-pixel-star-30.png-3d24435608bef9cf06786dd70d7c38d5.ctex"
 
 [node name="PanelContainer" type="PanelContainer"]
 offset_right = 440.0
@@ -124,10 +97,12 @@ text = "4"
 label_settings = SubResource("LabelSettings_816kj")
 vertical_alignment = 2
 
-[node name="TextureRect2" parent="HBoxContainer/HBoxContainer" instance=ExtResource("4_sowom")]
-material = SubResource("ShaderMaterial_rb5uq")
+[node name="Star" type="TextureRect" parent="HBoxContainer/HBoxContainer"]
+self_modulate = Color(0.996078, 0.784314, 0.215686, 1)
+custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
-texture = SubResource("CompressedTexture2D_tyy04")
+texture = ExtResource("8_boucf")
+expand_mode = 1
 stretch_mode = 5
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

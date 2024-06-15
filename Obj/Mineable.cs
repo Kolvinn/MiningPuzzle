@@ -18,7 +18,7 @@ public partial class Mineable : Sprite2D, IGameObject, ISaveable
 
     public Sprite2D HardnessIcon { get; set; }
 
-    public Label ResourceLabel { get => resLabel; set => resLabel = value; }
+    private Label ResourceLabel;
 
     private Label resLabel = null;
     public IndexPos Index { get; set; }
@@ -26,7 +26,8 @@ public partial class Mineable : Sprite2D, IGameObject, ISaveable
     public override void _Ready()
     {
 
-        this.Texture = ResourceStore.Mineables[Type];
+        if(ResourceStore.Mineables.ContainsKey(Type))
+            this.Texture = ResourceStore.Mineables[Type];
         //CanvasLayer canvas = new CanvasLayer();
         //this.AddChild(canvas);
         //canvas.Visible = true;
@@ -65,7 +66,7 @@ public partial class Mineable : Sprite2D, IGameObject, ISaveable
         else if (this.Type == MineableType.Gold)
             Hardness = 2;
 
-        var list = new List<MineableType>() { MineableType.Copper, MineableType.Iron };
+        var list = new List<MineableType>() { MineableType.Copper, MineableType.Iron, MineableType.Stone };
 
         //if (Hardness > 0)
         //{
@@ -76,6 +77,8 @@ public partial class Mineable : Sprite2D, IGameObject, ISaveable
         //}
         this.Texture = ResourceStore.Mineables[Type];
         ResourceLabel.Text = this.ResourceSpawn?.Amount.ToString();
+        ResourceLabel.Visible  = list.Contains(Type);
+
     }
     public virtual List<string> GetSaveRefs()
     {
@@ -99,6 +102,11 @@ public partial class Mineable : Sprite2D, IGameObject, ISaveable
     public void _on_area_2d_mouse_entered()
     {
         EventDispatch.Entered(this);
+    }
+
+    public override void _ExitTree()
+    {
+        
     }
 
 

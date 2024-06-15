@@ -12,6 +12,8 @@ namespace MagicalMountainMinery.Design
     public partial class ObjectTextEdit : TextEdit
     {
         public static bool IS_FOCUS = false;
+
+        public object ObjRef { get; set; }
         public override void _Ready()
         {
             this.Connect(SignalName.TextChanged, Callable.From(OnTextChanged));
@@ -19,8 +21,9 @@ namespace MagicalMountainMinery.Design
             this.Connect(SignalName.FocusEntered, Callable.From(OnFocus));
             this.CustomMinimumSize = this.Size = new Vector2(64, 64);
             this.Set("theme_override_font_sizes/font_size", 16);
-            this.Position = new(-32, -32);
+            this.Position += new Vector2(-32, -32);
             this.MouseFilter = MouseFilterEnum.Stop;
+            this.Name = "textEdit";
         }
         public void OnFocusExit()
         {
@@ -32,15 +35,16 @@ namespace MagicalMountainMinery.Design
         {
             IS_FOCUS = true;
             var rent = this.GetParent();
-            if(rent is LevelTarget levelTarget)
-                    this.Size = new Vector2(100, 50);
+            if(ObjRef is LevelTarget levelTarget)
+                    this.Size = new Vector2(300, 150);
         }
+
         public LevelTarget ConvertToTarget()
         {
-            var rent = this.GetParent();
+            var rent = ObjRef as LevelTarget;
             if (rent is LevelTarget levelTarget)
             {
-                var newT = new LevelTarget();
+                var newT = Runner.LoadScene<LevelTarget>("res://Obj/Target.tscn");
                 newT.Index = levelTarget.Index;
                 newT.Position = levelTarget.Position;
 
@@ -51,13 +55,17 @@ namespace MagicalMountainMinery.Design
                 //levelTarget.Batches.Clear();
                 for (int i = 0; i < array.Length; i++)
                 {
-                    DoTarget(array[0].Split(' ').ToList(), newT, i);
+                    if (string.IsNullOrEmpty(array[i]) || string.IsNullOrWhiteSpace(array[i]))
+                        continue;
+                    DoTarget(array[i].Split(' ').ToList(), newT, i);
                 }
 
                 return newT;
             }
             return null;
         }
+
+
         public void DoTarget(List<string> entries, LevelTarget target, int index)
         {
             ResourceType parsedEnumValue = ResourceType.Stone;
@@ -107,8 +115,8 @@ namespace MagicalMountainMinery.Design
 
             try
             {
-                var rent = this.GetParent();
-                if (rent is Mineable mine)
+                var rent = ObjRef;
+                if (rent is Mineable mine && !string.IsNullOrEmpty(this.Text))
                 {
                     mine.ResourceSpawn.Amount = int.Parse(this.Text);
 

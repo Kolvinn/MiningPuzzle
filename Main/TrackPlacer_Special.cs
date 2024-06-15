@@ -11,12 +11,13 @@ namespace MagicalMountainMinery.Main
     public partial class TrackPlacer
     {
         public bool HandleSpecial { get; set; } = false;
-        public Label SpecialLabel { get; set; }
 
         public Mineable focus { get; set; } = null;
 
         public List<GameResource> GemCopy { get; set; } = new List<GameResource>();
         public Runner.GemUsedDelegate GemUsed { get; internal set; }
+
+        public ResIcon SelectedIcon { get; set; }
 
         /// <summary>
         /// means different things depending on which resource interactions are being handled.
@@ -32,37 +33,21 @@ namespace MagicalMountainMinery.Main
 
         public void HandleSpecialInteraction(EventType env, IUIComponent comp, IGameObject interactable)
         {
-            var undo = env == EventType.Right_Action || env == EventType.Escape;
-            if (Special == ResourceType.Ruby)
+            var undo = env == EventType.Right_Action; //|| env == EventType.Escape;
+
+            if (undo)
             {
-                if (undo)
-                {
-                    UndoMoveNode();
-                }
-                else
-                    HandleMoveNode(env, comp, interactable);
+                Undo();
             }
+            else if (Special == ResourceType.Ruby)
+                HandleMoveNode(env, comp, interactable);
             else if (Special == ResourceType.Diamond)
-            {
-                if (undo)
-                    UndoChangeAmount();
-                else
-                    HandleChangeAmount(env, comp, interactable);
-            }
+                HandleChangeAmount(env, comp, interactable);
             else if (Special == ResourceType.Emerald)
-            {
-                if (undo)
-                    UndoChangeAmount();
-                else
-                    HandleDelete(env, comp, interactable);
-            }
+                HandleDelete(env, comp, interactable);
             else if (Special == ResourceType.Amethyst)
-            {
-                if (undo)
-                    UndoChangeType();
-                else
-                    HandleChangeType(env, comp, interactable);
-            }
+                HandleChangeType(env, comp, interactable);
+
         }
 
         public void HandleMoveNode(EventType env, IUIComponent comp, IGameObject interactable)
@@ -70,8 +55,8 @@ namespace MagicalMountainMinery.Main
             //wait on click of mine
             if (internalStateCount == 0)
             {
-                SpecialLabel.Visible = true;
-                SpecialLabel.Text = "Select an ore node to move...";
+                SpecialNodeLabel.Visible = true;
+                SpecialNodeLabel.Text = "Select an ore node to move...";
                 internalStateCount++;
             }
             else if (internalStateCount == 1)
@@ -94,7 +79,7 @@ namespace MagicalMountainMinery.Main
                         mine.GetNode<Control>("Arrows/" + text).Visible = true;
                     }
 
-                    SpecialLabel.Visible = false;
+                    SpecialNodeLabel.Visible = false;
                     focus = mine;
                     internalStateCount++;
                 }
@@ -138,30 +123,30 @@ namespace MagicalMountainMinery.Main
 
 
         }
-        public void UndoMoveNode()
-        {
-            if (internalStateCount == 1)
-            {
-                MineMoveFinished();
-                EventDispatch.ClearUIQueue();
-            }
-            else if (internalStateCount == 2)
-            {
-                SpecialLabel.Visible = true;
-                focus.GetNode<Control>("Arrows").Visible = false;
-                focus = null;
-                internalStateCount--;
-                EventDispatch.ClearUIQueue();
-            }
+        //public void UndoMoveNode()
+        //{
+        //    if (internalStateCount == 1)
+        //    {
+        //        MineMoveFinished();
+        //        EventDispatch.ClearUIQueue();
+        //    }
+        //    else if (internalStateCount == 2)
+        //    {
+        //        SpecialNodeLabel.Visible = true;
+        //        focus.GetNode<Control>("Arrows").Visible = false;
+        //        focus = null;
+        //        internalStateCount--;
+        //        EventDispatch.ClearUIQueue();
+        //    }
 
 
-        }
+        //}
         public void HandleChangeAmount(EventType env, IUIComponent comp, IGameObject interactable)
         {
             if (internalStateCount == 0)
             {
-                SpecialLabel.Visible = true;
-                SpecialLabel.Text = "Select a node to modify...";
+                SpecialNodeLabel.Visible = true;
+                SpecialNodeLabel.Text = "Select a node to modify...";
                 internalStateCount++;
             }
             else if (internalStateCount == 1)
@@ -203,30 +188,30 @@ namespace MagicalMountainMinery.Main
 
         }
 
-        public void UndoChangeAmount()
-        {
-            if (internalStateCount == 1)
-            {
-                MineMoveFinished();
-                EventDispatch.ClearUIQueue();
-            }
-            else if (internalStateCount == 2)
-            {
-                SpecialLabel.Visible = true;
-                focus.GetNode<Control>("Numbers").Visible = false;
-                focus = null;
-                internalStateCount--;
-                EventDispatch.ClearUIQueue();
-            }
-        }
+        //public void UndoChangeAmount()
+        //{
+        //    if (internalStateCount == 1)
+        //    {
+        //        MineMoveFinished();
+        //        EventDispatch.ClearUIQueue();
+        //    }
+        //    else if (internalStateCount == 2)
+        //    {
+        //        SpecialNodeLabel.Visible = true;
+        //        focus.GetNode<Control>("Numbers").Visible = false;
+        //        focus = null;
+        //        internalStateCount--;
+        //        EventDispatch.ClearUIQueue();
+        //    }
+        //}
 
 
         public void HandleChangeType(EventType env, IUIComponent comp, IGameObject interactable)
         {
             if (internalStateCount == 0)
             {
-                SpecialLabel.Visible = true;
-                SpecialLabel.Text = "Select a node to modify...";
+                SpecialNodeLabel.Visible = true;
+                SpecialNodeLabel.Text = "Select a node to modify...";
                 internalStateCount++;
             }
             else if (internalStateCount == 1)
@@ -246,7 +231,7 @@ namespace MagicalMountainMinery.Main
                 if (env == EventType.Left_Action && comp != null)
                 {
                     MineableType type;
-                    var obj = ResourceStore.GetEnumType(comp.UIID, typeof(MineableType));
+                    var obj = DataFunc.GetEnumType(comp.UIID, typeof(MineableType));
                     if (obj != null)
                     {
                         focus.Type = (MineableType)obj;
@@ -265,28 +250,53 @@ namespace MagicalMountainMinery.Main
             }
 
         }
-        public void UndoChangeType()
+
+        public void Undo()
         {
+            
             if (internalStateCount == 1)
             {
                 MineMoveFinished();
                 EventDispatch.ClearUIQueue();
+                SelectedIcon.Selected = SelectedIcon.HoverContainer.Visible = false;
+                SelectedIcon = null;
             }
             else if (internalStateCount == 2)
             {
-                SpecialLabel.Visible = true;
+                SpecialNodeLabel.Visible = true;
+
+                focus.GetNode<Control>("Numbers").Visible = false;
                 focus.GetNode<Control>("OreTypes").Visible = false;
+                focus.GetNode<Control>("Arrows").Visible = false;
                 focus = null;
                 internalStateCount--;
                 EventDispatch.ClearUIQueue();
             }
         }
+
+        //public void UndoChangeType()
+        //{
+        //    if (internalStateCount == 1)
+        //    {
+        //        MineMoveFinished();
+        //        EventDispatch.ClearUIQueue();
+                
+        //    }
+        //    else if (internalStateCount == 2)
+        //    {
+        //        SpecialNodeLabel.Visible = true;
+        //        focus.GetNode<Control>("OreTypes").Visible = false;
+        //        focus = null;
+        //        internalStateCount--;
+        //        EventDispatch.ClearUIQueue();
+        //    }
+        //}
         public void HandleDelete(EventType env, IUIComponent comp, IGameObject interactable)
         {
             if (internalStateCount == 0)
             {
-                SpecialLabel.Visible = true;
-                SpecialLabel.Text = "Select a node to delete...";
+                SpecialNodeLabel.Visible = true;
+                SpecialNodeLabel.Text = "Select a node to delete...";
                 internalStateCount++;
             }
             else if (internalStateCount == 1)
@@ -308,12 +318,15 @@ namespace MagicalMountainMinery.Main
             var res = new GameResource() { ResourceType = Special, Amount = 1 };
             GemCopy.Add(res);
             GemUsed(res);
+
+            SelectedIcon.Selected =  SelectedIcon.HoverContainer.Visible = false;
+            SelectedIcon = null;
         }
 
         public void MineMoveFinished()
         {
 
-            SpecialLabel.Visible = false;
+            SpecialNodeLabel.Visible = false;
             PauseHandle = false;
             focus = null;
             HandleSpecial = false;

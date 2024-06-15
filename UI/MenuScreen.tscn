@@ -1,25 +1,102 @@
-[gd_scene load_steps=10 format=3 uid="uid://caxy0l7ayp7qd"]
+[gd_scene load_steps=23 format=3 uid="uid://caxy0l7ayp7qd"]
 
 [ext_resource type="Script" path="res://UI/StartMenu.cs" id="1_iv03y"]
-[ext_resource type="Texture2D" uid="uid://b5bm17ugphuxt" path="res://Assets/UI/Menu Buttons/Large Buttons/Large Buttons/Settings Button.png" id="3_tnai5"]
+[ext_resource type="Texture2D" uid="uid://blr7spe10v1b7" path="res://Assets/UI/BackgroundEdit2.png" id="2_yvchn"]
 [ext_resource type="Script" path="res://UI/GameButton.cs" id="4_qvesj"]
 [ext_resource type="FontFile" uid="uid://cipymmhxrwq2p" path="res://Assets/Fonts/Pixel/Stepalange-x3BLm.otf" id="6_pe7j7"]
-[ext_resource type="Texture2D" uid="uid://o3jbons17n21" path="res://Assets/UI/Menu Buttons/Large Buttons/Large Buttons/Play Button.png" id="71_oga2n"]
-[ext_resource type="Texture2D" uid="uid://cqojfkr62dofh" path="res://Assets/UI/Menu Buttons/Large Buttons/Large Buttons/Quit Button.png" id="73_5jbu0"]
+[ext_resource type="Texture2D" uid="uid://b5f25hwbxci4v" path="res://Assets/UI/CatGifNoBackground.png" id="9_2hikb"]
+[ext_resource type="FontFile" uid="uid://d22bw0ao30uup" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_bold.ttf" id="12_qa0gp"]
+[ext_resource type="Texture2D" uid="uid://colbycgg5g22k" path="res://Assets/UI/Lucid V1.2/Spritesheet/Shadow/32/IconsShadow-32.png" id="13_2dhy2"]
+[ext_resource type="Texture2D" uid="uid://c7nbybyqmf2ed" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Button_Medium_Lock_02a1.png" id="14_uxoni"]
 [ext_resource type="Texture2D" uid="uid://cty3fuac4410f" path="res://Assets/UI/Mining_Gear_NPC.png" id="74_7csa3"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_x8lsu"]
+font = ExtResource("12_qa0gp")
+font_size = 32
+outline_size = 15
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p5fua"]
+atlas = ExtResource("13_2dhy2")
+region = Rect2(6, 194, 18, 28)
+
+[sub_resource type="LabelSettings" id="LabelSettings_klo8k"]
+font = ExtResource("12_qa0gp")
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_v1iem"]
 font = ExtResource("6_pe7j7")
 font_size = 128
 outline_size = 20
 outline_color = Color(0.247059, 0.247059, 0.247059, 1)
-shadow_color = Color(0.717647, 0, 0, 0)
+shadow_size = 10
+shadow_color = Color(0, 0, 0, 0.741176)
+shadow_offset = Vector2(0, 10)
 
-[sub_resource type="LabelSettings" id="LabelSettings_7onnf"]
-font = ExtResource("6_pe7j7")
-font_size = 32
-outline_size = 10
-outline_color = Color(0.313726, 0.313726, 0.313726, 1)
+[sub_resource type="AtlasTexture" id="AtlasTexture_s1jhm"]
+atlas = ExtResource("9_2hikb")
+region = Rect2(0, 0, 320, 180)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1ccny"]
+atlas = ExtResource("9_2hikb")
+region = Rect2(320, 0, 320, 180)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_35xqt"]
+atlas = ExtResource("9_2hikb")
+region = Rect2(640, 0, 320, 180)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pwgvv"]
+atlas = ExtResource("9_2hikb")
+region = Rect2(960, 0, 320, 180)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sxslp"]
+atlas = ExtResource("9_2hikb")
+region = Rect2(1280, 0, 320, 180)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gdflb"]
+atlas = ExtResource("9_2hikb")
+region = Rect2(1600, 0, 320, 180)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ml46g"]
+atlas = ExtResource("9_2hikb")
+region = Rect2(1920, 0, 320, 180)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7s2rt"]
+atlas = ExtResource("9_2hikb")
+region = Rect2(2240, 0, 320, 180)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_df7l6"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s1jhm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1ccny")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_35xqt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pwgvv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sxslp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gdflb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ml46g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7s2rt")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="StartMenu" type="Node2D"]
 script = ExtResource("1_iv03y")
@@ -35,7 +112,26 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="BackgroundStatic" type="TextureRect" parent="CanvasLayer/Control"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_yvchn")
+
+[node name="BackgroundTex" type="TextureRect" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="Background" type="Control" parent="CanvasLayer/Control"]
+visible = false
 texture_filter = 1
 layout_mode = 1
 anchors_preset = 15
@@ -52,44 +148,359 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 76.0
-offset_top = -371.0
-offset_right = 313.0
-offset_bottom = -54.0
+offset_left = 75.0
+offset_top = -350.0
+offset_right = 385.0
+offset_bottom = -35.0
 grow_vertical = 0
 mouse_filter = 2
 theme_override_constants/separation = 6
 
-[node name="Play" type="TextureButton" parent="CanvasLayer/Control/VBoxContainer"]
-texture_filter = 1
+[node name="Continue" type="Label" parent="CanvasLayer/Control/VBoxContainer"]
+visible = false
 layout_mode = 2
-size_flags_vertical = 3
-texture_normal = ExtResource("71_oga2n")
-ignore_texture_size = true
-stretch_mode = 5
-metadata/_edit_lock_ = true
+text = "Continue"
+label_settings = SubResource("LabelSettings_x8lsu")
 
-[node name="TextureButton2" type="TextureButton" parent="CanvasLayer/Control/VBoxContainer"]
-texture_filter = 1
-layout_mode = 2
-size_flags_vertical = 3
-texture_normal = ExtResource("3_tnai5")
+[node name="TextureButton" type="TextureButton" parent="CanvasLayer/Control/VBoxContainer/Continue"]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("14_uxoni")
 ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_qvesj")
+UIID = "Continue"
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/VBoxContainer"]
+layout_mode = 2
+text = "Start"
+label_settings = SubResource("LabelSettings_x8lsu")
+
+[node name="Arrow" type="TextureRect" parent="CanvasLayer/Control/VBoxContainer/Label"]
+layout_mode = 0
+offset_left = -47.0
+offset_top = 13.0
+offset_right = -11.0
+offset_bottom = 47.0
+texture = SubResource("AtlasTexture_p5fua")
 stretch_mode = 5
+
+[node name="TextureButton" type="TextureButton" parent="CanvasLayer/Control/VBoxContainer/Label"]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("14_uxoni")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_qvesj")
+UIID = "Start"
+
+[node name="Label2" type="Label" parent="CanvasLayer/Control/VBoxContainer"]
+layout_mode = 2
+text = "Settings"
+label_settings = SubResource("LabelSettings_x8lsu")
+
+[node name="TextureButton" type="TextureButton" parent="CanvasLayer/Control/VBoxContainer/Label2"]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("14_uxoni")
+ignore_texture_size = true
+stretch_mode = 0
 script = ExtResource("4_qvesj")
 UIID = "Settings"
-metadata/_edit_lock_ = true
 
-[node name="Quit" type="TextureButton" parent="CanvasLayer/Control/VBoxContainer"]
-texture_filter = 1
+[node name="Label5" type="Label" parent="CanvasLayer/Control/VBoxContainer"]
+self_modulate = Color(1, 1, 1, 0.301961)
 layout_mode = 2
-size_flags_vertical = 3
-texture_normal = ExtResource("73_5jbu0")
+text = "Credits"
+label_settings = SubResource("LabelSettings_x8lsu")
+
+[node name="TextureButton" type="TextureButton" parent="CanvasLayer/Control/VBoxContainer/Label5"]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+texture_normal = ExtResource("14_uxoni")
 ignore_texture_size = true
-stretch_mode = 5
-metadata/_edit_lock_ = true
+stretch_mode = 0
+script = ExtResource("4_qvesj")
+UIID = "Credits"
+
+[node name="Label3" type="Label" parent="CanvasLayer/Control/VBoxContainer"]
+layout_mode = 2
+text = "Quit"
+label_settings = SubResource("LabelSettings_x8lsu")
+
+[node name="TextureButton" type="TextureButton" parent="CanvasLayer/Control/VBoxContainer/Label3"]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("14_uxoni")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_qvesj")
+UIID = "Quit"
+
+[node name="StartBox" type="VBoxContainer" parent="CanvasLayer/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 75.0
+offset_top = -350.0
+offset_right = 385.0
+offset_bottom = -35.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="Continue" type="Label" parent="CanvasLayer/Control/StartBox"]
+visible = false
+layout_mode = 2
+text = "Continue"
+label_settings = SubResource("LabelSettings_x8lsu")
+
+[node name="TextureButton" type="TextureButton" parent="CanvasLayer/Control/StartBox/Continue"]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("14_uxoni")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_qvesj")
+UIID = "Continue"
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/StartBox"]
+layout_mode = 2
+text = "New Game"
+label_settings = SubResource("LabelSettings_x8lsu")
+
+[node name="TextureButton" type="TextureButton" parent="CanvasLayer/Control/StartBox/Label"]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("14_uxoni")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_qvesj")
+UIID = "New Game"
+
+[node name="Label2" type="Label" parent="CanvasLayer/Control/StartBox"]
+self_modulate = Color(1, 1, 1, 0.368627)
+layout_mode = 2
+text = "Load Game"
+label_settings = SubResource("LabelSettings_x8lsu")
+
+[node name="TextureButton" type="TextureButton" parent="CanvasLayer/Control/StartBox/Label2"]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+texture_normal = ExtResource("14_uxoni")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_qvesj")
+UIID = "Load Game"
+
+[node name="Label5" type="Label" parent="CanvasLayer/Control/StartBox"]
+layout_mode = 2
+text = "Back"
+label_settings = SubResource("LabelSettings_x8lsu")
+
+[node name="TextureButton" type="TextureButton" parent="CanvasLayer/Control/StartBox/Label5"]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("14_uxoni")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_qvesj")
+UIID = "Back"
+
+[node name="NewGame" type="VBoxContainer" parent="CanvasLayer/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 75.0
+offset_top = -350.0
+offset_right = 951.0
+offset_bottom = -42.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="Relaxed" type="HBoxContainer" parent="CanvasLayer/Control/NewGame"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_constants/separation = 70
+
+[node name="Label4" type="Label" parent="CanvasLayer/Control/NewGame/Relaxed"]
+self_modulate = Color(1, 1, 1, 0.337255)
+layout_mode = 2
+text = "Relaxed"
+label_settings = SubResource("LabelSettings_x8lsu")
+
+[node name="TextureButton" type="TextureButton" parent="CanvasLayer/Control/NewGame/Relaxed/Label4"]
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+texture_normal = ExtResource("14_uxoni")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_qvesj")
+UIID = "Relaxed"
+
+[node name="Desc" type="Label" parent="CanvasLayer/Control/NewGame/Relaxed"]
+visible = false
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "- Low level of randomness,  
+- Most levels can be completed without intervention
+"
+label_settings = SubResource("LabelSettings_klo8k")
+vertical_alignment = 1
+
+[node name="Adventure" type="HBoxContainer" parent="CanvasLayer/Control/NewGame"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+
+[node name="Label4" type="Label" parent="CanvasLayer/Control/NewGame/Adventure"]
+layout_mode = 2
+text = "Adventure"
+label_settings = SubResource("LabelSettings_x8lsu")
+
+[node name="TextureButton" type="TextureButton" parent="CanvasLayer/Control/NewGame/Adventure/Label4"]
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("14_uxoni")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_qvesj")
+UIID = "Adventure"
+
+[node name="Desc" type="Label" parent="CanvasLayer/Control/NewGame/Adventure"]
+visible = false
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "- A larger range of randomness.
+- A lot of levels will require intervention
+"
+label_settings = SubResource("LabelSettings_klo8k")
+vertical_alignment = 1
+
+[node name="Hellish" type="HBoxContainer" parent="CanvasLayer/Control/NewGame"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_constants/separation = 100
+
+[node name="Label4" type="Label" parent="CanvasLayer/Control/NewGame/Hellish"]
+self_modulate = Color(1, 1, 1, 0.337255)
+layout_mode = 2
+text = "Hellish"
+label_settings = SubResource("LabelSettings_x8lsu")
+
+[node name="TextureButton" type="TextureButton" parent="CanvasLayer/Control/NewGame/Hellish/Label4"]
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -4.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+texture_normal = ExtResource("14_uxoni")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_qvesj")
+UIID = "Hellish"
+
+[node name="Desc" type="Label" parent="CanvasLayer/Control/NewGame/Hellish"]
+visible = false
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "- A massive range of randomness.
+- Depending on seed, it's possible it's unachievable!
+"
+label_settings = SubResource("LabelSettings_klo8k")
+vertical_alignment = 1
+
+[node name="Label5" type="Label" parent="CanvasLayer/Control/NewGame"]
+layout_mode = 2
+text = "Back"
+label_settings = SubResource("LabelSettings_x8lsu")
+
+[node name="TextureButton" type="TextureButton" parent="CanvasLayer/Control/NewGame/Label5"]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("14_uxoni")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_qvesj")
+UIID = "Back"
 
 [node name="MiningGearNpc" type="Sprite2D" parent="CanvasLayer/Control"]
+visible = false
 texture_filter = 1
 position = Vector2(628.038, 560.922)
 scale = Vector2(0.501524, 0.559947)
@@ -111,68 +522,20 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -207.0
-offset_top = 30.0
-offset_right = 207.0
-offset_bottom = 155.0
+offset_left = -394.0
+offset_top = 51.0
+offset_right = 394.0
+offset_bottom = 298.0
 grow_horizontal = 2
-text = "Journey "
+text = "Mellon's Mining
+Adventure"
 label_settings = SubResource("LabelSettings_v1iem")
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="Label2" type="Label" parent="CanvasLayer/Control/Control2"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -37.0
-offset_top = 146.0
-offset_right = 42.0
-offset_bottom = 180.0
-grow_horizontal = 2
-text = "To The "
-label_settings = SubResource("LabelSettings_7onnf")
-
-[node name="Label3" type="Label" parent="CanvasLayer/Control/Control2"]
-texture_filter = 1
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -322.0
-offset_top = 146.0
-offset_right = -21.0
-offset_bottom = 271.0
-grow_horizontal = 2
-text = "Center"
-label_settings = SubResource("LabelSettings_v1iem")
-
-[node name="Label4" type="Label" parent="CanvasLayer/Control/Control2"]
-texture_filter = 1
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 39.0
-offset_top = 147.0
-offset_right = 340.0
-offset_bottom = 272.0
-grow_horizontal = 2
-text = "Mines"
-label_settings = SubResource("LabelSettings_v1iem")
-
-[node name="Label5" type="Label" parent="CanvasLayer/Control/Control2"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -15.0
-offset_top = 179.0
-offset_right = 64.0
-offset_bottom = 247.0
-grow_horizontal = 2
-text = "Of
-The"
-label_settings = SubResource("LabelSettings_7onnf")
-
-[connection signal="pressed" from="CanvasLayer/Control/VBoxContainer/Play" to="." method="_on_play_pressed"]
-[connection signal="pressed" from="CanvasLayer/Control/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+visible = false
+position = Vector2(-182, -51)
+sprite_frames = SubResource("SpriteFrames_df7l6")
+frame = 1
+frame_progress = 0.0497624

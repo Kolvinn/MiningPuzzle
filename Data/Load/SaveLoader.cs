@@ -191,7 +191,7 @@ namespace MagicalMountainMinery.Data.Load
             }
             catch (Exception e)
             {
-                GD.Print("EXCEPTION");
+                GD.PrintErr(e);
                 returnValue = o;
             }
             return returnValue;
@@ -308,7 +308,7 @@ namespace MagicalMountainMinery.Data.Load
             }
             catch (Exception e)
             {
-                GD.Print("EXCEPTION: ");
+                GD.PrintErr(e);
                 return json;
             }
             return returnValue;
@@ -346,7 +346,7 @@ namespace MagicalMountainMinery.Data.Load
             }
             else if (typeof(Enum).IsInstanceOfType(value))
             {
-                o = ResourceStore.GetEnumType(value.ToString(), fieldObject.GetType());
+                o = DataFunc.GetEnumType(value.ToString(), fieldObject.GetType());
             }
             //else if (typeof(Vec2).IsInstanceOfType(value))
             //{
@@ -462,7 +462,7 @@ namespace MagicalMountainMinery.Data.Load
                     {
                         if (o is string)
                         {
-                            var obj = ResourceStore.GetEnumType(o as string, p.PropertyType);
+                            var obj = DataFunc.GetEnumType(o as string, p.PropertyType);
                             if (obj != null)
                                 o = obj;
                         }
