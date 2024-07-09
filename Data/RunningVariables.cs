@@ -16,5 +16,8 @@ namespace MagicalMountainMinery.Data
 
         public float CAMERA_ZOOM { get; set; } = 1f;
 
+        public bool SHOW_GRID { get; set; } = true;
+        public bool SHOW_MINEABLES { get; set; } = true;
+
     }
 }

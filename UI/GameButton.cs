@@ -46,7 +46,6 @@ public partial class GameButton : TextureButton, IUIComponent
 
     public virtual void OnEnter()
     {
-        GD.Print("entered ", this.Name);
         if (!this.Disabled)
             EventDispatch.HoverUI(this);
     }

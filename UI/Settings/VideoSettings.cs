@@ -11,6 +11,7 @@ public partial class VideoSettings : HBoxContainer
     public delegate void WindowModeChangeEventHandler(int index);
     [Signal]
     public delegate void ResolutionChangeEventHandler(int index);
+    
     public override void _Ready()
 	{
         ResolutionSelect = this.GetNode<OptionButton>("Labels2/OptionButton");

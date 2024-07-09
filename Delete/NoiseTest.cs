@@ -238,7 +238,7 @@ public partial class NoiseTest : Node2D
 
         
     }
-    public void Reset()
+    public virtual void Reset()
     {
         if(Node != null && IsInstanceValid(Node))
         {
@@ -254,7 +254,7 @@ public partial class NoiseTest : Node2D
         map.ClearLayer(1);
 
     }
-	public void ReGenMap()
+	public virtual void ReGenMap()
 	{
 
         MapLevel.RemoveChild(Node);
@@ -267,7 +267,7 @@ public partial class NoiseTest : Node2D
         DoEnv();
     }
 
-    public void DoEnv()
+    public virtual void DoEnv()
 	{
 		var startX = -WholeWidth/2;
 		var startY = -WholeHeight/2;

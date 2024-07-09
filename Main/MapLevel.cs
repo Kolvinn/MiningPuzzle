@@ -103,7 +103,8 @@ namespace MagicalMountainMinery.Main
                 Modulate = Colors.AliceBlue,
                 Width = 1.5f,
                 TextureMode = Line2D.LineTextureMode.Tile,
-                Texture = ResourceLoader.Load<Texture2D>("res://Assets/linesprite.png") 
+                Texture = ResourceLoader.Load<Texture2D>("res://Assets/linesprite.png") ,
+                Visible = Settings.RunningVars.SHOW_GRID
             };
 
 
@@ -125,7 +126,8 @@ namespace MagicalMountainMinery.Main
                         boxLine = new Line2D()
                         {
                             Modulate = Colors.AliceBlue,
-                            Width = 1.4f
+                            Width = 1.4f,
+                            Visible = Settings.RunningVars.SHOW_GRID
                         };
 
                         this.AddChild(boxLine);
@@ -391,6 +393,9 @@ namespace MagicalMountainMinery.Main
                 return mine;
             return null;
         }
+
+    
+        
         public bool CanPlaceTrack(int level)
         {
             if (level == 1 && CurrentTracks < AllowedTracks)

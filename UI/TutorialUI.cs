@@ -186,7 +186,8 @@ public partial class TutorialUI : Control
 
     public bool IsPlacer()
     {
-        return Region == "Tutorial Valley" && CurrentSubIndex == 1 && CurrentLevelControl?.Name == "0";
+        return (Region == "Tutorial Valley" && CurrentSubIndex == 1 && CurrentLevelControl?.Name == "0")
+            || (Region == "Lonely Mountain" && CurrentSubIndex == 1 && CurrentLevelControl?.Name == "0");
     }
     public void Reset()
     {

@@ -222,6 +222,8 @@ offset_bottom = 102.0
 texture = ExtResource("12_rf5jj")
 expand_mode = 1
 script = ExtResource("13_2tjbo")
+OriginY = 65.0
+AttachedObjectPath = "CanvasLayer/NavBar/PanelContainer/Left/MiningStart"
 
 [node name="4" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/0/0"]
 visible = false
@@ -243,7 +245,7 @@ theme_override_fonts/normal_font = ExtResource("7_e1odu")
 theme_override_font_sizes/normal_font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
 bbcode_enabled = true
-text = "Melon will automatically mine one ore node per square. The number show is the ore amount that is received."
+text = "Melon will automatically mine one ore node per square. The number shown is the ore amount that is received."
 fit_content = true
 script = ExtResource("9_4btf7")
 EntryTrigger = 12
@@ -427,14 +429,16 @@ PauseHandle = true
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer/TutorialLayer/0/3/3"]
 top_level = true
 custom_minimum_size = Vector2(18, 18)
-layout_mode = 0
-offset_left = 735.0
-offset_top = 58.0
-offset_right = 775.0
-offset_bottom = 98.0
+layout_mode = 1
+offset_left = 736.0
+offset_top = 63.0
+offset_right = 776.0
+offset_bottom = 103.0
 texture = ExtResource("12_rf5jj")
 expand_mode = 1
 script = ExtResource("13_2tjbo")
+OriginY = 65.0
+AttachedObjectPath = "CanvasLayer/NavBar/PanelContainer/Middle/Right/Shop"
 
 [node name="4" type="Control" parent="CanvasLayer/TutorialLayer/0"]
 visible = false
@@ -580,7 +584,6 @@ script = ExtResource("9_4btf7")
 ShadowBackground = true
 
 [node name="2" type="Control" parent="CanvasLayer/TutorialLayer"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -590,7 +593,6 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="0" type="Control" parent="CanvasLayer/TutorialLayer/2"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -618,7 +620,11 @@ theme_override_fonts/normal_font = ExtResource("7_e1odu")
 theme_override_font_sizes/normal_font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
 bbcode_enabled = true
-text = "Oh dear, two targets and one cart, how will your poor human mind cope!"
+text = "Oh dear, two targets and one cart, how tough!
+
+No matter, I've modified the Cart such that it will not stop until the level is completed. 
+
+However, you will need junctions!"
 fit_content = true
 script = ExtResource("9_4btf7")
 ShadowBackground = true
@@ -631,8 +637,32 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -640.0
-offset_top = -222.0
+offset_left = -833.0
+offset_top = -168.0
+offset_right = -170.0
+offset_bottom = -30.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("7_e1odu")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
+bbcode_enabled = true
+text = "To create a junction, simply drag a track that is connected on both sides, onto another unconnected track."
+fit_content = true
+script = ExtResource("9_4btf7")
+ExitTrigger = 5
+
+[node name="3" type="RichTextLabel" parent="CanvasLayer/TutorialLayer/2/0"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -932.0
+offset_top = -185.0
 offset_right = -175.0
 offset_bottom = -45.0
 grow_horizontal = 0
@@ -642,10 +672,11 @@ theme_override_fonts/normal_font = ExtResource("7_e1odu")
 theme_override_font_sizes/normal_font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxTexture_0ifcb")
 bbcode_enabled = true
-text = "No matter, I've modified the Cart such that it will not stop until the level is completed. But know that a level target will consume ALL ORE regardless of the target conditions!"
+text = "Excellent. Try rotating the junction by hovering over it and pressing R. Melon will always follow the curve of the junction!"
 fit_content = true
 script = ExtResource("9_4btf7")
-ShadowBackground = true
+ExitTrigger = 7
+AcceptedEvent = 16
 
 [node name="ContinueLabel" type="Label" parent="CanvasLayer/TutorialLayer"]
 visible = false

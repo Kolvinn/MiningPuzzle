@@ -31,6 +31,7 @@ window/size/viewport_width=1280
 window/size/viewport_height=720
 window/size/resizable=false
 window/stretch/aspect="ignore"
+mouse_cursor/custom_image="res://Assets/Cursors_v2/Light/Hands/Hand3.png"
 
 [dotnet]
 

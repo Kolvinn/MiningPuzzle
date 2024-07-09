@@ -39,7 +39,7 @@ public partial class SettingsMenu : GuiOverride
     {
         { "Place Track","Left Mouse Button" },
         { "Delete Track","Right Mouse Button" },
-        { "Settings" , "Escape" },
+        { "Settings " , "Escape" },
         { "Zoom Out" , "Mouse Wheel Up" },
         { "Zoom In" , "Mouse Wheel Down" },
         { "Sim Speed +" , "1" },
@@ -52,21 +52,7 @@ public partial class SettingsMenu : GuiOverride
         { "Reset Level" , "R" },
     };
 
-    //public static Dictionary<string, string> Events { get; private set; } = new Dictionary<string, string>()
-    //{
-    //        { "Start Mining", "Left Mouse Button"  },
-    //        { "Stop Mining", EventType.Stop_Mining },
-    //        { "Sim Speed +", EventType.Speed_Increase },
-    //        { "Sim Speed -", EventType.Speed_Decrease },
-    //        { "Zoom In", EventType.Zoom_In },
-    //        { "Zoom Out", EventType.Zoom_Out },
-    //        { "Settings", EventType.Settings },
-    //        { "Home", EventType.Home },
-    //        { "Toggle Shop", EventType.Toggle_Shop },
-    //        { "Reset level", EventType.Reset_Level },
-    //        { "Pause", EventType.Pause },
-    //        { "Rotate", EventType.Rotate }
-    //};
+
         
     
 
@@ -90,7 +76,14 @@ public partial class SettingsMenu : GuiOverride
         AudioPanel.Connect(AudioSettings.SignalName.VolumeChange, new Callable(this, nameof(VolumeAdjust)));
 
         var gameplay = this.GetNode<HBoxContainer>("PanelContainer/HBoxContainer/ScrollContainer/Gameplay");
-        UI_SCALE_LABEL = gameplay.GetNode<Label>("Labels/Label");
+        UI_SCALE_LABEL = gameplay.GetNode<Label>("VBoxContainer2/scalingLabel");
+
+        //var gameplay = this.GetNode<HBoxContainer>("PanelContainer/HBoxContainer/ScrollContainer/Gameplay");
+        var check = gameplay.GetNode<CheckBox>("VBoxContainer/CheckBox");
+        check.Connect(CheckBox.SignalName.Toggled, new Callable(this, nameof(OnGridToggle)));
+
+        var check2 = gameplay.GetNode<CheckBox>("VBoxContainer/CheckBox2");
+        check2.Connect(CheckBox.SignalName.Toggled, new Callable(this, nameof(OnHighLightToggle)));
 
         SettingsFile = new ConfigFile();
         if(SettingsFile.Load(settingsPath) == Error.DoesNotExist)
@@ -128,7 +121,23 @@ public partial class SettingsMenu : GuiOverride
 
     }
 
-   
+
+    public void Apply(RunningVariables vars)
+    {
+        if(vars!=null)
+            UpdateUIScale(vars.UI_SCALE);
+        //vars.
+    }
+    public void OnHighLightToggle(bool toggle)
+    {
+        EventDispatch.PushEventFlag(GameEventType.HighlightToggle);
+        RunningVars.SHOW_MINEABLES = toggle;
+    }
+    public void OnGridToggle(bool toggle)
+    {
+        EventDispatch.PushEventFlag(GameEventType.GridToggle);
+        RunningVars.SHOW_GRID = toggle;
+    }
 
     public void LoadRunningVars(RunningVariables vars)
     {
@@ -202,7 +211,7 @@ public partial class SettingsMenu : GuiOverride
         GetTree().Root.ContentScaleFactor= RunningVars.UI_SCALE;
 
         Camera.UISCALECHANGE = true;
-        UI_SCALE_LABEL.Text = "UI Scale (" +(RunningVars.UI_SCALE * 100) + "%)";
+        UI_SCALE_LABEL.Text = (RunningVars.UI_SCALE * 100) + "%";
 
         SettingsFile.SetValue("", OverrideRefs[nameof(RunningVars.UI_SCALE)], RunningVars.UI_SCALE);
         SettingsFile.Save(settingsPath);
@@ -216,7 +225,7 @@ public partial class SettingsMenu : GuiOverride
         GetTree().Root.ContentScaleFactor = RunningVars.UI_SCALE;
 
         Camera.UISCALECHANGE = true;
-        UI_SCALE_LABEL.Text = "UI Scale (" + (RunningVars.UI_SCALE * 100) + "%)";
+        UI_SCALE_LABEL.Text = (RunningVars.UI_SCALE * 100) + "%";
 
         SettingsFile.SetValue("", OverrideRefs[nameof(RunningVars.UI_SCALE)], RunningVars.UI_SCALE);
         SettingsFile.Save(settingsPath);

@@ -23,9 +23,20 @@ public partial class Mineable : Sprite2D, IGameObject, ISaveable
     private Label resLabel = null;
     public IndexPos Index { get; set; }
 
+    public ColorRect ValidMineRect { get; set; }
+
     public override void _Ready()
     {
-
+        ValidMineRect = new ColorRect()
+        {
+            CustomMinimumSize = new Vector2(64, 64),
+            Position = new Vector2(-32, -32),
+            ShowBehindParent = true,
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+            Visible = false,
+            SelfModulate = new Color("3fa64e8e")
+        };
+        this.AddChild(ValidMineRect);
         if(ResourceStore.Mineables.ContainsKey(Type))
             this.Texture = ResourceStore.Mineables[Type];
         //CanvasLayer canvas = new CanvasLayer();

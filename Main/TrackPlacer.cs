@@ -1,11 +1,13 @@
 ﻿using Godot;
 using MagicalMountainMinery.Data;
+using MagicalMountainMinery.Data.Load;
 using MagicalMountainMinery.Obj;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static MagicalMountainMinery.Main.CartController;
 
 
 namespace MagicalMountainMinery.Main
@@ -43,8 +45,6 @@ namespace MagicalMountainMinery.Main
 
         public int CurrentTrackLevel = 1;
 
-
-
         [JsonProperty(ItemConverterType = typeof(StringEnumConverter))]
         public MineableType mineable { get; set; }
 
@@ -55,18 +55,15 @@ namespace MagicalMountainMinery.Main
 
         public AudioStreamPlayer AudioStream { get; set; }
 
-
         public AnimatedSprite2D TrackPlaceAnimation { get; set; }
 
-        public Queue<AnimatedSprite2D> placeAnims = new Queue<AnimatedSprite2D>();    
+        public Queue<AnimatedSprite2D> placeAnims = new Queue<AnimatedSprite2D>();
         public List<Track> OuterConnections { get; set; } = new List<Track>();
-        //public ColorRect[,] MineableLocations { get; set; }
-
-        //public Dictionary<IndexPos, ColorRect> MineableLocations { get; set; } = new Dictionary<IndexPos, ColorRect>();
-
-        //public Dictionary<IndexPos, ColorRect> MineableLocations { get; set; } = new Dictionary<IndexPos, ColorRect>();
 
         public Tuple<IndexPos, EventType> LastCompletedAction { get; set; } = null;
+
+
+        public Dictionary<IndexPos, Mineable> PathMineables { get; set; }
         public Track StartTrack { get; set; }
         public override void _Ready()
         {
@@ -84,7 +81,7 @@ namespace MagicalMountainMinery.Main
             this.AddChild(AudioStream);
             AudioStream.Bus = "Sfx";
 
-            
+
             //this.AddChild(TutorialUI);
         }
 
@@ -99,13 +96,13 @@ namespace MagicalMountainMinery.Main
             this.MapLevel = level;
             UpdateUI();
             ShowConnections(false);
-
+            PathMineables = new Dictionary<IndexPos, Mineable>();
             var raised = MapLevel.AllowedTracksRaised == 0 ? false : true;
             //var junc = MapLevel.AllowedJunctions == 0 ? false : true;
 
 
 
-           // this.GetNode<VBoxContainer>("CanvasLayer/Raised").Visible = raised;
+            // this.GetNode<VBoxContainer>("CanvasLayer/Raised").Visible = raised;
             //this.GetNode<TextureRect>("CanvasLayer/TextureRect3").Visible = raised;
             //this.GetNode<VBoxContainer>("CanvasLayer/Junc").Visible = junc;
 
@@ -113,7 +110,7 @@ namespace MagicalMountainMinery.Main
             ////TutorialUI.CurrentIndex = (regionDex + 1);
             //TutorialUI.CurrentSubIndex = levelDex;
             //f (!TutorialDisabled)
-               // TutorialUI.Load(load);
+            // TutorialUI.Load(load);
             //if(MineableLocations != null && MineableLocations.Count > 0)
             //{
             //    foreach (var m in MineableLocations)
@@ -144,6 +141,171 @@ namespace MagicalMountainMinery.Main
             }
 
         }
+
+        public IndexPos FetchNextDirection(IConnectable connection, IndexPos incoming)
+        {
+            var nextDir = IndexPos.Zero;
+            if (connection is Junction junc)
+            {
+                if (incoming == junc.Direction1)
+                    nextDir = junc.Option;
+                else if (incoming == junc.Option)
+                    nextDir = junc.Direction1;
+                else
+                    nextDir = junc.Direction1;
+
+                //var con = conList.First(item => item.From == nextDir + currentConnection.From);
+            }
+            else if (connection is Track track)
+            {
+
+                nextDir = track.Direction1 == incoming ? track.Direction2 : track.Direction1;
+            }
+
+            return nextDir == IndexPos.Zero ? incoming.Opposite() : nextDir;
+        }
+
+        public void LoadMineablePath()
+        {
+
+            //GD.Print("")
+            if (PathMineables == null)
+                return;
+            foreach (var entry in PathMineables)
+            {
+                if (entry.Value != null && IsInstanceValid(entry.Value))
+                    entry.Value.ValidMineRect.Visible = false;
+            }
+
+            PathMineables.Clear();
+            if (!Settings.RunningVars.SHOW_MINEABLES)
+                return;
+
+            IConnectable next = null;
+            if (MasterTrackList.TryGetValue(StartTrack, out var subList))
+            {
+                next = subList.FirstOrDefault(item => MapLevel.ValidIndex(item.Index));
+
+            }
+            if (next == null)
+            {
+                return;
+            }
+            var firstTrack = next as Track;
+            var startDirection = StartTrack.Index + StartTrack.Direction1 == firstTrack.Index ? StartTrack.Direction1 : StartTrack.Direction2;
+            var lastDirection = startDirection.Opposite(); //This should be the opposite of con 1, i.e., connected to start
+            IConnectable currentConnection = next;
+            // List<IConnectable> conList = MasterTrackList[];
+            var maxinterations = 100;
+
+            while (currentConnection != null && maxinterations != 0)
+            {
+
+                var conList = new List<IConnectable>();
+                MasterTrackList.TryGetValue(currentConnection, out conList);
+                //var nextDir = IndexPos.Zero;
+                var currentDex = currentConnection.Index;
+
+                if (!PathMineables.ContainsKey(currentDex))
+                {
+                    ValidateCollectionSquare(currentDex, lastDirection, currentConnection);
+                }
+                else
+                {
+                    //if we have a key with this index, break because we dont want to bother checking for
+                    //internal track loops
+                    return;
+                }
+                //if(currentConnection is Track t && t.IsCurve)
+                //{
+                //    var newFace = t.Direction1 == lastDirection ? t.Direction2 : t.Direction1;
+                //    //here we check again because a curve can have 2 facing directions
+                //    //only store it if it doesnt exit or we havent hit a mineable at this curve index
+                //    if (!PathMineables.ContainsKey(currentDex))
+                //        ValidateCollectionSquare(currentDex, newFace.Opposite());
+                //    else if(PathMineables[currentDex] == null)
+                //        ValidateCollectionSquare(currentDex, newFace.Opposite(), true);
+                //}
+                //normal con, i.e. start or non junc
+                if (conList == null || conList.Count == 0)
+                    break;
+
+                var nextDir = FetchNextDirection(currentConnection, lastDirection);
+                lastDirection = nextDir.Opposite();
+                var nextPos = currentConnection.Index + nextDir;
+                var nextCon = conList.FirstOrDefault(item => item.Index == nextPos);
+
+
+
+
+
+                //if (nextCon != null)
+                //{
+                //    var global = (MapLevel.GetGlobalPosition(nextPos));
+                //    CartLine.AddPoint(global);
+                //    CartVectors.Enqueue(global);
+                //    CartDirs.Enqueue(nextDir);
+                //    ConnectionQueue.Enqueue(nextCon);
+                //    lastDirection = nextDir.Opposite();
+
+                //}
+
+                currentConnection = nextCon;
+
+                if (currentConnection == null)
+                    break;
+
+                maxinterations--;
+
+            }
+        }
+
+        public void ValidateCollectionSquare(IndexPos currentDex, IndexPos lastDirection , IConnectable con = null)
+        {
+           // if(!ignoreExist)
+               //PathMineables.Add(currentDex, null);
+            var facing = lastDirection.Opposite();
+            var mineList = GetMineableIndexes(facing);
+            var mine = FetchVisibleMineableIndex(mineList, currentDex);
+
+            if (mine != null)
+            {
+                PathMineables[currentDex] = mine;
+                mine.ValidMineRect.Visible = true;
+            }
+            else if (con != null && con is Track t && t.IsCurve)
+            {
+                var newFace = t.Direction1 == lastDirection ? t.Direction2 : t.Direction1;
+                mineList = GetMineableIndexes(newFace.Opposite());
+                mine = FetchVisibleMineableIndex(mineList, currentDex);
+                if (mine != null)
+                {
+                    PathMineables[currentDex] = mine;
+                    mine.ValidMineRect.Visible = true;
+                }
+            }
+
+            
+        }
+
+        private Mineable FetchVisibleMineableIndex(List<IndexPos> mineList, IndexPos currentDex)
+        {
+            foreach(var dir in mineList)
+            {
+                if (MapLevel.TryGetMineable(currentDex + dir, out var mine))
+                {
+                    if (!PathMineables.Values.Contains(mine))
+                    {
+                        return mine;
+                 
+                    }
+
+                }
+            }
+            return null;
+        }
+
+
         public void Handle(EventType type, IUIComponent comp)
         {
             if (PauseHandle)
@@ -151,7 +313,7 @@ namespace MagicalMountainMinery.Main
             var obj = comp;
             var env = type;
 
-           
+
             if (HandleSpecial)
             {
                 var inter = EventDispatch.FetchInteractable();
@@ -173,9 +335,6 @@ namespace MagicalMountainMinery.Main
                 ValidateState(env);
             }
         }
-
-
-
 
         //public void SetButtonFocus(GameButton btn)
         //{
@@ -312,6 +471,17 @@ namespace MagicalMountainMinery.Main
 
 
                 }
+                else if(MapLevel.ValidIndex(index))
+                {
+                    if (index != CurrentHover)
+                    {
+                        LastHover = CurrentHover;
+
+                        CurrentHover = index;
+                    }
+                    //LastHover, index))
+                    CheckJunction(LastHover, index);
+                }
             }
             else if (CurrentState == State.Deleting)
             {
@@ -404,8 +574,8 @@ namespace MagicalMountainMinery.Main
                 AudioStream.Stream = ResourceStore.GetAudio("TrackPlace2");
                 AudioStream.Play();
                 junc.Texture = match.Texture;
-
-
+                EventDispatch.PushEventFlag(GameEventType.JunctionRotate);
+                LoadMineablePath();
             }
         }
 
@@ -539,6 +709,7 @@ namespace MagicalMountainMinery.Main
                 AudioStream.Play();
                 RemoveTrack(track, index);
             }
+            LoadMineablePath();
             //UpdateMineable();
         }
         //public override void _UnhandledInput(InputEvent @event)
@@ -556,7 +727,7 @@ namespace MagicalMountainMinery.Main
         //        if (MapLevel.ValidIndex(index))
         //        {
         //            var obj = MapLevel.MapObjects[index.X, index.Y];
-                    
+
 
         //            if (obj != null && obj is Mineable mine)
         //            {
@@ -599,6 +770,7 @@ namespace MagicalMountainMinery.Main
                 AudioStream.Play();
                 RemoveTrack(track, index);
             }
+            LoadMineablePath();
             //UpdateMineable();
         }
 
@@ -767,7 +939,8 @@ namespace MagicalMountainMinery.Main
             // return false;
             if (from == to)
                 return false;
-
+            if (!MapLevel.ValidIndex(from) || !MapLevel.ValidIndex(to))
+                return false;
             var fromTrack = MapLevel.GetTrack(from);
             var toTrack = MapLevel.GetTrack(to);
 
@@ -803,65 +976,67 @@ namespace MagicalMountainMinery.Main
 
             if (fromTrack is not Junction && !fromTrack.CanConnect())
             {
-                if (toTrack != null && !toTrack.CanConnect())
+                if (toTrack == null || !toTrack.CanConnect())
                     return false;
                 //con has 2 connections and iss not junc, so try make new junction
-                if (toTrack == null)
-                {
-                    var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), fromDir, CurrentTrackLevel);
-                    SetTrack(to, newT, tracklevel: CurrentTrackLevel);
-                    toTrack = newT;
-                    //ConnectTo(thatTrackDex, connection, index, newT);
-                }
+                //if (toTrack == null)
+                //{
+                //    SetTrackSingle(to);
+                //    var newT = new Track(ResourceStore.GetTex(TrackType.Straight, CurrentTrackLevel), fromDir, CurrentTrackLevel);
+                //    SetTrack(to, newT, tracklevel: CurrentTrackLevel);
+                //    toTrack = newT;
+                //    //ConnectTo(thatTrackDex, connection, index, newT);
+                //}
 
                 //GD.Print("Setting junction from: ", from, " to: ", to);
-                if (toTrack.CanConnect())
+
+
+                var j = OrientateJunction(fromTrack.Direction1, fromTrack.Direction2, toDir);
+                var newJc = new Junc();
+                try
                 {
-
-                    var j = OrientateJunction(fromTrack.Direction1, fromTrack.Direction2, toDir);
-                    var newJc = new Junc();
-                    try
-                    {
-                        newJc = ResourceStore.GetJunc(j, fromTrack.TrackLevel);
-                    }
-                    catch (Exception e)
-                    {
-                        return false;
-                    }
-
-                    var junction = new Junction();
-                    ReplaceRef(fromTrack, junction);
-                    MapLevel.RemoveTrack(from);
-                    junction.Texture = newJc.Texture;
-                    junction.Index = fromTrack.Index;
-                    junction.TrackLevel = fromTrack.TrackLevel;
-
-                    SetTrack(from, junction, false);
-
-                    var conList = new IConnectable[] { GetConnectable(from + j.From), GetConnectable(from + j.To), GetConnectable(from + j.Option) };
-                    ConnectTo(junction, conList);
-                    //now we connect the toTrack back to junction and check it
-                    ConnectTo(toTrack, junction);
-                    //MatchSprite(toTrack);
-
-
-                    MapLevel.CurrentJunctions++;
-                    UpdateUI();
-
-                    AudioStream.Stream = ResourceStore.GetAudio("Junction");
-                    AudioStream.Play();
-                    //if (ResourceStore.ContainsCurve(toTrack.GetConnection()))
-                    //{
-                    //    toTrack.Texture = ResourceStore.GetCurve(toTrack.GetConnection(), toTrack.TrackLevel).Texture;
-                    //}
-                    //// DoCurve(from, track1, ResourceStore.GetCurve(con));
-                    //else
-                    //{
-                    //    toTrack.Texture = ResourceStore.GetTex(toTrack.GetConnection(), toTrack.TrackLevel);
-                    //}
-                    return true;
-
+                    newJc = ResourceStore.GetJunc(j, fromTrack.TrackLevel);
                 }
+                catch (Exception e)
+                {
+                    return false;
+                }
+
+                var junction = new Junction();
+                ReplaceRef(fromTrack, junction);
+                MapLevel.RemoveTrack(from);
+                junction.Texture = newJc.Texture;
+                junction.Index = fromTrack.Index;
+                junction.TrackLevel = fromTrack.TrackLevel;
+
+                SetTrack(from, junction, false);
+
+                var conList = new IConnectable[] { GetConnectable(from + j.From), GetConnectable(from + j.To), GetConnectable(from + j.Option) };
+                ConnectTo(junction, conList);
+                //now we connect the toTrack back to junction and check it
+                ConnectTo(toTrack, junction);
+                //MatchSprite(toTrack);
+
+
+                MapLevel.CurrentJunctions++;
+                UpdateUI();
+
+                AudioStream.Stream = ResourceStore.GetAudio("TrackPlace2");
+                AudioStream.Play();
+                //if (ResourceStore.ContainsCurve(toTrack.GetConnection()))
+                //{
+                //    toTrack.Texture = ResourceStore.GetCurve(toTrack.GetConnection(), toTrack.TrackLevel).Texture;
+                //}
+                //// DoCurve(from, track1, ResourceStore.GetCurve(con));
+                //else
+                //{
+                //    toTrack.Texture = ResourceStore.GetTex(toTrack.GetConnection(), toTrack.TrackLevel);
+                //}
+                LoadMineablePath();
+                EventDispatch.PushEventFlag(GameEventType.JunctionPlace);
+                return true;
+
+
             }
 
             else if (fromTrack != null && fromTrack is Junction junc)
@@ -1021,7 +1196,7 @@ namespace MagicalMountainMinery.Main
 
             var tween = GetTree().CreateTween();
             newT.Scale = new Vector2(0.1f, 0.1f);
-            tween.TweenProperty(newT, "scale", new Vector2(1,1), 0.4f).
+            tween.TweenProperty(newT, "scale", new Vector2(1, 1), 0.4f).
             SetTrans(Tween.TransitionType.Elastic).SetEase(Tween.EaseType.Out);
 
             //tween.Parallel().TweenProperty(Cart, "scale", new Vector2(1, 1), 0.5f).
@@ -1034,6 +1209,7 @@ namespace MagicalMountainMinery.Main
 
             //tween.property
             //newAnim.QueueFree();
+            LoadMineablePath();
             return true;
 
 
@@ -1044,7 +1220,7 @@ namespace MagicalMountainMinery.Main
         }
         public void OnFin()
         {
-            if(placeAnims.Count > 0)
+            if (placeAnims.Count > 0)
             {
                 placeAnims.Dequeue().QueueFree();
             }

@@ -11,15 +11,16 @@ using System.Threading;
 
 using Timer = Godot.Timer;
 using System.Diagnostics.Metrics;
-
+using System.Threading.Tasks;
+using Mutex = System.Threading.Mutex;
 namespace MagicalMountainMinery.Main
 {
-    
+
     public partial class GameController : Node2D, IMain
     {
         public int LoadIndex { get; set; } = 0;
         public Node2D CurrentControl { get; set; }
-        public SettingsMenu SettingsMenu {  get; set; }
+        public SettingsMenu SettingsMenu { get; set; }
         public Runner Runner { get; set; }
         public MapController MapController { get; set; }
 
@@ -31,6 +32,7 @@ namespace MagicalMountainMinery.Main
         public static SaveProfile CurrentProfile { get; set; }
         //TODO THING
         public Timer LoadTimer { get; set; }
+
         public enum InternalState
         {
             Level,
@@ -43,7 +45,7 @@ namespace MagicalMountainMinery.Main
         public InternalState State { get; set; } = InternalState.Start;
 
         public bool PauseHandle { get; set; }
-        public Shop ShopScreen {  get; set; }
+        public Shop ShopScreen { get; set; }
         public NavBar NavBar { get; set; }
         public GameController()
         {
@@ -63,7 +65,7 @@ namespace MagicalMountainMinery.Main
 
         public bool LoadNew = true;
         public bool TutorialDisabled = false;
-        public LoaderThread LoaderThread { get; set; }  
+        public static LoaderThread LoaderThread { get; set; }
         public TutorialUI TutorialUI { get; set; }
 
         //public string RebindKeyCode {  get; set; }
@@ -76,7 +78,10 @@ namespace MagicalMountainMinery.Main
             LoadTimer.Connect(Timer.SignalName.Timeout, Callable.From(OnTimeout));
             LoadBar = this.GetNode<TextureProgressBar>("CanvasLayer/Loading/TextureProgressBar");
 
+            var t = Thread.CurrentThread;
+
             StartMenu = Runner.LoadScene<StartMenu>("res://UI/MenuScreen.tscn");
+            //Monitor.wa
             this.NavBar = this.GetNode<NavBar>("CanvasLayer/NavBar");
 
             Runner = Runner.LoadScene<Runner>("res://Main/Main.tscn");
@@ -110,12 +115,12 @@ namespace MagicalMountainMinery.Main
             EventDispatch = new EventDispatch();
             this.AddChild(EventDispatch);
 
-            
+
 
             ChangeScene(InternalState.Start);
 
             SettingsMenu = this.GetNode<SettingsMenu>("CanvasLayer/SettingsOverlay");
-            SettingsMenu.Connect(SettingsMenu.SignalName.SettingsClose, new Callable(this, nameof(Settings)));
+            SettingsMenu.Connect(SettingsMenu.SignalName.SettingsClose, new Callable(this, nameof(SettingsToggle)));
             //var mat = Runner.GetNode<Sprite2D>("Pallet").Material as ShaderMaterial;
 
             // mat.SetShaderParameter("colorpallet", ResourceStore.ColorPallet.ToArray());
@@ -124,16 +129,18 @@ namespace MagicalMountainMinery.Main
             Engine.MaxFps = 144;
             this.GetNode<AudioStreamPlayer>("AudioStreamPlayer").Connect(AudioStreamPlayer.SignalName.Finished, Callable.From(OnMusicEnd));
             this.GetNode<AudioStreamPlayer>("AudioStreamPlayer").Play();
-            
+
             this.SetProcessUnhandledInput(false);
-        
+
         }
+
+
         public void OnTimeout()
         {
             var val = new Random().Next(1, 5);
             LoadBar.Value = LoadBar.Value + val >= 100 ? 100 : LoadBar.Value + val;
-            GD.Print("Updating timer: ", LoadBar.Value);
-            if(LoadBar.Value != 100) 
+            //GD.Print("Updating timer: ", LoadBar.Value);
+            if (LoadBar.Value != 100)
                 LoadTimer.Start(0.03f);
 
         }
@@ -143,11 +150,12 @@ namespace MagicalMountainMinery.Main
         }
 
 
-        
 
-        public void Settings()
+
+        public void SettingsToggle()
         {
             SettingsMenu.Visible = !SettingsMenu.Visible;
+            Camera.Disabled = SettingsMenu.Visible;
             if (CurrentControl != StartMenu)
             {
                 ((IMain)CurrentControl).PauseHandle = SettingsMenu.Visible;
@@ -156,9 +164,35 @@ namespace MagicalMountainMinery.Main
 
         public void HandleFlag(GameEventType flag)
         {
-            if(flag == GameEventType.WindowSizeChange)
+            if (flag == GameEventType.WindowSizeChange)
             {
                 WindowSizeChangeFlag();
+            }
+            else if (flag == GameEventType.GridToggle)
+            {
+                if (CurrentControl == Runner)
+                {
+                    foreach (var item in Runner.MapLevel.GridLines)
+                    {
+                        item.Visible = RunningVars.SHOW_GRID;
+                    }
+                }
+            }
+            else if (flag == GameEventType.HighlightToggle && CurrentControl == Runner)
+            {
+                if (Runner.Placer.PathMineables.Count > 0)
+                {
+                    var list = Runner.Placer.PathMineables?.Where(i => i.Value != null);
+                    foreach (var item in list)
+                    {
+                        item.Value.ValidMineRect.Visible = false;
+                    }
+                    Runner.Placer.PathMineables?.Clear();
+                }
+            }
+            else if (flag == GameEventType.CartStopped && CurrentControl == Runner)
+            {
+                Runner.Placer.LoadMineablePath();
             }
         }
 
@@ -180,7 +214,7 @@ namespace MagicalMountainMinery.Main
                 if (@event is InputEventMouse mouse)
                 {
                     bound = SettingsMenu.BindAction(RebindButton, mouse.AsText(), mouse);
-                    
+
                 }
             }
 
@@ -212,6 +246,7 @@ namespace MagicalMountainMinery.Main
                 }
                 else if (TutorialUI.TryPass(env, obj, flag))
                 {
+                    Runner.Placer.CurrentState = TrackPlacer.State.Default;
                     TutorialUI.GetNext(env, obj);
                     PauseControl(false);
                     if (TutorialUI.CurrentTutorial != null)
@@ -230,22 +265,36 @@ namespace MagicalMountainMinery.Main
         public override void _PhysicsProcess(double delta)
         {
 
-            if(State == InternalState.Loading && LoaderThread != null)
+
+
+            if (State == InternalState.Loading)
             {
-                LoaderThread.mutex.Lock();
-                if (LoaderThread.Finished && LoadBar.Value ==100)
+                //don't bother looking for it if you can't enter
+
+                if (LoaderThread != null && LoaderThread.IsFinished() && LoadBar.Value >= 100)
                 {
                     FinishProfileLoad();
-                    
+
                     foreach (var res in ResourceStore.ShopResources)
                         ShopScreen.AddGameResource(res);
-                    return;
+
+
                 }
-                LoaderThread.mutex.Unlock();
-                //Load();
+                //if(!LoaderThread.HasFinished() || LoadBar.Value != 100)
+                //    {
+                //    GD.Print("phys process in thread: ", Thread.CurrentThread.ManagedThreadId);
+                //        return;
+                //    }
+                //    else
+                //    {
+                //        
+
+                //    }
+
+
                 return;
             }
-            
+
 
 
             var LastEvent = EventDispatch.PopGameEvent();
@@ -272,16 +321,16 @@ namespace MagicalMountainMinery.Main
             if (!TutorialDisabled && TutorialUI.HasTutorial)
             {
                 HandleTutorial(env, obj, flag);
-                if(TutorialUI.CurrentTutorial != null)
+                if (TutorialUI.CurrentTutorial != null)
                 {
-                    if(TutorialUI.CurrentTutorial.Entered && env != TutorialUI.CurrentTutorial.AcceptedEvent)
+                    if (TutorialUI.CurrentTutorial.Entered && env != TutorialUI.CurrentTutorial.AcceptedEvent)
                     {
-                        if (TutorialUI.IsPlacer() && env == EventType.Left_Release)
+                        if (TutorialUI.IsPlacer() && (env == EventType.Left_Release || env == EventType.Right_Action || env == EventType.Right_Release))
                         {
                             GD.Print("sdfd");
                             //EventDispatch.ClearAll();
                         }
-                        else if(env != EventType.Nill)
+                        else if (env != EventType.Nill)
                         {
                             GD.Print("sdfd");
                             EventDispatch.ClearAll();
@@ -290,14 +339,15 @@ namespace MagicalMountainMinery.Main
                 }
             }
 
-                
+
             if (flag != GameEventType.Nil)
                 HandleFlag(flag);
             if (env == EventType.Settings)
             {
                 EventDispatch.ClearAll();
                 //EventD
-                Settings();
+
+                SettingsToggle();
             }
 
             else if (obj != null && env == EventType.Left_Action && !string.IsNullOrEmpty(obj.UIID))
@@ -312,7 +362,7 @@ namespace MagicalMountainMinery.Main
                     ((Label)RebindButton.GetChild(0)).Text = "Listening";
                     return;
                 }
-                if(obj.UIID == "ExitTitle" || obj.UIID == "QuitGame")
+                if (obj.UIID == "ExitTitle" || obj.UIID == "QuitGame")
                 {
                     //TODO deal with current run exit
                     if (CurrentControl == Runner)
@@ -330,7 +380,7 @@ namespace MagicalMountainMinery.Main
         }
         public void PauseControl(bool pause)
         {
-            if(CurrentControl == Runner)
+            if (CurrentControl == Runner)
                 Runner.PauseHandle = pause;
         }
 
@@ -346,7 +396,7 @@ namespace MagicalMountainMinery.Main
 
         }
 
-    
+
         public void ContinueGame()
         {
             GD.Print("CONTINUEING");
@@ -355,13 +405,14 @@ namespace MagicalMountainMinery.Main
             StartMenu.Visible = false;
             this.GetNode<Control>("CanvasLayer/Loading").Visible = true;
             OnTimeout();
-            LoaderThread =  new LoaderThread();
+            LoaderStart(false);
+            //LoaderThread =  new LoaderThread(false);
 
             return;
             //LoadNew = false;
-           // CallDeferred(nameof(LoadLastProfile));
-            
-            
+            // CallDeferred(nameof(LoadLastProfile));
+
+
         }
 
         public void FinishProfileLoad()
@@ -376,16 +427,18 @@ namespace MagicalMountainMinery.Main
             MapController.LoadProfile(CurrentProfile);
             LoaderThread = null;
             Runner.LoadProfile(CurrentProfile);
+            SettingsMenu.Apply(CurrentProfile.RunningVars);
+
 
         }
         public void LoadLastProfile()
         {
             var saveFiles = Godot.DirAccess.GetFilesAt("user://saves/");
             var list = new SortedList<ulong, string>();
-            foreach(var name in saveFiles)
+            foreach (var name in saveFiles)
             {
                 var last = FileAccess.GetModifiedTime("user://saves/" + name);
-                if(!list.ContainsKey(last))
+                if (!list.ContainsKey(last))
                     list.Add(last, name);
             }
             var first = list.Last().Value;
@@ -398,7 +451,9 @@ namespace MagicalMountainMinery.Main
             }
 
         }
-        
+
+
+
         public void NewGame(string difficulty)
         {
             GD.Print("CONTINUEING");
@@ -407,19 +462,21 @@ namespace MagicalMountainMinery.Main
             StartMenu.Visible = false;
             this.GetNode<Control>("CanvasLayer/Loading").Visible = true;
             OnTimeout();
-            LoaderThread = new LoaderThread(true);
+
+            LoaderStart(true);
+            //LoaderThread = new LoaderThread(true);
 
             return;
 
-            
 
-            
 
-  
+
+
+
 
         }
 
-        
+
 
         public void QuitGame()
         {
@@ -428,7 +485,7 @@ namespace MagicalMountainMinery.Main
             CurrentControl.Dispose();
             GetTree().Quit();
         }
-        
+
 
         public void WindowSizeChangeFlag()
         {
@@ -436,7 +493,7 @@ namespace MagicalMountainMinery.Main
             var scale = 1f;
             if (ratio.X > 1.4)
             {
-                scale= 1.5f;
+                scale = 1.5f;
             }
             else if (ratio.X < 0.8f)
             {
@@ -448,7 +505,7 @@ namespace MagicalMountainMinery.Main
 
         public void LoadHome()
         {
-            
+
             ChangeScene(InternalState.Map);
 
             MapController.ScrollToNext(Runner.CurrentMapData.RegionIndex, false);
@@ -477,7 +534,7 @@ namespace MagicalMountainMinery.Main
                 CurrentProfile.DataList.Add(overwrite.GetHashCode(), overwrite);
                 Runner.CurrentMapSave = overwrite;
             }
-
+            CurrentProfile.RunningVars = RunningVars;
             using var file = Godot.FileAccess.OpenEncryptedWithPass("user://saves/" + CurrentProfile.Filename + ".save", Godot.FileAccess.ModeFlags.Write, encrypt);
             {
 
@@ -490,7 +547,7 @@ namespace MagicalMountainMinery.Main
 
         public void ChangeScene(InternalState newstate)
         {
-            
+
             EventDispatch.ClearAll();
             if (CurrentControl != null)
             {
@@ -542,7 +599,7 @@ namespace MagicalMountainMinery.Main
 
         }
 
-      
+
 
         public void OnNodeAdded(Node node)
         {
@@ -552,76 +609,109 @@ namespace MagicalMountainMinery.Main
             }
         }
 
-
+        public static void LoaderStart(bool newProfile)
+        {
+            LoaderThread = new LoaderThread(newProfile);
+            //InstanceCaller.jo
+        }
 
     }
 
-    public partial class LoaderThread : Node
+    public class LoaderThread
     {
-        public Godot.Mutex mutex = new Godot.Mutex();
+        //public Godot.Mutex mutex = new Godot.Mutex();
         public int count = 0;
         public SaveProfile CurrentProfile;
-
+        private static Mutex mut = new Mutex();
         private string encrypt = "Gcv1Zfvttos&&";
 
-        public bool Finished { get; set; } = false;
+        private bool Finished { get; set; } = false;
+
+        public List<bool> TestList = new List<bool>() { true };
         public bool newProf { get; set; } = false;
         public bool HasLoaded = false;
-        public Godot.GodotThread ted;
-        public LoaderThread(bool thing = false)
+        // public Godot.GodotThread ted;
+
+        //public Thread Owner { get; set; }
+
+        Thread InstanceCaller;
+        public LoaderThread(bool newProfile)
         {
-            ted = new Godot.GodotThread();
-            newProf = thing;
-            GD.Print("starting thread");
-            //thread.wai
-            ted.Start(Callable.From(DoLoad));
+            //ted = new Thread();
+            this.newProf = newProfile;
+            //var LoaderThread = new LoaderThread(true);
+            InstanceCaller = new Thread(new ThreadStart(DoWork));
+            InstanceCaller.Start();
 
-            GD.Print("waiting for finish");
-            ted.WaitToFinish();
-            //thread.Free();
-            ted.Dispose();
-            this.QueueFree();
-
-            GD.Print("freeing");
         }
-        public void DoLoad()
+
+        public async void DoWork()
+        {
+            //Starts a new Task that will NOT block the UI thread. 
+            //var t = new Task(() => DoLoad());
+            //await Task.Run(t)
+            GD.Print("running task delay w");
+            var t = Task.Run(() =>
+            {
+                DoLoad();
+            });
+            await t;
+            InstanceCaller.Join();
+            //Owner.
+        }
+
+        public async void DoLoad()
         {
 
-            mutex.Lock();
-            GD.Print("Locking mutex in thread 1");
-            Finished = false;
-            mutex.Unlock();
-            long x = 0;
 
-            GD.Print("unlocking mutex in thread 2");
+            IsFinished(true, false);
+
             if (newProf)
                 CreateProfile();
             else
                 LoadLastProfile();
             if (!ResourceStore.LOADED)
             {
-                GD.Print("Loading start");
+                GD.Print("Loading pallet in thread ", Thread.CurrentThread.ManagedThreadId);
                 ResourceStore.LoadPallet();
+                GD.Print("Loading tracks", Thread.CurrentThread.ManagedThreadId);
                 ResourceStore.LoadTracksV2();
+                GD.Print("Loading rocks", Thread.CurrentThread.ManagedThreadId);
                 ResourceStore.LoadRocks();
+                GD.Print("Loading res", Thread.CurrentThread.ManagedThreadId);
                 ResourceStore.LoadResources();
+                GD.Print("Loading junction");
                 ResourceStore.LoadJunctionsV2();
+                GD.Print("Loading audio");
                 ResourceStore.LoadAudio();
-                ResourceStore.LoadPallet();
-                GD.Print("Loading end ", GetTree());
+                GD.Print("Loading end ");
             }
-
+            GD.Print("Loading levels");
             ResourceStore.LoadLevels(CurrentProfile.Seed);
             ResourceStore.LOADED = true;
 
-            GD.Print("Locking mutex in thread 3");
-            mutex.Lock();
-            Finished = true;
 
-            GD.Print("unlocking mutex in thread 4");
-            mutex.Unlock();
+            IsFinished(true, true);
+
+            // Finished = true;
+
+
+            // mutex.Unlock();
 
         }
+
+        public bool IsFinished(bool set = false, bool val = false)
+        {
+            mut.WaitOne();
+            if (set)
+            {
+                Finished = val;
+            }
+            //var thing = Finished;
+            mut.ReleaseMutex();
+            return Finished;
+        }
+
         public void LoadLastProfile()
         {
             var saveFiles = Godot.DirAccess.GetFilesAt("user://saves/");

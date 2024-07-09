@@ -42,6 +42,8 @@ namespace MagicalMountainMinery.Main
             }
         }
         private CamSettings camSettings;
+
+        public static bool Disabled { get; set; }
         public override void _Ready()
         {
             MaxSize = new Vector2(LimitRight - LimitLeft, LimitBottom - LimitTop);
@@ -267,7 +269,7 @@ namespace MagicalMountainMinery.Main
 
         public void HandleBaseInput()
         {
-            if (moving)
+            if (moving || Disabled)
                 return;
             var scrollDir = 0.0f;
             var speedCheck = Vector2.Zero;

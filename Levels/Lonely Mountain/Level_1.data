@@ -3,7 +3,14 @@
   "Difficulty": 1,
   "BonusStars": 0,
   "DataString": null,
+  "MapSeed": 0,
+  "AllowedTracks": 0,
+  "Width": 0,
+  "Height": 0,
+  "WidthAbsolute": 0.0,
+  "HeightAbsolute": 0.0,
+  "AllowRandom": false,
   "Region": "Lonely Mountain",
-  "LevelIndex": 0,
-  "RegionIndex": 0
+  "LevelIndex": 5,
+  "RegionIndex": 2
 }

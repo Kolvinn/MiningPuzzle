@@ -90,7 +90,7 @@ namespace MagicalMountainMinery.Main
             {
                 Stream = ResourceStore.GetAudio("tracksound1"),
                 Autoplay = false,
-                VolumeDb = 1,
+                VolumeDb = 1.5f,
                 PitchScale = 1f,
                 Bus = "Sfx"
             };
@@ -156,6 +156,7 @@ namespace MagicalMountainMinery.Main
                 return;
             else if (State == CartState.Stopped)
             {
+                Cart.LastMinedIndex = new IndexPos(-1, -1);
                 if (spriteSpawns.Count > 0)
                     DoSprites((float)delta);
                 else if (NextConnection != null && NextConnection is LevelTarget target)
@@ -316,6 +317,7 @@ namespace MagicalMountainMinery.Main
 
                         if (cart.Completed)
                         {
+                            EventDispatch.PushEventFlag(GameEventType.CartStopped);
                             State = CartState.Stopped; //TODO
                         }
                         return;
@@ -354,6 +356,7 @@ namespace MagicalMountainMinery.Main
                 LastDirection = NextDirection;
                 if (CartVectors.Count == 0)
                 {
+                    EventDispatch.PushEventFlag(GameEventType.CartStopped);
                     State = CartState.Stopped;
                     return;
                 }
@@ -364,6 +367,7 @@ namespace MagicalMountainMinery.Main
                     NextConnection = ConnectionQueue.Dequeue();
                     if (NextConnection is LevelTarget)
                     {
+                        EventDispatch.PushEventFlag(GameEventType.CartStopped);
                         State = CartState.Stopped;
                         //CheckEnd(Cart.CurrentIndex);
                     }
@@ -565,6 +569,7 @@ namespace MagicalMountainMinery.Main
 
             if (CartVectors.Count == 0)
             {
+                EventDispatch.PushEventFlag(GameEventType.CartStopped);
                 State = CartState.Stopped;
                 //CheckEnd(Cart.CurrentIndex);
                 return;

@@ -416,6 +416,7 @@ namespace MagicalMountainMinery.Data
         EndConFail,
         JunctionPlace,
         JunctionDelete,
+        JunctionRotate,
         JunctionsExhausted,
         LevelComplete,
         Nil,
@@ -424,8 +425,11 @@ namespace MagicalMountainMinery.Data
         CartStart,
         OreMineStart,
         MiningStart,
-        GemMined
-        
+        GemMined,
+        GridToggle,
+        HighlightToggle,
+        CartStopped
+
 
 
 

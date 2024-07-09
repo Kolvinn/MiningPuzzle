@@ -295,7 +295,6 @@ public partial class StartMenu : Node2D
         if(hover is GameButton btn )
         {
             
-            //&& (btn.UIID == "Play" || btn.UIID == "Settings" || btn.UIID == "Quit")
             var str = btn.UIID;
             if (!list.Contains(str))
                 return;

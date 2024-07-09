@@ -18,9 +18,6 @@ namespace MagicalMountainMinery.Obj
         public IndexPos Direction1 { get; set; } = IndexPos.Zero;
         public IndexPos Direction2 { get; set; } = IndexPos.Zero;
 
-        public IConnectable Connection1 { get; set; }
-        public IConnectable Connection2 { get; set; }
-
         public IndexPos Index { get; set; } = IndexPos.Zero;
         public TrackConnectionUI ConnectionUI { get; set; }
 
@@ -29,6 +26,16 @@ namespace MagicalMountainMinery.Obj
         public Label HeightLabel { get; set; }
 
         public Sprite2D BackingTrack {  get; set; }
+
+        public bool IsCurve
+        {
+            get
+            {
+                var res = (Direction1 + Direction2);
+                return Mathf.Abs(res.X) + Mathf.Abs(res.Y) == 2;
+                //return true;
+            }
+        }
 
         public Dictionary<IndexPos, int> Heights { get; set; } = new Dictionary<IndexPos, int>();
 

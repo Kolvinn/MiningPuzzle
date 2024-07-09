@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bg2stbseh0n52"]
+[gd_scene load_steps=15 format=3 uid="uid://bg2stbseh0n52"]
 
 [ext_resource type="Texture2D" uid="uid://bnwpai7x8v8ky" path="res://Assets/UI/Lucid V1.2/PNG/Flat/32/Plus.png" id="1_21p1o"]
 [ext_resource type="FontFile" uid="uid://byjdlexdr3rw3" path="res://Assets/Fonts/Pixel/pf_tempesta_seven/pf_tempesta_seven_compressed.ttf" id="1_u1quf"]
@@ -6,8 +6,16 @@
 [ext_resource type="Texture2D" uid="uid://begtjjxbjqcmy" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/UI_Flat_Button_Small_Press_01a2.png" id="3_edqd3"]
 [ext_resource type="Script" path="res://UI/GameButton.cs" id="4_807aj"]
 [ext_resource type="Texture2D" uid="uid://dpi3u8p8vrlon" path="res://Assets/UI/Lucid V1.2/PNG/Flat/16/Plus.png" id="4_xh3g4"]
+[ext_resource type="Texture2D" uid="uid://mjdmx77eppsr" path="res://Assets/UI/Complete_GUI_Essential_Pack_Free_Version/01_Basic_Collection/01_Flat_Theme/Sprites/TickBoxes.png" id="7_ftd0b"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_jf3fs"]
+font = ExtResource("1_u1quf")
+font_size = 32
+font_color = Color(0.984314, 0.929412, 0.87451, 1)
+outline_size = 15
+outline_color = Color(0.282353, 0.282353, 0.282353, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_b4po3"]
 font = ExtResource("1_u1quf")
 font_size = 32
 font_color = Color(0.984314, 0.929412, 0.87451, 1)
@@ -18,9 +26,28 @@ outline_color = Color(0.282353, 0.282353, 0.282353, 1)
 atlas = ExtResource("1_21p1o")
 region = Rect2(0, 10, 28, 8)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_n5a4p"]
+atlas = ExtResource("7_ftd0b")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_81rfn"]
+atlas = ExtResource("7_ftd0b")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="Theme" id="Theme_ijkw8"]
+CheckBox/icons/checked = SubResource("AtlasTexture_n5a4p")
+CheckBox/icons/unchecked = SubResource("AtlasTexture_81rfn")
+
+[sub_resource type="LabelSettings" id="LabelSettings_ukos4"]
+font = ExtResource("1_u1quf")
+font_size = 32
+font_color = Color(0.984314, 0.929412, 0.87451, 1)
+outline_size = 15
+outline_color = Color(0.282353, 0.282353, 0.282353, 1)
+
 [node name="HBoxContainer" type="HBoxContainer"]
-offset_right = 762.0
-offset_bottom = 134.0
+offset_right = 790.0
+offset_bottom = 150.0
 size_flags_horizontal = 3
 theme_override_constants/separation = 20
 
@@ -31,9 +58,9 @@ size_flags_stretch_ratio = 0.5
 theme_override_constants/separation = 30
 
 [node name="Label" type="Label" parent="Labels"]
-custom_minimum_size = Vector2(0, 45)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
-text = "UI Scaling: 100%"
+text = "UI Scaling"
 label_settings = SubResource("LabelSettings_jf3fs")
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -42,8 +69,24 @@ metadata/origin = Vector2(2, 2)
 [node name="Label2" type="Label" parent="Labels"]
 custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
-text = "Camera Zoom: 100%"
+text = "Camera Zoom"
 label_settings = SubResource("LabelSettings_jf3fs")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label3" type="Label" parent="Labels"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "Enable Grid"
+label_settings = SubResource("LabelSettings_b4po3")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label4" type="Label" parent="Labels"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "Highlight Squares"
+label_settings = SubResource("LabelSettings_b4po3")
 horizontal_alignment = 2
 vertical_alignment = 1
 
@@ -54,12 +97,14 @@ size_flags_stretch_ratio = 0.5
 theme_override_constants/separation = 30
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 30)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 
 [node name="Minus" type="TextureButton" parent="VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
 texture_normal = ExtResource("2_gf5hv")
 texture_pressed = ExtResource("3_edqd3")
 ignore_texture_size = true
@@ -81,12 +126,14 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("AtlasTexture_55uf5")
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 3
 metadata/_edit_lock_ = true
 
 [node name="Plus" type="TextureButton" parent="VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
 texture_normal = ExtResource("2_gf5hv")
 texture_pressed = ExtResource("3_edqd3")
 stretch_mode = 0
@@ -109,12 +156,17 @@ stretch_mode = 5
 metadata/_edit_lock_ = true
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 45)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="Minus" type="TextureButton" parent="VBoxContainer/HBoxContainer2"]
+modulate = Color(1, 1, 1, 0.270588)
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+disabled = true
 texture_normal = ExtResource("2_gf5hv")
 texture_pressed = ExtResource("3_edqd3")
 ignore_texture_size = true
@@ -135,13 +187,17 @@ offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("AtlasTexture_55uf5")
-expand_mode = 1
-stretch_mode = 5
+expand_mode = 3
+stretch_mode = 3
 metadata/_edit_lock_ = true
 
 [node name="Plus" type="TextureButton" parent="VBoxContainer/HBoxContainer2"]
+modulate = Color(1, 1, 1, 0.270588)
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+disabled = true
 texture_normal = ExtResource("2_gf5hv")
 texture_pressed = ExtResource("3_edqd3")
 ignore_texture_size = true
@@ -162,3 +218,44 @@ texture = ExtResource("4_xh3g4")
 expand_mode = 3
 stretch_mode = 5
 metadata/_edit_lock_ = true
+
+[node name="CheckBox" type="CheckBox" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+focus_mode = 0
+theme = SubResource("Theme_ijkw8")
+button_pressed = true
+
+[node name="CheckBox2" type="CheckBox" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+focus_mode = 0
+theme = SubResource("Theme_ijkw8")
+button_pressed = true
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_stretch_ratio = 0.0
+theme_override_constants/separation = 30
+
+[node name="scalingLabel" type="Label" parent="VBoxContainer2"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "150%"
+label_settings = SubResource("LabelSettings_ukos4")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="zoomLabel" type="Label" parent="VBoxContainer2"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "50%"
+label_settings = SubResource("LabelSettings_ukos4")
+horizontal_alignment = 2
+vertical_alignment = 1

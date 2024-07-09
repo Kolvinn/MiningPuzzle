@@ -146,6 +146,7 @@ public partial class Runner : Node2D
         newMapLevel.StartData = existingMapLevel.StartData;
         newMapLevel.CurrentTracks = existingMapLevel.CurrentTracks;
         newMapLevel.AllowedTracks = existingMapLevel.AllowedTracks;
+        
 
         foreach (var t in newMapLevel.LevelTargets)
             t.Reset();
@@ -215,19 +216,21 @@ public partial class Runner : Node2D
 
         //TODO actually make this how it shouldd be not a static level check
        // if(load.AllowRandom)
-        if(load.RegionIndex >0 || load.LevelIndex > 5)
+        if((load.RegionIndex >0 || load.LevelIndex > 5) && (load.RegionIndex != 2 && load.LevelIndex != 0))
             ApplyRandomGen(newMapLevel, load, CurrentMapSave);
 
         ValidRun = true;
 
         if(existing == null)
             CallDeferred(nameof(CenterCamera));
+
+        this.Placer.CallDeferred(nameof(Placer.LoadMineablePath));
         //should always send a camera mov event so that the things affected by it can reset themselves
         //Also defer the call because level target needs a call deferred wait as well.
 
 
-       // var next = Math.Round()
-       //cam.SnapCamera();
+        // var next = Math.Round()
+        //cam.SnapCamera();
         /*
          * 1,1 zoom is (17,7)
          * as 1.5 scale ui (17/1.5,7/1.5)
@@ -725,6 +728,7 @@ public partial class Runner : Node2D
             }
 
             Placer.OuterConnections.Add(last);
+            Placer.StartTrack = last;
             var control = new CartController(startT, level, start);
             this.AddChild(control);
             CartControllers.Add(control);
