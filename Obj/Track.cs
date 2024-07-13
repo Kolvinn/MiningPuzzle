@@ -96,6 +96,7 @@ namespace MagicalMountainMinery.Obj
             this.AddChild(BackingTrack);
             BackingTrack.ShowBehindParent = true;
             SetBacking();
+            ZIndex = 2;
         }
 
         public virtual void SetBacking()

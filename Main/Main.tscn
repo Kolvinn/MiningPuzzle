@@ -1,7 +1,8 @@
-[gd_scene load_steps=20 format=3 uid="uid://wq76ad7cyi0p"]
+[gd_scene load_steps=21 format=3 uid="uid://wq76ad7cyi0p"]
 
 [ext_resource type="Script" path="res://Main/Runner.cs" id="1_m33n5"]
 [ext_resource type="PackedScene" uid="uid://diiy2ucnw1hmx" path="res://Delete/NoiseTest.tscn" id="2_i2xsn"]
+[ext_resource type="PackedScene" uid="uid://dgj44b6ksu0ur" path="res://Delete/NoiseTest2.tscn" id="3_1wo2i"]
 [ext_resource type="PackedScene" uid="uid://bf3xrtnouiei1" path="res://Main/TrackPlacer.tscn" id="4_gnfs1"]
 [ext_resource type="FontFile" uid="uid://cdjxwrsadqdwg" path="res://Assets/Fonts/Pixel/Dogica/dogicapixel.ttf" id="11_56kdd"]
 [ext_resource type="Texture2D" uid="uid://ca8yrgp3vv7cw" path="res://Assets/GameResource/Track.png" id="12_seer6"]
@@ -57,6 +58,9 @@ font_size = 40
 script = ExtResource("1_m33n5")
 
 [node name="NoiseMap" parent="." instance=ExtResource("2_i2xsn")]
+visible = false
+
+[node name="NoiseMap2" parent="." instance=ExtResource("3_1wo2i")]
 
 [node name="TrackPlacer" parent="." node_paths=PackedStringArray("TrackAmountLabel", "SpecialNodeLabel") instance=ExtResource("4_gnfs1")]
 TrackAmountLabel = NodePath("../CanvasLayer/TrackImage/Label")

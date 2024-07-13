@@ -210,7 +210,7 @@ public partial class Runner : Node2D
             GenerateNewData(newMapLevel, CurrentMapData);
 
 
-        this.GetNode<NoiseTest>("NoiseMap").LoadMapLevel(newMapLevel, load, Placer.OuterConnections );
+        this.GetNode<NoiseTest2>("NoiseMap2").LoadMapLevel(newMapLevel, load, Placer.OuterConnections );
         MapLevel?.QueueFree();
         MapLevel = newMapLevel;
 

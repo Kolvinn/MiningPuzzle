@@ -37,10 +37,6 @@ mouse_cursor/custom_image="res://Assets/Cursors_v2/Light/Hands/Hand3.png"
 
 project/assembly_name="MagicalMountainMinery"
 
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/godot-box2d/plugin.cfg")
-
 [input]
 
 ui_left={
@@ -149,7 +145,7 @@ Rotate={
 [physics]
 
 common/physics_ticks_per_second=144
-2d/physics_engine="Box2D"
+3d/physics_engine="GodotPhysics3D"
 
 [rendering]
 

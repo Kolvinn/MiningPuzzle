@@ -176,7 +176,7 @@ namespace MagicalMountainMinery.Main
 
         public bool CheckLimit(float change)
         {
-
+            return false;//TODO get rid of this
             if (currentzoom + change < upperLimit)
                 return true;
             if (currentzoom + change > lowerLimit)

@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3h7d78k6en7v"]
+
+[ext_resource type="Texture2D" uid="uid://c1ohfo3mp1uoo" path="res://Assets/Tiny Swords (Update 010)/Resources/Trees/Tree.png" id="1_pqq2l"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8f4l3"]
+atlas = ExtResource("1_pqq2l")
+region = Rect2(43, 4, 111, 174)
+
+[node name="Sprite2D" type="Sprite2D"]
+texture = SubResource("AtlasTexture_8f4l3")
+offset = Vector2(0, -74.375)
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D"]
+polygon = PackedVector2Array(-62, -33, -1, -152, 61, -31, -1, 13)

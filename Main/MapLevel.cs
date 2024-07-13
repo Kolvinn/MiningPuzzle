@@ -628,6 +628,7 @@ namespace MagicalMountainMinery.Main
         {
             this.AddChild(poly);
             this.Connect(SignalName.AreaEntered, new Callable(this, nameof(TreeAreaEntered)));
+            this.Connect(SignalName.BodyShapeEntered, new Callable(this,nameof(OnBodyShapeEntered)));
             //this.AddChild(new ColorRect()
             //{
             //    Size = new Vector2(64, 64),
@@ -637,6 +638,13 @@ namespace MagicalMountainMinery.Main
             InputPickable = false;
             ZIndex = -5;
             
+        }
+
+        public void OnBodyShapeEntered(Rid id, Node2D body, int bodyIndex, int shapeIndex)
+        {
+            
+            GD.Print("bluh");
+            var thing = PhysicsServer2D.BodyGetObjectInstanceId(id);
         }
         public SquareArea(Vector2 position, Vector2 size)
         {
@@ -652,6 +660,7 @@ namespace MagicalMountainMinery.Main
                 },
             };
         }
+
 
         public void TreeAreaEntered(Area2D area)
         {
